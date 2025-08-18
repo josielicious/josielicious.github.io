@@ -1,0 +1,97 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: white;
+    color: #333;
+    text-align: center;
+}
+
+header {
+    padding: 20px 20px;
+    background: #1a1a1a;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+header h1 {
+    font-size: 1.5rem;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+header ul {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+}
+
+header ul a {
+    color: #ccc;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+header ul a:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+header p {
+    font-size: 1.1rem;
+    color: #ccc;
+    margin-top: 8px;
+}
+
+main {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.sim-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    justify-content: center;
+}
+
+.sim-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.sim-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+.sim-card img {
+    width: 100%;
+    object-fit: fill;
+}
+
+.sim-card h3 {
+    margin: 10px;
+    font-size: 1.2rem;
+}
+
+.sim-card p {
+    margin: 0 5px 5px;
+    font-size: 0.9rem;
+    color: #666;
+}

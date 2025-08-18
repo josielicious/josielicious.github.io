@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Big Brother - Main</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="scripts.js" defer></script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+    <main id="main-body">
+        <div id="cast-editor">
+            <h3 id="contestant-text"></h3>
+            <div class="contestant-grid" id="contestant-container">
+            </div>
+        </div>
+        <div id="simulation-settings">
+            <button id="season-toggle" onclick="toggleSettings()"disabled>Season Settings</button>
+            <button id="editing-toggle" onclick="toggleEditing()">Toggle Editing</button>
+            <br>
+            <button id="start-simulation" onclick="startSimulation()">Start the Simulation.</button>
+        </div>
+        <div id="season-toggles">
+
+        </div>
+    </main>
+</body>
+</html>
