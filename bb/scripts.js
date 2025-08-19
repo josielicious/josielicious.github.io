@@ -1,5 +1,3 @@
-
-/*
 document.addEventListener('contextmenu', event => event.preventDefault());
 
 document.addEventListener('keydown', function(e) {
@@ -29,7 +27,6 @@ setInterval(function() {
         devtoolsOpen = false;
     }
 }, 1000);
- */
 
 // - HEADER LOGIC - //
 fetch('data/header.html')
