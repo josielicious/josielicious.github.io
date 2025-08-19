@@ -5,6 +5,22 @@
     <title>Big Brother - Casts</title>
     <link rel="stylesheet" href="styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function() {
+            var password = "support25";
+            var storageKey = "accessGranted";
+
+            if (localStorage.getItem(storageKey) !== "true") {
+                var input = prompt("Enter password:");
+                if (input !== password) {
+                    alert("Wrong password! Access denied.");
+                    window.location.href = "/";
+                } else {
+                    localStorage.setItem(storageKey, "true");
+                }
+            }
+        })();
+    </script>
 </head>
 <body>
     <div id="header-placeholder"></div>

@@ -1,3 +1,32 @@
+document.addEventListener('contextmenu', event => event.preventDefault());
+
+document.addEventListener('keydown', function(e) {
+    if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+        (e.ctrlKey && e.key === 'U')
+    ) {
+        e.preventDefault();
+        alert('Inspect Element is disabled on this page.');
+    }
+});
+
+var devtoolsOpen = false;
+var threshold = 160;
+setInterval(function() {
+    var widthThreshold = window.outerWidth - window.innerWidth > threshold;
+    var heightThreshold = window.outerHeight - window.innerHeight > threshold;
+    if (widthThreshold || heightThreshold) {
+        if (!devtoolsOpen) {
+            devtoolsOpen = true;
+            alert('DevTools detected! Please close it to continue.');
+            window.location.href = '/';
+        }
+    } else {
+        devtoolsOpen = false;
+    }
+}, 1000);
+
 // - HEADER LOGIC - //
 fetch('data/header.html')
     .then(response => response.text())
