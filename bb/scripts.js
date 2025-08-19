@@ -37,15 +37,21 @@ class Interface {
         this.main.appendChild(element);
     }
 
-    createBold(txt) {
+    createBold(txt, event = true) {
         const element = document.createElement("p");
         element.innerHTML = `<b>${txt}</b>`;
+        if (event === true) {
+            element.classList.add('event');
+        }
         this.main.appendChild(element);
     }
 
-    createItalic(txt) {
+    createItalic(txt,  event = true) {
         const element = document.createElement("p");
         element.innerHTML = `<i>${txt}</i>`;
+        if (event === true) {
+            element.classList.add('event');
+        }
         this.main.appendChild(element);
     }
 
@@ -305,6 +311,144 @@ class VetoCompetition {
         this._ui.createImage(winner.image, true);
         this._ui.createParagraph(`${winner.getNick()} has won the Power of Veto!`, true);
     }
+
+    generateUsage() {
+        const ui = this._ui;
+        const nominees = SimulatorGlobals.cast['nominatedContestants'];
+        const vetoWinner = SimulatorGlobals.cast['vetoWinner'];
+        const hoh = SimulatorGlobals.cast['headOfHousehold'][0];
+
+        ui.createHeader("Veto Ceremony", "3");
+        ui.createImage(vetoWinner.image, true);
+
+        const nomineeA = nominees[0];
+        const nomineeB = nominees[1];
+
+        let willUse = false;
+        let savedNominee = null;
+        let selfSaved = false;
+
+        if (vetoWinner === nomineeA || vetoWinner === nomineeB) {
+            savedNominee = vetoWinner;
+            willUse = true;
+            selfSaved = true;
+        } else {
+            willUse = Math.random() < 0.5;
+            if (willUse) {
+                savedNominee = Math.random() < 0.5 ? nomineeA : nomineeB;
+            }
+        }
+
+        if (!willUse) {
+            ui.createParagraph(`${vetoWinner.getNick()} has decided not to use the Power of Veto.`, true);
+            ui.createButton("Proceed", "votingCeremony()");
+            return;
+        }
+
+        if (selfSaved) {
+            ui.createParagraph(`${vetoWinner.getNick()} has used the Power of Veto to save themselves.`, true);
+        } else {
+            ui.createImage(savedNominee.image, true);
+            ui.createParagraph(`${vetoWinner.getNick()} has used the Power of Veto to save ${savedNominee.getNick()}.`, true);
+        }
+
+        SimulatorGlobals.cast['nominatedContestants'] = nominees.filter(n => n !== savedNominee);
+
+        const otherNominee = nominees.find(n => n !== savedNominee);
+
+        const potentialReplacements = this._cast.filter(c =>
+            c !== hoh &&
+            c !== savedNominee &&
+            c !== otherNominee &&
+            c !== vetoWinner
+        );
+
+        if (potentialReplacements.length === 0) {
+            ui.createItalic("No eligible replacement nominees available.");
+            ui.createButton("Proceed", "votingCeremony()");
+            return;
+        }
+
+        const replacement = potentialReplacements[Math.floor(Math.random() * potentialReplacements.length)];
+        SimulatorGlobals.cast['nominatedContestants'].push(replacement);
+
+        ui.createImage(hoh.image, true);
+        ui.createImage(replacement.image, true);
+        ui.createParagraph(`${hoh.getNick()} has nominated ${replacement.getNick()} as the replacement nominee.`, true);
+
+        ui.createButton("Proceed", "votingCeremony()");
+    }
+}
+
+class VotingCeremony {
+    constructor(cast, ui) {
+        this._cast = cast;
+        this._ui = ui;
+    }
+
+    generateVoting() {
+        this._ui.createHeader("Voting Ceremony", "3");
+
+        const nominees = SimulatorGlobals.cast['nominatedContestants'];
+        if (nominees.length < 2) {
+            this._ui.createItalic("Not enough nominees to proceed with a vote.");
+            return;
+        }
+
+        const nomineeA = nominees[0];
+        const nomineeB = nominees[1];
+        const votes = new Map();
+        votes.set(nomineeA, 0);
+        votes.set(nomineeB, 0);
+
+        const hoh = SimulatorGlobals.cast['headOfHousehold'][0];
+        const voters = this._cast.filter(c => c !== nomineeA && c !== nomineeB && c !== hoh)
+        this._ui.createBold(`The following houseguests are voting to evict:`);
+
+        voters.forEach(voter => {
+            const vote = Math.random() < 0.5 ? nomineeA : nomineeB;
+            votes.set(vote, votes.get(vote) + 1);
+
+            this._ui.createImage(voter.image, true);
+            this._ui.createImage(vote.image, true);
+            this._ui.createParagraph(`${voter.getNick()} has voted to evict ${vote.getNick()}.`, true);
+        });
+
+        this._ui.createHorizontal();
+        this._ui.createBold("Vote Summary:");
+
+        this._ui.createImage(nomineeA.image, true);
+        this._ui.createParagraph(`${nomineeA.getNick(true)} received ${votes.get(nomineeA)} votes.`, true);
+        this._ui.createImage(nomineeB.image, true);
+        this._ui.createParagraph(`${nomineeB.getNick(true)} received ${votes.get(nomineeB)} votes.`, true);
+
+        let evicted;
+        if (votes.get(nomineeA) > votes.get(nomineeB)) {
+            evicted = nomineeA;
+        } else if (votes.get(nomineeB) > votes.get(nomineeA)) {
+            evicted = nomineeB;
+        } else {
+            this._ui.createHorizontal();
+            this._ui.createItalic("It's a tie! The Head of Household will break the tie.");
+
+            const hohVote = Math.random() < 0.5 ? nomineeA : nomineeB;
+            evicted = hohVote;
+
+            this._ui.createImage(hoh.image, true);
+            this._ui.createImage(hohVote.image, true);
+            this._ui.createParagraph(`${hoh.getNick()} has voted to evict ${hohVote.getNick()}.`, true);
+        }
+
+        this._ui.createHorizontal();
+        this._ui.createImage(evicted.image, true);
+        this._ui.createBold(`${evicted.getNick(true)} has been evicted from the house.`, "2");
+
+        SimulatorGlobals.cast['currentCast'] = this._cast.filter(c => c !== evicted);
+        SimulatorGlobals.cast['eliminatedContestants'].push(evicted);
+        SimulatorGlobals.cast['nominatedContestants'] = [];
+
+        this._ui.createButton("Proceed", "startEpisode()");
+    }
 }
 
 // - SEASON ONE - //
@@ -370,15 +514,16 @@ let SimulatorGlobals = {
         "all-contestants" : [EddieMcGee, JoshSouza, CurtisKin, JamieMarieKern, GeorgeAllenBoswell, CassandraWaldon, BrittanyPetros, KarenFowler, JordanParker, WilliamCollins,
             WillKirby, NicoleMarieChristner, MonicaBailey, HardyAmesHill, BunkyMiller, KristaStegall, KentBlackwelder, MikeBoogieMalin, ShannonDragoo, AutumnDaly, SherylBraxton, JustinSebik,
             AshleyHollis, AvaPearl, KatherineWoodman, KeanuSoto, KelleyJorgensen, LaurenDomingue, MickeyLee, MorganPope, RylieJeffries, VincePanaro, WillWilliams, ZachCornell, JimmyHeagerty, AdrianRocha, AmyBingham, ZaeFrederich, RachelEileenVillegas],
-        "current-cast" : [],
+        "currentCast" : [],
         "headOfHousehold" : [],
         "nominatedContestants" : [],
+        "eliminatedContestants" : [],
         "relationships" : new Map()
     }
 };
 
 function castOverZero() {
-    return SimulatorGlobals.cast['current-cast'].length > 0;
+    return SimulatorGlobals.cast['currentCast'].length > 0;
 }
 
 // - PREDEFINED CASTS SCREEN - //
@@ -440,7 +585,7 @@ function selectPredefinedCast(cast, format, jury, finale) {
 
 function pushPredefinedCast(cast) {
     //window.history.replaceState({}, document.title, "index.html");
-    SimulatorGlobals.cast['current-cast'] = cast;
+    SimulatorGlobals.cast['currentCast'] = cast;
 
     updateContestants();
 }
@@ -455,10 +600,10 @@ function updateContestants() {
     if (castOverZero()) {
         container.classList.remove("hidden");
         simulation.classList.remove("hidden");
-        text.innerHTML = `Current Cast: ${SimulatorGlobals.cast['current-cast'].length}`;
+        text.innerHTML = `Current Cast: ${SimulatorGlobals.cast['currentCast'].length}`;
 
         // - UPDATE CAST INTERFACE - //
-        SimulatorGlobals.cast["current-cast"].forEach(c => {
+        SimulatorGlobals.cast["currentCast"].forEach(c => {
             const card = document.createElement("div");
             card.className = "contestant-card";
             card.innerHTML = `
@@ -472,7 +617,7 @@ function updateContestants() {
                 button.classList.remove("hidden");
             }
             button.addEventListener("click", () => {
-                SimulatorGlobals.cast["current-cast"] = SimulatorGlobals.cast["current-cast"].filter(q => q !== c);
+                SimulatorGlobals.cast["currentCast"] = SimulatorGlobals.cast["currentCast"].filter(q => q !== c);
                 updateContestants();
             });
             container.appendChild(card);
@@ -505,25 +650,25 @@ function toggleEditing() {
 
 // - START SIMULATION - //
 function startSimulation() {
-
-
     startEpisode();
 }
 
 function startEpisode() {
-    const cast = SimulatorGlobals.cast['current-cast'];
+    const cast = SimulatorGlobals.cast['currentCast'];
     const fin = SimulatorGlobals.season['finale-size'];
     const interface = new Interface();
     interface.clean();
     if (cast.length !== fin) {
-        houseEvents()
+        houseEvents();
+    } else {
+        finaleCeremony();
     }
 }
 
 function houseEvents() {
     const ui = new Interface();
-    const houseEvents = new HouseEvents(SimulatorGlobals.cast['current-cast'], ui);
-    const cast = SimulatorGlobals.cast['current-cast'];
+    const houseEvents = new HouseEvents(SimulatorGlobals.cast['currentCast'], ui);
+    const cast = SimulatorGlobals.cast['currentCast'];
 
     let eventCount = 1;
     if (cast.length <= 4) {
@@ -551,7 +696,7 @@ function hohCompetition() {
     const ui = new Interface();
     ui.clean();
 
-    const hoh = new HOHCompetition(SimulatorGlobals.cast['current-cast'], ui);
+    const hoh = new HOHCompetition(SimulatorGlobals.cast['currentCast'], ui);
     hoh.generateHOH();
 
     ui.createButton("Proceed", "nominationCeremony()");
@@ -561,7 +706,7 @@ function nominationCeremony() {
     const ui = new Interface();
     ui.clean();
 
-    const ceremony = new NominationCeremony(SimulatorGlobals.cast['current-cast'], ui);
+    const ceremony = new NominationCeremony(SimulatorGlobals.cast['currentCast'], ui);
     ceremony.generateVotes();
 
     if (SimulatorGlobals.season['format'] === 'regular') {
@@ -572,9 +717,78 @@ function nominationCeremony() {
 }
 
 function povCompetition() {
+    const cast = SimulatorGlobals.cast['currentCast'];
     const ui = new Interface();
     ui.clean();
 
-    const veto = new VetoCompetition(SimulatorGlobals.cast['current-cast'], ui);
+    if (cast.length <= 3) {
+        votingCeremony();
+        return;
+    }
+
+    const veto = new VetoCompetition(cast, ui);
     veto.generateVeto();
+
+    ui.createButton("Proceed", "vetoUsage()");
+}
+
+function vetoUsage() {
+    const ui = new Interface();
+    ui.clean();
+
+    const veto = new VetoCompetition(SimulatorGlobals.cast['currentCast'], ui);
+    veto.generateUsage();
+}
+
+function votingCeremony() {
+    const ui = new Interface();
+    ui.clean();
+
+    const voting = new VotingCeremony(SimulatorGlobals.cast['currentCast'], ui);
+    voting.generateVoting();
+}
+
+function finaleCeremony() {
+    const ui = new Interface();
+    ui.clean();
+
+    ui.createHeader("Finale", "2");
+    const finalists = SimulatorGlobals.cast['currentCast'];
+    const jury = SimulatorGlobals.cast['eliminatedContestants'].slice(-SimulatorGlobals.season['jury-size']);
+
+    if (jury.length === 0) {
+        ui.createItalic("No jury members available to vote.");
+        return;
+    }
+
+    const votes = new Map();
+    votes.set(finalists[0], 0);
+    votes.set(finalists[1], 0);
+
+    ui.createBold("The jury will now vote for the winner:");
+
+    jury.forEach(juror => {
+        const vote = Math.random() < 0.5 ? finalists[0] : finalists[1];
+        votes.set(vote, votes.get(vote) + 1);
+
+        ui.createImage(juror.image, true);
+        ui.createImage(vote.image, true);
+        ui.createParagraph(`${juror.getNick()} has voted for ${vote.getNick()} to win.`, true);
+    });
+
+    ui.createHorizontal();
+    ui.createHeader("Final Vote Count", "3");
+
+    finalists.forEach(finalist => {
+        ui.createImage(finalist.image, true);
+        ui.createParagraph(`${finalist.getNick(true)} received ${votes.get(finalist)} votes.`, true);
+    });
+
+    ui.createHorizontal();
+
+    const winner = votes.get(finalists[0]) > votes.get(finalists[1]) ? finalists[0] : finalists[1];
+    ui.createImage(winner.image, true);
+    ui.createBold(`${winner.getNick(true)} is the winner of Big Brother!`, true);
+
+    ui.createButton("Restart", "window.location.href='index.html'");
 }
