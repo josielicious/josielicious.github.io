@@ -1,3 +1,5 @@
+
+/*
 document.addEventListener('contextmenu', event => event.preventDefault());
 
 document.addEventListener('keydown', function(e) {
@@ -10,6 +12,7 @@ document.addEventListener('keydown', function(e) {
         alert('Inspect Element is disabled on this page.');
     }
 });
+
 
 var devtoolsOpen = false;
 var threshold = 160;
@@ -26,6 +29,7 @@ setInterval(function() {
         devtoolsOpen = false;
     }
 }, 1000);
+ */
 
 // - HEADER LOGIC - //
 fetch('data/header.html')
@@ -242,38 +246,33 @@ class NominationCeremony {
     generateVotes() {
         this._ui.createHeader("Nomination Ceremony", "3");
 
-        if (SimulatorGlobals.season['format'] === 'original') {
-            this._cast.forEach((c) => {
-                const others = this._cast.filter(q => q !== c);
-
-                const shuffled = others.sort(() => 0.5 - Math.random());
-                const votedCast1 = shuffled[0];
-                const votedCast2 = shuffled[1];
-
-                SimulatorGlobals.cast['nominatedContestants'].push(votedCast1);
-                SimulatorGlobals.cast['nominatedContestants'].push(votedCast2);
-
-                this._ui.createImage(c.image, true);
-                this._ui.createImage(votedCast1.image, true);
-                this._ui.createImage(votedCast2.image, true);
-                this._ui.createParagraph(`${c.getNick()} has voted for ${votedCast1.getNick()} as his first option, and ${votedCast2.getNick()} as his second option.`, true);
-            })
-        } else {
+        if (SimulatorGlobals.season['format'] !== 'original') {
             const hoh = SimulatorGlobals.cast['headOfHousehold'][0];
             const others = this._cast.filter(q => q !== hoh);
 
             const shuffled = others.sort(() => 0.5 - Math.random());
+
+            const twists = SimulatorGlobals.season['active-twists'];
             const votedCast1 = shuffled[0];
             const votedCast2 = shuffled[1];
+            if (twists.includes("ai-arena") || twists.includes("bb-blockbuster")) {
+                const votedCast3 = shuffled[2];
+                SimulatorGlobals.cast['nominatedContestants'].push(votedCast1, votedCast2, votedCast3);
 
-            SimulatorGlobals.cast['nominatedContestants'].push(votedCast1);
-            SimulatorGlobals.cast['nominatedContestants'].push(votedCast2);
+                this._ui.createImage(hoh.image, true);
+                this._ui.createImage(votedCast1.image, true);
+                this._ui.createImage(votedCast2.image, true);
+                this._ui.createImage(votedCast3.image, true);
+                this._ui.createParagraph(`${hoh.getNick()} has nominated ${votedCast1.getNick()}, ${votedCast2.getNick()} and ${votedCast3.getNick()}.`, true);
+            }
+            else {
+                SimulatorGlobals.cast['nominatedContestants'].push(votedCast1, votedCast2);
 
-            this._ui.createImage(hoh.image, true);
-            this._ui.createImage(votedCast1.image, true);
-            this._ui.createImage(votedCast2.image, true);
-            this._ui.createParagraph(`${hoh.getNick()} has nominated ${votedCast1.getNick()} and ${votedCast2.getNick()}`, true);
-
+                this._ui.createImage(hoh.image, true);
+                this._ui.createImage(votedCast1.image, true);
+                this._ui.createImage(votedCast2.image, true);
+                this._ui.createParagraph(`${hoh.getNick()} has nominated ${votedCast1.getNick()} and ${votedCast2.getNick()}`, true);
+            }
         }
     }
 }
@@ -352,12 +351,16 @@ class VetoCompetition {
 
         const nomineeA = nominees[0];
         const nomineeB = nominees[1];
+        let nomineeC = null;
+        if (nominees.length > 2) {
+            nomineeC = nominees[2];
+        }
 
         let willUse = false;
         let savedNominee = null;
         let selfSaved = false;
 
-        if (vetoWinner === nomineeA || vetoWinner === nomineeB) {
+        if (vetoWinner === nomineeA || vetoWinner === nomineeB || vetoWinner === nomineeC) {
             savedNominee = vetoWinner;
             willUse = true;
             selfSaved = true;
@@ -368,9 +371,16 @@ class VetoCompetition {
             }
         }
 
+        const twists = SimulatorGlobals.season['active-twists'] || [];
+        const specialTwist = twists.includes("ai-arena") || twists.includes("bb-blockbuster");
+
         if (!willUse) {
             ui.createParagraph(`${vetoWinner.getNick()} has decided not to use the Power of Veto.`, true);
-            ui.createButton("Proceed", "votingCeremony()");
+            if (specialTwist && SimulatorGlobals.cast['currentCast'].length > 5) {
+                ui.createButton("Proceed", "secondChanceChallenge()");
+            } else {
+                ui.createButton("Proceed", "votingCeremony()");
+            }
             return;
         }
 
@@ -381,31 +391,36 @@ class VetoCompetition {
             ui.createParagraph(`${vetoWinner.getNick()} has used the Power of Veto to save ${savedNominee.getNick()}.`, true);
         }
 
-        SimulatorGlobals.cast['nominatedContestants'] = nominees.filter(n => n !== savedNominee);
+        const remainingNominees = nominees.filter(n => n !== savedNominee);
+        SimulatorGlobals.cast['nominatedContestants'] = remainingNominees;
 
-        const otherNominee = nominees.find(n => n !== savedNominee);
 
-        const potentialReplacements = this._cast.filter(c =>
-            c !== hoh &&
-            c !== savedNominee &&
-            c !== otherNominee &&
-            c !== vetoWinner
-        );
+        if (selfSaved || willUse) {
+            if (remainingNominees.length < 2 || specialTwist) {
+                const potentialReplacements = this._cast.filter(c =>
+                    c !== hoh &&
+                    c !== vetoWinner &&
+                    !remainingNominees.includes(c)
+                );
 
-        if (potentialReplacements.length === 0) {
-            ui.createItalic("No eligible replacement nominees available.");
-            ui.createButton("Proceed", "votingCeremony()");
-            return;
+                if (potentialReplacements.length > 0) {
+                    const replacement = potentialReplacements[Math.floor(Math.random() * potentialReplacements.length)];
+                    SimulatorGlobals.cast['nominatedContestants'].push(replacement);
+
+                    ui.createImage(hoh.image, true);
+                    ui.createImage(replacement.image, true);
+                    ui.createParagraph(`${hoh.getNick()} has nominated ${replacement.getNick()} as the replacement nominee.`, true);
+                } else {
+                    ui.createItalic("No eligible replacement nominees available.");
+                }
+            }
         }
 
-        const replacement = potentialReplacements[Math.floor(Math.random() * potentialReplacements.length)];
-        SimulatorGlobals.cast['nominatedContestants'].push(replacement);
-
-        ui.createImage(hoh.image, true);
-        ui.createImage(replacement.image, true);
-        ui.createParagraph(`${hoh.getNick()} has nominated ${replacement.getNick()} as the replacement nominee.`, true);
-
-        ui.createButton("Proceed", "votingCeremony()");
+        if (specialTwist && SimulatorGlobals.cast['currentCast'].length > 5) {
+            ui.createButton("Proceed", "secondChanceChallenge()");
+        } else {
+            ui.createButton("Proceed", "votingCeremony()");
+        }
     }
 }
 
@@ -537,7 +552,8 @@ let SimulatorGlobals = {
     season : {
         "format": "original",
         "jury-size": 7,
-        "finale-size": 2
+        "finale-size": 2,
+        "active-twists": []
     },
     cast : {
         "all-contestants" : [EddieMcGee, JoshSouza, CurtisKin, JamieMarieKern, GeorgeAllenBoswell, CassandraWaldon, BrittanyPetros, KarenFowler, JordanParker, WilliamCollins,
@@ -567,7 +583,7 @@ if (document.location.pathname.endsWith('/bb/casts.html')) {
                 seasons.forEach(season => {
                     const card = document.createElement("a");
                     card.className = "season-card";
-                    card.href = `index.html?cast=${encodeURIComponent(season.id)}&format=${encodeURIComponent(season.format)}&jury=${encodeURIComponent(season["jury-size"])}&finale=${encodeURIComponent(season["finale-size"])}`;
+                    card.href = `index.html?cast=${encodeURIComponent(season.id)}&format=${encodeURIComponent(season.format)}&twists=${encodeURIComponent(JSON.stringify(season.twists))}&jury=${encodeURIComponent(season["jury-size"])}&finale=${encodeURIComponent(season["finale-size"])}`;
                     card.innerHTML = `
                         <img src="${season.image}" loading="lazy" oncontextmenu="return false;">
                         <h3>${season.season}</h3>
@@ -586,19 +602,33 @@ if (document.location.pathname.endsWith('/bb/index.html')) {
         const format = params.get("format");
         const jury = params.get("jury");
         const finale = params.get("finale");
+        const twistsParam = params.get("twists");
+        let twists = [];
+
+        if (twistsParam) {
+            try {
+                twists = JSON.parse(twistsParam); // handle ["bb-blockbuster"]
+                if (!Array.isArray(twists)) {
+                    twists = [twists]; // wrap single value
+                }
+            } catch {
+                twists = [twistsParam]; // fallback if plain string
+            }
+        }
 
         if (cast) {
-            selectPredefinedCast(cast, format, jury, finale);
+            selectPredefinedCast(cast, format, jury, finale, twists);
         } else {
             updateContestants();
         }
     })
 }
 
-function selectPredefinedCast(cast, format, jury, finale) {
+function selectPredefinedCast(cast, format, jury, finale, twists) {
     SimulatorGlobals.season['format'] = format;
     SimulatorGlobals.season['jury-size'] = jury;
     SimulatorGlobals.season['finale'] = finale;
+    SimulatorGlobals.season['active-twists'] = twists;
     switch (cast) {
         case 'bb1':
             pushPredefinedCast(US_Season1);
@@ -714,11 +744,7 @@ function houseEvents() {
         houseEvents.generateEvent();
     }
 
-    if (SimulatorGlobals.season['format'] === 'original') {
-        ui.createButton("Proceed", "nominationCeremony()");
-    } else {
-        ui.createButton("Proceed", "hohCompetition()");
-    }
+    ui.createButton("Proceed", "hohCompetition()");
 }
 
 function hohCompetition() {
@@ -767,6 +793,32 @@ function vetoUsage() {
 
     const veto = new VetoCompetition(SimulatorGlobals.cast['currentCast'], ui);
     veto.generateUsage();
+}
+
+function secondChanceChallenge() {
+    const ui = new Interface();
+    ui.clean();
+
+    const nominees = SimulatorGlobals.cast['nominatedContestants'];
+    if (nominees.length < 3) {
+        votingCeremony();
+        return;
+    }
+
+    ui.createHeader("Second Chance Challenge", "3");
+    nominees.forEach(n => ui.createImage(n.image, true));
+    ui.createParagraph("The three nominees will compete for a chance to save themselves from eviction!", true);
+
+    const savedNomineeIndex = Math.floor(Math.random() * nominees.length);
+    const savedNominee = nominees[savedNomineeIndex];
+
+    ui.createImage(savedNominee.image, true);
+    ui.createParagraph(`${savedNominee.getNick()} has won the Second Chance Challenge and is safe from eviction!`, true);
+
+    const remainingNominees = nominees.filter(n => n !== savedNominee);
+    SimulatorGlobals.cast['nominatedContestants'] = remainingNominees;
+
+    ui.createButton("Proceed", "votingCeremony()");
 }
 
 function votingCeremony() {
