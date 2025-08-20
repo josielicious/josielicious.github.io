@@ -252,7 +252,7 @@ class NominationCeremony {
             const twists = SimulatorGlobals.season['active-twists'];
             const votedCast1 = shuffled[0];
             const votedCast2 = shuffled[1];
-            if (twists.includes("ai-arena") || twists.includes("bb-blockbuster")) {
+            if (twists.includes("ai-arena") || twists.includes("bb-blockbuster") && this._cast.length > 9) {
                 const votedCast3 = shuffled[2];
                 SimulatorGlobals.cast['nominatedContestants'].push(votedCast1, votedCast2, votedCast3);
 
