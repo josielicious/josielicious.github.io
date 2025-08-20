@@ -391,12 +391,12 @@ class VetoCompetition {
         const remainingNominees = nominees.filter(n => n !== savedNominee);
         SimulatorGlobals.cast['nominatedContestants'] = remainingNominees;
 
-
         if (selfSaved || willUse) {
             if (remainingNominees.length < 2 || specialTwist) {
                 const potentialReplacements = this._cast.filter(c =>
                     c !== hoh &&
                     c !== vetoWinner &&
+                    c !== savedNominee &&
                     !remainingNominees.includes(c)
                 );
 
