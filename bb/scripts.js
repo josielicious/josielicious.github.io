@@ -407,8 +407,6 @@ class VetoCompetition {
                     ui.createImage(hoh.image, true);
                     ui.createImage(replacement.image, true);
                     ui.createParagraph(`${hoh.getNick()} has nominated ${replacement.getNick()} as the replacement nominee.`, true);
-                } else {
-                    ui.createItalic("No eligible replacement nominees available.");
                 }
             }
         }
