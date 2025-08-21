@@ -229,12 +229,21 @@ class HOHCompetition {
     generateHOH() {
         this._ui.createHeader("HOH Competition", "3");
 
-        const shuffled = [...this._cast].sort(() => 0.5 - Math.random());
+        const lastHOH = SimulatorGlobals.cast['headOfHousehold']?.[0];
+
+        let eligibleCast;
+        if (this._cast.length === 3) {
+            eligibleCast = [...this._cast];
+        } else {
+            eligibleCast = this._cast.filter(c => c !== lastHOH);
+        }
+
+        const shuffled = [...eligibleCast].sort(() => 0.5 - Math.random());
         const hoh = shuffled[0];
 
         SimulatorGlobals.cast['headOfHousehold'] = [hoh];
 
-        hoh.hohWins++
+        hoh.hohWins++;
         this._ui.createImage(hoh.image, true);
         this._ui.createParagraph(`${hoh.getNick()} has won Head of Household!`, true);
     }
