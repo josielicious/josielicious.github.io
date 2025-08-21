@@ -495,41 +495,34 @@ class VotingCeremony {
     }
 }
 
-// - SEASON ONE - //
-const EddieMcGee = new Contestant("Eddie McGee", ["Eddie"], "1/Eddie");
-const JoshSouza = new Contestant("Josh Souza", ["Josh", "Sooz", "Sloshy"], "1/Josh");
-const CurtisKin = new Contestant("Curtis Kin", ["Curtis"], "1/Curtis");
-const JamieMarieKern = new Contestant("Jamie Marie Kern", ["Jamie"], "1/Jamie");
-const GeorgeAllenBoswell = new Contestant("George Allen Boswell", ["George", "Chicken George"], "7/George");
-const CassandraWaldon = new Contestant("Cassandra Waldon", ["Cassandra"], "1/Cassandra");
-const BrittanyPetros = new Contestant("Brittany Petros", ["Brittany"], "1/Brittany");
-const KarenFowler = new Contestant("Karen Fowler", ["Karen"], "1/Karen");
-const JordanParker = new Contestant("Jordan Parker", ["Jordan"], "1/Jordan");
-const WilliamCollins = new Contestant("William Collins", ["William", "Mega", "Will Mega"], "1/William");
-const US_Season1 = [EddieMcGee, JoshSouza, CurtisKin, JamieMarieKern, GeorgeAllenBoswell, CassandraWaldon, BrittanyPetros, KarenFowler, JordanParker, WilliamCollins];
-
-// - SEASON TWO - //
-const WillKirby = new Contestant("Will Kirby", ["Will", "Dr. Will", "Dr. Delicious", "The Pupper Master"], "7/Will");
-const NicoleMarieChristner = new Contestant("Nicole Marie Christner", ["Nicole"], "2/Nicole");
-const MonicaBailey = new Contestant("Monica Bailey", ["Monica"], "2/Monica");
-const HardyAmesHill = new Contestant("Hardy Ames-Hill", ["Hardy"], "2/Hardy");
-const BunkyMiller = new Contestant("Bunky Miller", ["Bunky"], "2/Bunky");
-const KristaStegall = new Contestant("Krista Stegall", ["Krista"], "2/Krista");
-const KentBlackwelder = new Contestant("Kent Blackwelder", ["Kent"], "2/Kent");
-const MikeBoogieMalin = new Contestant("Mike Malin", ["Mike","Boogie"], "14/Mike");
-const ShannonDragoo = new Contestant("Shannon Dragoo", ["Shannon"], "2/Shannon");
-const AutumnDaly = new Contestant("Autumn Daly", ["Autumn"], "2/Autumn");
-const SherylBraxton = new Contestant("Sheryl Braxton", ["Sheryl"], "2/Sheryl");
-const JustinSebik = new Contestant("Justin Sebik", ["Justin"], "2/Justin");
-const US_Season2 = [WillKirby, NicoleMarieChristner, MonicaBailey, HardyAmesHill, BunkyMiller, KristaStegall, KentBlackwelder, MikeBoogieMalin, ShannonDragoo, AutumnDaly, SherylBraxton, JustinSebik];
 
 // - SEASON TWELVE - //
 const RachelEileenVillegas = new Contestant("Rachel Eileen Villegas", ["Rachel"], "27/Rachel");
 
+// - SEASON TWENTY-FIVE - //
+const JagBains = new Contestant("Jag Bains", ["Jag"], "25/Jag");
+const MattKlotz = new Contestant("Matt Klotz", ["Matt"], "25/Matt");
+const BowieJaneBall = new Contestant("Bowie Jane Ball", ["Bowie Jane", "Bowie"], "25/BowieJane");
+const FeliciaCannon = new Contestant("Felicia Cannon", ["Felicia"], "25/Felicia");
+const CirieFields = new Contestant("Cirie Fields", ["Cirie"], "25/Cirie");
+const AmericaLopez = new Contestant("America Lopez", ["America"], "25/America");
+const BlueKim = new Contestant("Blue Kim", ["Blue"], "25/Blue");
+const CoryWuetenberger = new Contestant("Cory Wurtenberger", ["Cory"], "25/Cory");
+const CameronHardin = new Contestant("Cameron Hardin", ["Cameron"], "25/Cameron");
+const MecoleHayes = new Contestant("Mecole Hayes", ["Mecole", "Meme"], "25/Mecole");
+const JaredFields = new Contestant("Jared Fields", ["Jared"], "25/Jared");
+const IzzyGleicher = new Contestant("Izzy Gleicher", ["Izzy"], "25/Izzy");
+const RedUtley = new Contestant("Red Utley", ["Red"], "25/Red");
+const HisamGoueli = new Contestant("Hisam Goueli", ["Hisam"], "25/Hisam");
+const ReillySmedley = new Contestant("Reilly Smedley", ["Reilly"], "25/Reilly");
+const KirstenElwin = new Contestant("Kirsten Elwin", ["Kirsten"], "25/Kirsten");
+const LukeValentine = new Contestant("Luke Valentine", ["Luke"], "25/Luke");
+const US_Season25 = [JagBains, MattKlotz, BowieJaneBall, FeliciaCannon, CirieFields, AmericaLopez, BlueKim, CoryWuetenberger, CameronHardin, MecoleHayes, JaredFields, KirstenElwin, IzzyGleicher, RedUtley, HisamGoueli, ReillySmedley, KirstenElwin, LukeValentine];
+
 // - SEASON TWENTY-SIX - //
 const ChelsieBaham = new Contestant("Chelsie Baham", ["Chelsie"], "26/Chelsie");
 const MakensyManbeck = new Contestant("Makensy Manbeck", ["Makensy", "MJ"], "26/Makensy");
-const CameronSullivanBrown = new Contestant("Cameron Sullivan-Brown", ["Cameron", "Cam"], "26/Cam");
+const CamSullivanBrown = new Contestant("Cam Sullivan-Brown", ["Cameron", "Cam"], "26/Cam");
 const RubinaBernabe = new Contestant("Rubina Bernabe", ["Rubina", "RB"], "26/Rubina");
 const KimoApaka = new Contestant("Kimo Apaka", ["Kimo"], "26/Kimo");
 const AngelaMurray = new Contestant("Angela Murray", ["Angela", "Mama"], "26/Angela");
@@ -543,7 +536,7 @@ const CedricHodges = new Contestant("Cedric Hodges", ["Cedric", "Young Cedric"] 
 const KenneyKelley = new Contestant("Kenney Kelley", ["Kenney"], "26/Kenney");
 const LisaWeintraub = new Contestant("Lisa Weintraub", ["Lisa"], "26/Lisa");
 const MattHardeman = new Contestant("Matt Hardeman", ["Matt", "Crazy Eyes"], "26/Matt");
-const US_Season26 = [ChelsieBaham, MakensyManbeck, CameronSullivanBrown, RubinaBernabe, KimoApaka, AngelaMurray, LeahPeters, TkorClottley, QuinnMartin, JosephRodriguez, TuckerDesLauriers, BrooklynRivera, CedricHodges, KenneyKelley, LisaWeintraub, MattHardeman];
+const US_Season26 = [ChelsieBaham, MakensyManbeck, CamSullivanBrown, RubinaBernabe, KimoApaka, AngelaMurray, LeahPeters, TkorClottley, QuinnMartin, JosephRodriguez, TuckerDesLauriers, BrooklynRivera, CedricHodges, KenneyKelley, LisaWeintraub, MattHardeman];
 
 // - SEASON TWENTY-SEVEN - //
 const AshleyHollis = new Contestant("Ashley Hollis", ["Ashley"], "27/Ashley");
@@ -575,9 +568,7 @@ let SimulatorGlobals = {
         "active-twists": []
     },
     cast : {
-        "all-contestants" : [EddieMcGee, JoshSouza, CurtisKin, JamieMarieKern, GeorgeAllenBoswell, CassandraWaldon, BrittanyPetros, KarenFowler, JordanParker, WilliamCollins,
-            WillKirby, NicoleMarieChristner, MonicaBailey, HardyAmesHill, BunkyMiller, KristaStegall, KentBlackwelder, MikeBoogieMalin, ShannonDragoo, AutumnDaly, SherylBraxton, JustinSebik,
-            AshleyHollis, AvaPearl, KatherineWoodman, KeanuSoto, KelleyJorgensen, LaurenDomingue, MickeyLee, MorganPope, RylieJeffries, VincePanaro, WillWilliams, ZachCornell, JimmyHeagerty, AdrianRocha, AmyBingham, ZaeFrederich, RachelEileenVillegas],
+        "all-contestants" : [AshleyHollis, AvaPearl, KatherineWoodman, KeanuSoto, KelleyJorgensen, LaurenDomingue, MickeyLee, MorganPope, RylieJeffries, VincePanaro, WillWilliams, ZachCornell, JimmyHeagerty, AdrianRocha, AmyBingham, ZaeFrederich, RachelEileenVillegas],
         "currentCast" : [],
         "headOfHousehold" : [],
         "nominatedContestants" : [],
@@ -649,6 +640,9 @@ function selectPredefinedCast(cast, format, jury, finale, twists) {
     SimulatorGlobals.season['finale'] = finale;
     SimulatorGlobals.season['active-twists'] = twists;
     switch (cast) {
+        case 'bb25':
+            pushPredefinedCast(US_Season25);
+            break;
         case 'bb26':
             pushPredefinedCast(US_Season26);
             break;
