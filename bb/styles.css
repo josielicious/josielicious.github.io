@@ -80,7 +80,7 @@ main {
 /* Contestant Grid */
 .contestant-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 15px;
     justify-content: center;
 }
@@ -164,6 +164,7 @@ button:not(button:disabled):hover {
 }
 
 h1, h2, h3, h4, h5, h6 {
+    margin: 20px 0 10px 0;
     padding: 12px;
 }
 
@@ -173,4 +174,24 @@ p {
 
 hr {
     margin: 10px;
+}
+
+.track-record {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.track-record th, .track-record td {
+    border: 1px solid #888;
+    padding: 6px;
+}
+
+.track-record th {
+    background: #222;
+    color: #fff;
+}
+
+.track-record td {
+    background: #f9f9f9;
 }

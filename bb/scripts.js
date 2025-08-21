@@ -1,4 +1,4 @@
-document.addEventListener('contextmenu', event => event.preventDefault());
+/*document.addEventListener('contextmenu', event => event.preventDefault());
 
 document.addEventListener('keydown', function(e) {
     if (
@@ -27,6 +27,8 @@ setInterval(function() {
         devtoolsOpen = false;
     }
 }, 1000);
+
+*/
 
 // - HEADER LOGIC - //
 fetch('data/header.html')
@@ -113,6 +115,9 @@ class Contestant {
         this._name = name;
         this._nick = Array.isArray(nick) ? nick : [nick];
         this._image = image;
+        this.povWins = 0;
+        this.hohWins = 0;
+        this.sccWins = 0;
     }
 
     get name() {
@@ -229,6 +234,7 @@ class HOHCompetition {
 
         SimulatorGlobals.cast['headOfHousehold'] = [hoh];
 
+        hoh.hohWins++
         this._ui.createImage(hoh.image, true);
         this._ui.createParagraph(`${hoh.getNick()} has won Head of Household!`, true);
     }
@@ -333,6 +339,7 @@ class VetoCompetition {
         const winner = this._eligible[Math.floor(Math.random() * this._eligible.length)];
         SimulatorGlobals.cast['vetoWinner'] = winner;
 
+        winner.povWins++;
         this._ui.createImage(winner.image, true);
         this._ui.createParagraph(`${winner.getNick()} has won the Power of Veto!`, true);
     }
@@ -485,8 +492,6 @@ class VotingCeremony {
         SimulatorGlobals.cast['currentCast'] = this._cast.filter(c => c !== evicted);
         SimulatorGlobals.cast['eliminatedContestants'].push(evicted);
         SimulatorGlobals.cast['nominatedContestants'] = [];
-
-        this._ui.createButton("Proceed", "startEpisode()");
     }
 }
 
@@ -520,6 +525,25 @@ const US_Season2 = [WillKirby, NicoleMarieChristner, MonicaBailey, HardyAmesHill
 
 // - SEASON TWELVE - //
 const RachelEileenVillegas = new Contestant("Rachel Eileen Villegas", ["Rachel"], "27/Rachel");
+
+// - SEASON TWENTY-SIX - //
+const ChelsieBaham = new Contestant("Chelsie Baham", ["Chelsie"], "26/Chelsie");
+const MakensyManbeck = new Contestant("Makensy Manbeck", ["Makensy", "MJ"], "26/Makensy");
+const CameronSullivanBrown = new Contestant("Cameron Sullivan-Brown", ["Cameron", "Cam"], "26/Cam");
+const RubinaBernabe = new Contestant("Rubina Bernabe", ["Rubina", "RB"], "26/Rubina");
+const KimoApaka = new Contestant("Kimo Apaka", ["Kimo"], "26/Kimo");
+const AngelaMurray = new Contestant("Angela Murray", ["Angela", "Mama"], "26/Angela");
+const LeahPeters = new Contestant("Leah Peters", ["Leah"], "26/Leah");
+const TkorClottley = new Contestant("T'kor Clottley", ["T'kor", "T"], "26/T'kor");
+const QuinnMartin = new Contestant("Quinn Martin", ["Quinn"], "26/Quinn");
+const JosephRodriguez = new Contestant("Joseph Rodriguez", ["Joseph"], "26/Joseph");
+const TuckerDesLauriers = new Contestant("Tucker Des Lauriers", ["Tucker"], "26/Tucker");
+const BrooklynRivera = new Contestant("Brookyln Rivera", ["Brooklyn"], "26/Brooklyn");
+const CedricHodges = new Contestant("Cedric Hodges", ["Cedric", "Young Cedric"] ,"26/Cedric");
+const KenneyKelley = new Contestant("Kenney Kelley", ["Kenney"], "26/Kenney");
+const LisaWeintraub = new Contestant("Lisa Weintraub", ["Lisa"], "26/Lisa");
+const MattHardeman = new Contestant("Matt Hardeman", ["Matt", "Crazy Eyes"], "26/Matt");
+const US_Season26 = [ChelsieBaham, MakensyManbeck, CameronSullivanBrown, RubinaBernabe, KimoApaka, AngelaMurray, LeahPeters, TkorClottley, QuinnMartin, JosephRodriguez, TuckerDesLauriers, BrooklynRivera, CedricHodges, KenneyKelley, LisaWeintraub, MattHardeman];
 
 // - SEASON TWENTY-SEVEN - //
 const AshleyHollis = new Contestant("Ashley Hollis", ["Ashley"], "27/Ashley");
@@ -602,12 +626,12 @@ if (document.location.pathname.endsWith('/bb/index.html')) {
 
         if (twistsParam) {
             try {
-                twists = JSON.parse(twistsParam); // handle ["bb-blockbuster"]
+                twists = JSON.parse(twistsParam);
                 if (!Array.isArray(twists)) {
-                    twists = [twists]; // wrap single value
+                    twists = [twists];
                 }
             } catch {
-                twists = [twistsParam]; // fallback if plain string
+                twists = [twistsParam];
             }
         }
 
@@ -625,11 +649,8 @@ function selectPredefinedCast(cast, format, jury, finale, twists) {
     SimulatorGlobals.season['finale'] = finale;
     SimulatorGlobals.season['active-twists'] = twists;
     switch (cast) {
-        case 'bb1':
-            pushPredefinedCast(US_Season1);
-            break;
-        case 'bb2':
-            pushPredefinedCast(US_Season2);
+        case 'bb26':
+            pushPredefinedCast(US_Season26);
             break;
         case 'bb27':
             pushPredefinedCast(US_Season27);
@@ -800,15 +821,24 @@ function secondChanceChallenge() {
         return;
     }
 
-    ui.createHeader("Second Chance Challenge", "3");
+    const twists = SimulatorGlobals.season['active-twists'] || [];
+    let twistName;
+    if (twists.includes("ai-arena")) {
+        twistName = "AI Arena";
+    } else if (twists.includes("bb-blockbuster")) {
+        twistName = "BB Blockbuster";
+    }
+
+    ui.createHeader(`The ${twistName}`, "3");
     nominees.forEach(n => ui.createImage(n.image, true));
     ui.createParagraph("The three nominees will compete for a chance to save themselves from eviction!", true);
 
     const savedNomineeIndex = Math.floor(Math.random() * nominees.length);
     const savedNominee = nominees[savedNomineeIndex];
 
+    savedNominee.sccWins++;
     ui.createImage(savedNominee.image, true);
-    ui.createParagraph(`${savedNominee.getNick()} has won the Second Chance Challenge and is safe from eviction!`, true);
+    ui.createParagraph(`${savedNominee.getNick()} has won the ${twistName} and is safe from eviction!`, true);
 
     const remainingNominees = nominees.filter(n => n !== savedNominee);
     SimulatorGlobals.cast['nominatedContestants'] = remainingNominees;
@@ -822,6 +852,79 @@ function votingCeremony() {
 
     const voting = new VotingCeremony(SimulatorGlobals.cast['currentCast'], ui);
     voting.generateVoting();
+
+    ui.createButton("Proceed", "memoryWall()");
+}
+
+function memoryWall() {
+    const ui = new Interface();
+    ui.clean();
+
+    ui.createHeader("Memory Wall", "2");
+
+    const current = SimulatorGlobals.cast['currentCast'];
+    const evicted = SimulatorGlobals.cast['eliminatedContestants']
+
+    const twists = SimulatorGlobals.season['active-twists'] || [];
+    const activeTwist = "ai-arena" || "bb-blockbuster";
+
+    const currentTitle = document.createElement("h3");
+    currentTitle.innerHTML = "Current Houseguests";
+    ui.main.appendChild(currentTitle);
+    const currentDiv = document.createElement("div");
+    currentDiv.classList.add("contestant-grid");
+    current.forEach(c => {
+        const card = document.createElement("div");
+        card.classList.add("contestant-card");
+        if (twists.includes(activeTwist)) {
+            card.innerHTML = `
+            <img src="${c.image}" alt="${c.name}" width="100">
+            <p><b>${c.name}</b></p>
+            <p>HOH Wins: ${c.hohWins}</p>
+            <p>POV Wins: ${c.povWins}</p>
+            <p>SCC Wins: ${c.sccWins}</p>
+        `;
+        } else {
+            card.innerHTML = `
+            <img src="${c.image}" alt="${c.name}" width="100">
+            <p><b>${c.name}</b></p>
+            <p>HOH Wins: ${c.hohWins}</p>
+            <p>POV Wins: ${c.povWins}</p>
+        `;
+        }
+        currentDiv.appendChild(card);
+    });
+    ui.main.appendChild(currentDiv);
+
+    const evictedTitle = document.createElement("h3");
+    evictedTitle.innerHTML = "Evicted Houseguests";
+    ui.main.appendChild(evictedTitle);
+    const evictedDiv = document.createElement("div");
+    evictedDiv.classList.add("contestant-grid");
+    evicted.forEach(c => {
+        const card = document.createElement("div");
+        card.classList.add("contestant-card");
+        if (twists.includes(activeTwist)) {
+            card.innerHTML = `
+            <img src="${c.image}" alt="${c.name}" width="100">
+            <p><b>${c.name}</b></p>
+            <p>HOH Wins: ${c.hohWins}</p>
+            <p>POV Wins: ${c.povWins}</p>
+            <p>SCC Wins: ${c.sccWins}</p>
+        `;
+        } else {
+            card.innerHTML = `
+            <img src="${c.image}" alt="${c.name}" width="100">
+            <p><b>${c.name}</b></p>
+            <p>HOH Wins: ${c.hohWins}</p>
+            <p>POV Wins: ${c.povWins}</p>
+        `;
+        }
+        evictedDiv.appendChild(card);
+    });
+    ui.main.appendChild(evictedDiv);
+
+    ui.createButton("Proceed", "startEpisode()");
 }
 
 function finaleCeremony() {

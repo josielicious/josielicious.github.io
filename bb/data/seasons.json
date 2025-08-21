@@ -1,5 +1,14 @@
 [
   {
+    "id": "bb26",
+    "season": "Big Brother 26",
+    "image": "images/seasons/26.png",
+    "format": "regular",
+    "twists": "ai-arena",
+    "jury-size": 7,
+    "finale-size": 2
+  },
+  {
     "id": "bb27",
     "season": "Big Brother 27",
     "image": "images/seasons/27.png",
