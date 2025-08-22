@@ -38,6 +38,91 @@ fetch('data/header.html')
     });
 
 // - CLASSES - //
+class Contestant {
+    constructor(name, nick, image) {
+        this._name = name;
+        this._nick = Array.isArray(nick) ? nick : [nick];
+        this._image = image;
+        this.povWins = 0;
+        this.hohWins = 0;
+        this.sccWins = 0;
+    }
+
+    get name() {
+        return this._name;
+    }
+
+    getNick(formal = false) {
+        if (this._nick.length === 0) return "";
+        return formal ? this._nick[0] : this._nick[Math.floor(Math.random() * this._nick.length)];
+    }
+
+    get image() {
+        return `images/contestants/${this._image}.png`;
+    }
+}
+
+// - SEASON TWELVE - //
+const RachelEileenVillegas = new Contestant("Rachel Eileen Villegas", ["Rachel"], "27/Rachel");
+
+// - SEASON TWENTY-FIVE - //
+const JagBains = new Contestant("Jag Bains", ["Jag"], "25/Jag");
+const MattKlotz = new Contestant("Matt Klotz", ["Matt"], "25/Matt");
+const BowieJaneBall = new Contestant("Bowie Jane Ball", ["Bowie Jane", "Bowie"], "25/BowieJane");
+const FeliciaCannon = new Contestant("Felicia Cannon", ["Felicia"], "25/Felicia");
+const CirieFields = new Contestant("Cirie Fields", ["Cirie"], "25/Cirie");
+const AmericaLopez = new Contestant("America Lopez", ["America"], "25/America");
+const BlueKim = new Contestant("Blue Kim", ["Blue"], "25/Blue");
+const CoryWuetenberger = new Contestant("Cory Wurtenberger", ["Cory"], "25/Cory");
+const CameronHardin = new Contestant("Cameron Hardin", ["Cameron"], "25/Cameron");
+const MecoleHayes = new Contestant("Mecole Hayes", ["Mecole", "Meme"], "25/Mecole");
+const JaredFields = new Contestant("Jared Fields", ["Jared"], "25/Jared");
+const IzzyGleicher = new Contestant("Izzy Gleicher", ["Izzy"], "25/Izzy");
+const RedUtley = new Contestant("Red Utley", ["Red"], "25/Red");
+const HisamGoueli = new Contestant("Hisam Goueli", ["Hisam"], "25/Hisam");
+const ReillySmedley = new Contestant("Reilly Smedley", ["Reilly"], "25/Reilly");
+const KirstenElwin = new Contestant("Kirsten Elwin", ["Kirsten"], "25/Kirsten");
+const LukeValentine = new Contestant("Luke Valentine", ["Luke"], "25/Luke");
+const US_Season25 = [JagBains, MattKlotz, BowieJaneBall, FeliciaCannon, CirieFields, AmericaLopez, BlueKim, CoryWuetenberger, CameronHardin, MecoleHayes, JaredFields, IzzyGleicher, RedUtley, HisamGoueli, ReillySmedley, KirstenElwin, LukeValentine];
+
+// - SEASON TWENTY-SIX - //
+const ChelsieBaham = new Contestant("Chelsie Baham", ["Chelsie"], "26/Chelsie");
+const MakensyManbeck = new Contestant("Makensy Manbeck", ["Makensy", "MJ"], "26/Makensy");
+const CamSullivanBrown = new Contestant("Cam Sullivan-Brown", ["Cameron", "Cam"], "26/Cam");
+const RubinaBernabe = new Contestant("Rubina Bernabe", ["Rubina", "RB"], "26/Rubina");
+const KimoApaka = new Contestant("Kimo Apaka", ["Kimo"], "26/Kimo");
+const AngelaMurray = new Contestant("Angela Murray", ["Angela", "Mama"], "26/Angela");
+const LeahPeters = new Contestant("Leah Peters", ["Leah"], "26/Leah");
+const TkorClottley = new Contestant("T'kor Clottley", ["T'kor", "T"], "26/T'kor");
+const QuinnMartin = new Contestant("Quinn Martin", ["Quinn"], "26/Quinn");
+const JosephRodriguez = new Contestant("Joseph Rodriguez", ["Joseph"], "26/Joseph");
+const TuckerDesLauriers = new Contestant("Tucker Des Lauriers", ["Tucker"], "26/Tucker");
+const BrooklynRivera = new Contestant("Brookyln Rivera", ["Brooklyn"], "26/Brooklyn");
+const CedricHodges = new Contestant("Cedric Hodges", ["Cedric", "Young Cedric"] ,"26/Cedric");
+const KenneyKelley = new Contestant("Kenney Kelley", ["Kenney"], "26/Kenney");
+const LisaWeintraub = new Contestant("Lisa Weintraub", ["Lisa"], "26/Lisa");
+const MattHardeman = new Contestant("Matt Hardeman", ["Matt", "Crazy Eyes"], "26/Matt");
+const US_Season26 = [ChelsieBaham, MakensyManbeck, CamSullivanBrown, RubinaBernabe, KimoApaka, AngelaMurray, LeahPeters, TkorClottley, QuinnMartin, JosephRodriguez, TuckerDesLauriers, BrooklynRivera, CedricHodges, KenneyKelley, LisaWeintraub, MattHardeman];
+
+// - SEASON TWENTY-SEVEN - //
+const AshleyHollis = new Contestant("Ashley Hollis", ["Ashley"], "27/Ashley");
+const AvaPearl = new Contestant("Ava Pearl", ["Ava"], "27/Ava");
+const KatherineWoodman = new Contestant("Katherine Woodman", ["Katherine", "Kat"], "27/Katherine");
+const KeanuSoto = new Contestant("Keanu Soto", ["Keanu"], "27/Keanu");
+const KelleyJorgensen = new Contestant("Kelley Jorgensen", ["Kelley"], "27/Kelley");
+const LaurenDomingue = new Contestant("Lauren Domingue", ["Lauren"], "27/Lauren");
+const MickeyLee = new Contestant("Mickey Lee", ["Mickey"], "27/Mickey");
+const MorganPope = new Contestant("Morgan Pope", ["Morgan"], "27/Morgan");
+const RylieJeffries = new Contestant("Rylie Jeffries", ["Rylie"], "27/Rylie");
+const VincePanaro = new Contestant("Vince Panaro", ["Vince"], "27/Vince");
+const WillWilliams = new Contestant("Will Williams", ["Will"], "27/Will");
+const ZachCornell = new Contestant("Zach Cornell", ["Zach"], "27/Zach");
+const JimmyHeagerty = new Contestant("Jimmy Heagerty", ["Jimmy"], "27/Jimmy");
+const AdrianRocha = new Contestant("Adrian Rocha", ["Adrian"], "27/Adrian");
+const AmyBingham = new Contestant("Amy Bingham", ["Amy"], "27/Amy");
+const ZaeFrederich = new Contestant("Zae Frederich", ["Zae"], "27/Zae");
+const US_Season27 = [AshleyHollis, AvaPearl, KatherineWoodman, KeanuSoto, KelleyJorgensen, LaurenDomingue, MickeyLee, MorganPope, RylieJeffries, VincePanaro, WillWilliams, ZachCornell, JimmyHeagerty, AdrianRocha, AmyBingham, ZaeFrederich, RachelEileenVillegas];
+
 class Interface {
     constructor(main) {
         this.main = document.getElementById("main-body");
@@ -107,30 +192,6 @@ class Interface {
         element.setAttribute("onclick", onclick);
         element.classList.add(clss);
         this.main.appendChild(element);
-    }
-}
-
-class Contestant {
-    constructor(name, nick, image) {
-        this._name = name;
-        this._nick = Array.isArray(nick) ? nick : [nick];
-        this._image = image;
-        this.povWins = 0;
-        this.hohWins = 0;
-        this.sccWins = 0;
-    }
-
-    get name() {
-        return this._name;
-    }
-
-    getNick(formal = false) {
-        if (this._nick.length === 0) return "";
-        return formal ? this._nick[0] : this._nick[Math.floor(Math.random() * this._nick.length)];
-    }
-
-    get image() {
-        return `images/contestants/${this._image}.png`;
     }
 }
 
@@ -267,7 +328,7 @@ class NominationCeremony {
             const twists = SimulatorGlobals.season['active-twists'];
             const votedCast1 = shuffled[0];
             const votedCast2 = shuffled[1];
-            if (twists.includes("ai-arena") || twists.includes("bb-blockbuster") && this._cast.length > 9) {
+            if ((twists.includes("ai-arena") || twists.includes("bb-blockbuster")) && this._cast.length > 9) {
                 const votedCast3 = shuffled[2];
                 SimulatorGlobals.cast['nominatedContestants'].push(votedCast1, votedCast2, votedCast3);
 
@@ -505,66 +566,6 @@ class VotingCeremony {
 }
 
 
-// - SEASON TWELVE - //
-const RachelEileenVillegas = new Contestant("Rachel Eileen Villegas", ["Rachel"], "27/Rachel");
-
-// - SEASON TWENTY-FIVE - //
-const JagBains = new Contestant("Jag Bains", ["Jag"], "25/Jag");
-const MattKlotz = new Contestant("Matt Klotz", ["Matt"], "25/Matt");
-const BowieJaneBall = new Contestant("Bowie Jane Ball", ["Bowie Jane", "Bowie"], "25/BowieJane");
-const FeliciaCannon = new Contestant("Felicia Cannon", ["Felicia"], "25/Felicia");
-const CirieFields = new Contestant("Cirie Fields", ["Cirie"], "25/Cirie");
-const AmericaLopez = new Contestant("America Lopez", ["America"], "25/America");
-const BlueKim = new Contestant("Blue Kim", ["Blue"], "25/Blue");
-const CoryWuetenberger = new Contestant("Cory Wurtenberger", ["Cory"], "25/Cory");
-const CameronHardin = new Contestant("Cameron Hardin", ["Cameron"], "25/Cameron");
-const MecoleHayes = new Contestant("Mecole Hayes", ["Mecole", "Meme"], "25/Mecole");
-const JaredFields = new Contestant("Jared Fields", ["Jared"], "25/Jared");
-const IzzyGleicher = new Contestant("Izzy Gleicher", ["Izzy"], "25/Izzy");
-const RedUtley = new Contestant("Red Utley", ["Red"], "25/Red");
-const HisamGoueli = new Contestant("Hisam Goueli", ["Hisam"], "25/Hisam");
-const ReillySmedley = new Contestant("Reilly Smedley", ["Reilly"], "25/Reilly");
-const KirstenElwin = new Contestant("Kirsten Elwin", ["Kirsten"], "25/Kirsten");
-const LukeValentine = new Contestant("Luke Valentine", ["Luke"], "25/Luke");
-const US_Season25 = [JagBains, MattKlotz, BowieJaneBall, FeliciaCannon, CirieFields, AmericaLopez, BlueKim, CoryWuetenberger, CameronHardin, MecoleHayes, JaredFields, IzzyGleicher, RedUtley, HisamGoueli, ReillySmedley, KirstenElwin, LukeValentine];
-
-// - SEASON TWENTY-SIX - //
-const ChelsieBaham = new Contestant("Chelsie Baham", ["Chelsie"], "26/Chelsie");
-const MakensyManbeck = new Contestant("Makensy Manbeck", ["Makensy", "MJ"], "26/Makensy");
-const CamSullivanBrown = new Contestant("Cam Sullivan-Brown", ["Cameron", "Cam"], "26/Cam");
-const RubinaBernabe = new Contestant("Rubina Bernabe", ["Rubina", "RB"], "26/Rubina");
-const KimoApaka = new Contestant("Kimo Apaka", ["Kimo"], "26/Kimo");
-const AngelaMurray = new Contestant("Angela Murray", ["Angela", "Mama"], "26/Angela");
-const LeahPeters = new Contestant("Leah Peters", ["Leah"], "26/Leah");
-const TkorClottley = new Contestant("T'kor Clottley", ["T'kor", "T"], "26/T'kor");
-const QuinnMartin = new Contestant("Quinn Martin", ["Quinn"], "26/Quinn");
-const JosephRodriguez = new Contestant("Joseph Rodriguez", ["Joseph"], "26/Joseph");
-const TuckerDesLauriers = new Contestant("Tucker Des Lauriers", ["Tucker"], "26/Tucker");
-const BrooklynRivera = new Contestant("Brookyln Rivera", ["Brooklyn"], "26/Brooklyn");
-const CedricHodges = new Contestant("Cedric Hodges", ["Cedric", "Young Cedric"] ,"26/Cedric");
-const KenneyKelley = new Contestant("Kenney Kelley", ["Kenney"], "26/Kenney");
-const LisaWeintraub = new Contestant("Lisa Weintraub", ["Lisa"], "26/Lisa");
-const MattHardeman = new Contestant("Matt Hardeman", ["Matt", "Crazy Eyes"], "26/Matt");
-const US_Season26 = [ChelsieBaham, MakensyManbeck, CamSullivanBrown, RubinaBernabe, KimoApaka, AngelaMurray, LeahPeters, TkorClottley, QuinnMartin, JosephRodriguez, TuckerDesLauriers, BrooklynRivera, CedricHodges, KenneyKelley, LisaWeintraub, MattHardeman];
-
-// - SEASON TWENTY-SEVEN - //
-const AshleyHollis = new Contestant("Ashley Hollis", ["Ashley"], "27/Ashley");
-const AvaPearl = new Contestant("Ava Pearl", ["Ava"], "27/Ava");
-const KatherineWoodman = new Contestant("Katherine Woodman", ["Katherine", "Kat"], "27/Katherine");
-const KeanuSoto = new Contestant("Keanu Soto", ["Keanu"], "27/Keanu");
-const KelleyJorgensen = new Contestant("Kelley Jorgensen", ["Kelley"], "27/Kelley");
-const LaurenDomingue = new Contestant("Lauren Domingue", ["Lauren"], "27/Lauren");
-const MickeyLee = new Contestant("Mickey Lee", ["Mickey"], "27/Mickey");
-const MorganPope = new Contestant("Morgan Pope", ["Morgan"], "27/Morgan");
-const RylieJeffries = new Contestant("Rylie Jeffries", ["Rylie"], "27/Rylie");
-const VincePanaro = new Contestant("Vince Panaro", ["Vince"], "27/Vince");
-const WillWilliams = new Contestant("Will Williams", ["Will"], "27/Will");
-const ZachCornell = new Contestant("Zach Cornell", ["Zach"], "27/Zach");
-const JimmyHeagerty = new Contestant("Jimmy Heagerty", ["Jimmy"], "27/Jimmy");
-const AdrianRocha = new Contestant("Adrian Rocha", ["Adrian"], "27/Adrian");
-const AmyBingham = new Contestant("Amy Bingham", ["Amy"], "27/Amy");
-const ZaeFrederich = new Contestant("Zae Frederich", ["Zae"], "27/Zae");
-const US_Season27 = [AshleyHollis, AvaPearl, KatherineWoodman, KeanuSoto, KelleyJorgensen, LaurenDomingue, MickeyLee, MorganPope, RylieJeffries, VincePanaro, WillWilliams, ZachCornell, JimmyHeagerty, AdrianRocha, AmyBingham, ZaeFrederich, RachelEileenVillegas];
 
 let SimulatorGlobals = {
     simulator : {
