@@ -526,7 +526,7 @@ const HisamGoueli = new Contestant("Hisam Goueli", ["Hisam"], "25/Hisam");
 const ReillySmedley = new Contestant("Reilly Smedley", ["Reilly"], "25/Reilly");
 const KirstenElwin = new Contestant("Kirsten Elwin", ["Kirsten"], "25/Kirsten");
 const LukeValentine = new Contestant("Luke Valentine", ["Luke"], "25/Luke");
-const US_Season25 = [JagBains, MattKlotz, BowieJaneBall, FeliciaCannon, CirieFields, AmericaLopez, BlueKim, CoryWuetenberger, CameronHardin, MecoleHayes, JaredFields, KirstenElwin, IzzyGleicher, RedUtley, HisamGoueli, ReillySmedley, KirstenElwin, LukeValentine];
+const US_Season25 = [JagBains, MattKlotz, BowieJaneBall, FeliciaCannon, CirieFields, AmericaLopez, BlueKim, CoryWuetenberger, CameronHardin, MecoleHayes, JaredFields, IzzyGleicher, RedUtley, HisamGoueli, ReillySmedley, KirstenElwin, LukeValentine];
 
 // - SEASON TWENTY-SIX - //
 const ChelsieBaham = new Contestant("Chelsie Baham", ["Chelsie"], "26/Chelsie");
