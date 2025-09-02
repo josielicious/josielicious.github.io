@@ -1,3 +1,16 @@
+document.addEventListener("contextmenu", e => e.preventDefault());
+
+document.addEventListener("keydown", e => {
+    if (e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+        (e.ctrlKey && e.key === "U")) {
+        e.preventDefault();
+    }
+});
+
+document.querySelectorAll("[contenteditable]")
+    .forEach(el => el.setAttribute("contenteditable", "false"));
+
 class Queen {
     constructor(name, acting, comedy, dance, design, improv, runway, lipsync, image = "noimage", custom = false) {
         this.trackRecord = [];
@@ -1355,6 +1368,8 @@ function initDragAndDrop() {
     const pool = document.getElementById("unassigned-queens");
     const brackets = document.querySelectorAll(".bracket-queens");
 
+    let draggingItem = null;
+
     function handleDrop(targetContainer, draggedItem) {
         const qName = draggedItem.querySelector("p").innerText;
         const q = currentCast.find(c => c.getName() === qName);
@@ -1376,23 +1391,74 @@ function initDragAndDrop() {
         createStartButton();
     }
 
+    function startDragging(item, e) {
+        draggingItem = item;
+        item.classList.add("dragging");
+
+        // For touch
+        if (e.type.startsWith("touch")) {
+            item.style.position = "absolute";
+            item.style.zIndex = 1000;
+            moveAt(e.touches[0].pageX, e.touches[0].pageY);
+
+            function moveAt(x, y) {
+                item.style.left = x - item.offsetWidth / 2 + "px";
+                item.style.top = y - item.offsetHeight / 2 + "px";
+            }
+
+            function onTouchMove(eMove) {
+                moveAt(eMove.touches[0].pageX, eMove.touches[0].pageY);
+            }
+
+            document.addEventListener("touchmove", onTouchMove);
+
+            item.addEventListener("touchend", function onTouchEnd(eEnd) {
+                document.removeEventListener("touchmove", onTouchMove);
+
+                const touch = eEnd.changedTouches[0];
+                const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY)?.closest(".bracket-queens, #unassigned-queens");
+
+                if (dropTarget) handleDrop(dropTarget, item);
+
+                item.style.position = "";
+                item.style.left = "";
+                item.style.top = "";
+                item.style.zIndex = "";
+                item.classList.remove("dragging");
+
+                item.removeEventListener("touchend", onTouchEnd);
+                draggingItem = null;
+            });
+        }
+    }
+
+    // Add both mouse and touch events
     document.querySelectorAll("#unassigned-queens .cast-item, .bracket-queens .cast-item").forEach(item => {
-        item.addEventListener("dragstart", () => item.classList.add("dragging"));
-        item.addEventListener("dragend", () => item.classList.remove("dragging"));
+        item.setAttribute("draggable", true);
+
+        // Desktop
+        item.addEventListener("dragstart", () => { draggingItem = item; item.classList.add("dragging"); });
+        item.addEventListener("dragend", () => { draggingItem.classList.remove("dragging"); draggingItem = null; });
+
+        // Mobile
+        item.addEventListener("touchstart", e => startDragging(item, e));
     });
 
+    // Desktop drop
     brackets.forEach(bracket => {
         bracket.addEventListener("dragover", e => {
             e.preventDefault();
-            const dragging = document.querySelector(".dragging");
-            if (dragging) handleDrop(bracket, dragging);
+        });
+        bracket.addEventListener("drop", e => {
+            e.preventDefault();
+            if (draggingItem) handleDrop(bracket, draggingItem);
         });
     });
 
-    pool.addEventListener("dragover", e => {
+    pool.addEventListener("dragover", e => e.preventDefault());
+    pool.addEventListener("drop", e => {
         e.preventDefault();
-        const dragging = document.querySelector(".dragging");
-        if (dragging) handleDrop(pool, dragging);
+        if (draggingItem) handleDrop(pool, draggingItem);
     });
 }
 

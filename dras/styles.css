@@ -364,6 +364,11 @@ button:hover {
     display: none;
 }
 
+img {
+    -webkit-user-drag: none;
+    pointer-events: none;
+}
+
 #seasons-block h2 {
     font-size: 1.5rem;
     margin-bottom: 15px;
@@ -384,4 +389,58 @@ button:hover {
     border-radius: 10px;
     margin-top: 15px;
     color: #eee;
+}
+
+@media (max-width: 768px) {
+    #main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+    }
+
+    #header-title {
+        margin-bottom: 0.8rem;
+    }
+
+    #main-block {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    section {
+        width: 100%;
+        padding: 1.2rem;
+    }
+
+    #simulation-block {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+
+    #simulation-block img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .cast-item {
+        width: 80px;
+    }
+
+    .cast-item img {
+        width: 65px;
+        height: 65px;
+    }
+
+    #brackets-container {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    button {
+        width: 100%;
+        max-width: 300px;
+        font-size: 1rem;
+        padding: 0.8rem;
+    }
 }

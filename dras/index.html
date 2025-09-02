@@ -60,5 +60,46 @@
         <i class="fa-solid fa-angle-up"></i>
     </a>
     <script src="script.js"></script>
+    <script>
+        const siteVersion = "1.5";
+
+        async function checkVersion() {
+            try {
+                const res = await fetch("version.json", { cache: "no-store" });
+                const data = await res.json();
+
+                if (data.latest !== siteVersion) {
+                    showOutdatedBanner(data.latest);
+                }
+            } catch (e) {
+                console.error("Version check failed", e);
+            }
+        }
+
+        function showOutdatedBanner(latest) {
+            if (document.getElementById("outdated-banner")) return;
+            const banner = document.createElement("div");
+            banner.id = "outdated-banner";
+            banner.innerHTML = `
+            This site is outdated (new version: ${latest}).
+              <a href="" style="color:white;text-decoration:underline;">Refresh</a>
+            `;
+                banner.style.cssText = `
+                  position: fixed;
+                  top: 0; left: 0; right: 0;
+                  background: #ff4d4d;
+                  color: white;
+                  padding: 12px;
+                  text-align: center;
+                  font-weight: bold;
+                  z-index: 9999;
+                `;
+            document.body.prepend(banner);
+            }
+
+        checkVersion();
+
+        setInterval(checkVersion, 30000);
+    </script>
 </body>
 </html>
