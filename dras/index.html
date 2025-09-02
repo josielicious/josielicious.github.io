@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tournament Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header id="main-header">
+        <div id="header-title">
+            <img src="images/Logo.svg" alt="logo">
+            <h1>Tournament Simulator</h1>
+        </div>
+        <nav id="header-buttons">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="predef.html">Predefined Casts</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div id="main-block">
+        <section id="settings-block">
+            <h3>Choose your contestants:</h3>
+            <input type="text" id="queen-search" placeholder="Type a queen's name...">
+            <div id="queen-suggestions" class="suggestions"></div>
+            <button onclick="createCast()">Random Cast</button>
+            <button onclick="addRandomQueen()">Random Contestant</button>
+            <h3>Choose your wildcard format:</h3>
+            <select id="wildcard-format">
+                <option value="merge">Merge Wildcard</option>
+                <option value="finale">Finale Wildcard</option>
+            </select>
+        </section>
+
+        <section id="casting-block">
+            <img id="logo" src="images/Logo.svg" alt="logo">
+            <div id="cast-container"></div>
+            <div id="brackets-container" class="hidden">
+                <div class="bracket" data-bracket="A">
+                    <h3>Bracket A</h3>
+                    <div class="bracket-queens"></div>
+                </div>
+                <div class="bracket" data-bracket="B">
+                    <h3>Bracket B</h3>
+                    <div class="bracket-queens"></div>
+                </div>
+                <div class="bracket" data-bracket="C">
+                    <h3>Bracket C</h3>
+                    <div class="bracket-queens"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <a href="#" class="toTop active">
+        <i class="fa-solid fa-angle-up"></i>
+    </a>
+    <script src="script.js"></script>
+</body>
+</html>
