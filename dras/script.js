@@ -1818,7 +1818,7 @@ function top2Win() {
     screen.createBigText("Ladies, I've made my decision...");
 
     const [queen1, queen2] = topQueens;
-    topQueens.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
+    topQueens.sort((a, b) => a.lipsyncScore - b.lipsyncScore);
 
     const isDoubleWinner =
         queen1.lipsyncScore === queen2.lipsyncScore &&
