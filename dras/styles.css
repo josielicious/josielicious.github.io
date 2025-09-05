@@ -469,6 +469,36 @@ td {
     font-weight: bold;
 }
 
+.tab-buttons {
+    margin-bottom: 10px;
+}
+
+.tab-btn {
+    background-color: #ddd;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-right: 2px;
+    border-radius: 5px 5px 0 0;
+}
+
+.tab-btn:hover {
+    background-color: #ccc;
+}
+
+.tab-btn.active {
+    background-color: #fff;
+    border-bottom: 2px solid white;
+}
+
+.tab-content {
+    display: none;
+    border-top: none;
+    padding: 10px;
+    border-radius: 25px;
+    backdrop-filter: blur(2px);
+}
 
 @media (max-width: 768px) {
     #main-header {

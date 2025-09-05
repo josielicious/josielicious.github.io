@@ -1651,8 +1651,14 @@ function addWildcard() {
 
     const wildcard = eliminatedCast[randomNumber(0, currentCast.length - 1)];
     eliminatedCast = eliminatedCast.filter(q => q !== wildcard);
-
+    Mergers.push(wildcard);
     currentCast.push(wildcard);
+
+    if (wildcard.trackRecord.length > 0) {
+        wildcard.trackRecord.pop();
+    }
+
+    wildcard.addToTrackRecord("RTRN");
 
     screen.createImage(wildcard.image, "orange");
     screen.createBold(wildcard.getName() + ", has been chosen by the wheel to be a wildcard!");
@@ -1788,7 +1794,12 @@ function judgingScreen() {
             `${safeQueens.map(q => q.getName()).join(", ")}, you are safe.`,
         );
         safeQueens.forEach(q => {
-            q.addToTrackRecord("SAFE");
+            const lastIndex = q.trackRecord.length - 1;
+            if (q.trackRecord[lastIndex].toUpperCase() === "RTRN") {
+                q.editTrackRecord("SAFE");
+            } else {
+                q.addToTrackRecord("SAFE");
+            }
             q.ppe += 3;
         })
 
@@ -1983,6 +1994,12 @@ function winAndBtms() {
             q.favoritism += 5;
             q.ppe += 5;
             screen.createImage(q.image, "darkblue");
+            const lastIndex = q.trackRecord.length - 1;
+            if (q.trackRecord[lastIndex].toUpperCase() === "RTRN") {
+                q.editTrackRecord("WIN");
+            } else {
+                q.addToTrackRecord("WIN");
+            }
         });
 
         screen.createBold(
@@ -1992,7 +2009,12 @@ function winAndBtms() {
         topQueens.splice(0, 2);
     } else {
         let winner = topQueens.shift();
-        winner.addToTrackRecord("WIN");
+        const lastIndex = winner.trackRecord.length - 1;
+        if (winner.trackRecord[lastIndex].toUpperCase() === "RTRN") {
+            winner.editTrackRecord("WIN");
+        } else {
+            winner.addToTrackRecord("WIN");
+        }
         winner.favoritism += 5;
         winner.ppe += 5;
 
@@ -2007,6 +2029,12 @@ function winAndBtms() {
             q.addToTrackRecord("HIGH");
             q.favoritism += 1;
             q.ppe += 4;
+            const lastIndex = q.trackRecord.length - 1;
+            if (q.trackRecord[lastIndex].toUpperCase() === "RTRN") {
+                q.editTrackRecord("HIGH");
+            } else {
+                q.addToTrackRecord("HIGH");
+            }
         });
 
         screen.createParagraph(
@@ -2038,10 +2066,16 @@ function winAndBtms() {
     safeQueen.unfavoritism += 1;
     safeQueen.ppe += 2;
 
+    const lastIndex = safeQueen.trackRecord.length - 1;
+    if (safeQueen.trackRecord[lastIndex].toUpperCase() === "RTRN") {
+        safeQueen.editTrackRecord("LOW");
+    } else {
+        safeQueen.addToTrackRecord("LOW");
+    }
+
     screen.createImage(safeQueen.image, "pink");
     screen.createBold(`${safeQueen.getName()}... you are safe.`);
 
-    // Render remaining bottoms (lipsyncers etc.)
     bottomQueens.forEach(q => screen.createImage(q.image, "tomato"));
     screen.createBold("", "btm2");
     let btm2 = document.getElementById("btm2");
@@ -2082,15 +2116,26 @@ function lipSync() {
     }
     screen.createImage(bottomQueens[0].image, "tomato");
     screen.createBold(bottomQueens[0].getName() + ", shantay you stay.");
-    bottomQueens[0].addToTrackRecord("BTM2");
     bottomQueens[0].unfavoritism += 3;
     bottomQueens[0].ppe += 1;
+    const lastIndex1 = bottomQueens[0].trackRecord.length - 1;
+    if (bottomQueens[0].trackRecord[lastIndex1].toUpperCase() === "RTRN") {
+        bottomQueens[0].editTrackRecord("BTM2");
+    } else {
+        bottomQueens[0].addToTrackRecord("BTM2");
+    }
+
     screen.createImage(bottomQueens[1].image, "red");
     screen.createBold(bottomQueens[1].getName() + ", sashay away...");
-    bottomQueens[1].addToTrackRecord("ELIM");
     bottomQueens[1].unfavoritism += 5;
     eliminatedCast.unshift(bottomQueens[1]);
     currentCast.splice(currentCast.indexOf(bottomQueens[1]), 1);
+    const lastIndex2 = bottomQueens[1].trackRecord.length - 1;
+    if (bottomQueens[1].trackRecord[lastIndex2].toUpperCase() === "RTRN") {
+        bottomQueens[1].editTrackRecord("ELIM");
+    } else {
+        bottomQueens[1].addToTrackRecord("ELIM");
+    }
 
     screen.createButton("Proceed", "contestantProgress()");
 }
@@ -2122,7 +2167,6 @@ function top8Smackdown() {
         const q1 = lipsyncers[i * 2];
         const q2 = lipsyncers[i * 2 + 1];
 
-        // Only push pairs if both exist
         if (q1 && q2) {
             smackdownRounds.push([q1, q2]);
         }
@@ -2132,7 +2176,6 @@ function top8Smackdown() {
     screen.createHorizontalLine();
     screen.createBigText("The preliminaries are...");
 
-    // Display images above paragraph
     smackdownRounds.forEach((match, i) => {
         match.forEach(q => screen.createImage(q.image, "royalblue"));
         screen.createParagraph(`Round ${i + 1}: ${match[0].getName()} vs ${match[1].getName()}`);
@@ -2147,22 +2190,18 @@ function resolveSmackdownPrelims() {
     smackdownWinners = [];
 
     smackdownRounds.forEach((match, i) => {
-        // Each queen performs lip-sync
+
         match.forEach(q => q.getASLipsync());
 
-        // Sort by lipsyncScore
         match.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
 
-        // Winner = highest score
         const winner = match[0];
         smackdownWinners.push(winner);
 
-        // Image above paragraph
         screen.createImage(winner.image, "darkblue");
         screen.createParagraph(`Round ${i + 1} Winner: ${winner.getName()}`);
     });
 
-    // Setup semifinals: 1v2, 3v4 winners
     smackdownRounds = [
         [smackdownWinners[0], smackdownWinners[1]],
         [smackdownWinners[2], smackdownWinners[3]]
@@ -2186,7 +2225,6 @@ function resolveSmackdownSemis() {
         screen.createParagraph(`Semifinal ${i + 1} Winner: ${winner.getName()}`);
     });
 
-    // Setup final
     smackdownRounds = [[semiWinners[0], semiWinners[1]]];
 
     screen.createButton("Resolve final", "resolveSmackdownFinal()");
@@ -2242,175 +2280,208 @@ function contestantProgress() {
     let screen = new Scene();
     screen.clean();
 
-    let main = document.querySelector("div#simulation-block");
-    let centering = document.createElement("center");
-    let trackRecords = document.createElement("table");
-    trackRecords.id = "trackRecord";
-    trackRecords.className = "trtable";
-    trackRecords.border = "2";
+    const main = document.querySelector("div#simulation-block");
+    main.innerHTML = ""; // clear previous content
+
+    // ===== TAB BUTTONS =====
+    const tabs = ["Bracket A", "Bracket B", "Bracket C", "Mergers"];
+    const tabContainer = document.createElement("div");
+    tabContainer.className = "tab-buttons";
+
+    const contentContainer = document.createElement("div");
+    contentContainer.className = "tab-contents";
+
+    tabs.forEach((tabName, index) => {
+        // Tab button
+        const btn = document.createElement("button");
+        btn.textContent = tabName;
+        btn.className = "tab-btn";
+        if (index === 0) btn.classList.add("active");
+
+        btn.onclick = () => {
+            document.querySelectorAll(".tab-content").forEach(tc => tc.style.display = "none");
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            document.getElementById(tabName).style.display = "block";
+            btn.classList.add("active");
+        };
+        tabContainer.appendChild(btn);
+
+        const tabContent = document.createElement("div");
+        tabContent.id = tabName;
+        tabContent.className = "tab-content";
+        tabContent.style.display = index === 0 ? "block" : "none";
+
+        const centeringDiv = document.createElement("div");
+        centeringDiv.style.display = "flex";
+        centeringDiv.style.justifyContent = "center";
+
+        const table = createTrackRecordTable(tabName);
+        centeringDiv.appendChild(table);
+
+        tabContent.appendChild(centeringDiv);
+        contentContainer.appendChild(tabContent);
+    });
+
+    main.appendChild(tabContainer);
+    main.appendChild(contentContainer);
+
+    screen.createButton("Proceed", "episodeProcessing()");
+}
+
+// Helper to generate table for a bracket or mergers
+function createTrackRecordTable(groupName) {
+    const table = document.createElement("table");
+    table.className = "trtable";
+    table.border = "2";
+
+    let epStart = 1, epEnd = episodeChallenges.length;
+    let cast;
+    switch (groupName) {
+        case "Bracket A": epStart = 0; epEnd = 3; cast = BracketA; break;
+        case "Bracket B": epStart = 3; epEnd = 6; cast = BracketB; break;
+        case "Bracket C": epStart = 6; epEnd = 9; cast = BracketC; break;
+        case "Mergers": epStart = 9; epEnd = episodeChallenges.length; cast = Mergers; break;
+        default: cast = [];
+    }
+
+    if (groupName === "Mergers") {
+        const rankOrder = ["RTRNWINNER", "WINNER", "RTRNWIN", "RTRN WIN", "RTRN WIN ", "WIN", "RTRNLR3", "LR3", "RTRNL2R", "LR2", "RTRNL1R", "L1R", "RTRNHIGH", "HIGH", "RTRNSAFE", "SAFE", "RTRNLOW", "LOW", "RTRNBTM2", "BTM2", "RTRNELIM", "ELIM", ""];
+
+        cast.sort((a, b) => {
+            const aPerf = a.trackRecord.filter(p => !["CHOC","RTRN"].includes(p)).slice(-1)[0] || "SAFE";
+            const bPerf = b.trackRecord.filter(p => !["CHOC","RTRN"].includes(p)).slice(-1)[0] || "SAFE";
+
+            let aRank = rankOrder.findIndex(r => aPerf.toUpperCase().includes(r));
+            let bRank = rankOrder.findIndex(r => bPerf.toUpperCase().includes(r));
+
+            if (aRank === rankOrder.length-1 && bRank === rankOrder.length-1) {
+                return eliminatedCast.indexOf(a) - eliminatedCast.indexOf(b);
+            }
+            return aRank - bRank;
+        });
+    }
+
+    const epsToShow = episodeChallenges.slice(epStart, epEnd);
 
     // ===== HEADER ROW =====
-    let header = document.createElement("tr");
+    const header = document.createElement("tr");
     [
-        {text: "Rank", rowspan: 2, width: null},
-        {text: "Contestant", rowspan: 2, width: "100px"},
-        {text: "Photo", rowspan: 2, width: null}
+        { text: "Rank", rowspan: 2 },
+        { text: "Contestant", rowspan: 2, width: "100px" },
+        { text: "Photo", rowspan: 2 }
     ].forEach(cell => {
-        let th = document.createElement("th");
+        const th = document.createElement("th");
         th.innerHTML = cell.text;
         th.style.fontWeight = "bold";
         if (cell.width) th.style.width = cell.width;
         if (cell.rowspan) th.rowSpan = cell.rowspan;
         header.appendChild(th);
     });
-
-    for (let i = 0; i < episodeChallenges.length; i++) {
-        let th = document.createElement("th");
-        th.innerHTML = "Ep. " + (i + 1);
+    epsToShow.forEach((_, i) => {
+        const th = document.createElement("th");
+        th.innerHTML = "Ep. " + (epStart + i + 1);
         th.style.fontWeight = "bold";
+        th.style.textAlign = "center";
         header.appendChild(th);
-    }
-
-    let thPPE = document.createElement("th");
+    });
+    const thPPE = document.createElement("th");
     thPPE.className = "ppeTR";
     thPPE.rowSpan = 2;
     thPPE.innerHTML = "PPE - MVQ";
     header.appendChild(thPPE);
 
-    trackRecords.appendChild(header);
+    table.appendChild(header);
 
-    // ===== SUBHEADER ROW (Episode names) =====
-    let header1 = document.createElement("tr");
-    for (let i = 0; i < episodeChallenges.length; i++) {
-        let th = document.createElement("th");
-        th.innerHTML = `<small>${episodeChallenges[i]}</small>`;
+    // ===== SUBHEADER ROW =====
+    const header1 = document.createElement("tr");
+    epsToShow.forEach(challenge => {
+        const th = document.createElement("th");
+        th.innerHTML = `<small>${challenge}</small>`;
         th.className = "episodeTR";
+        th.style.textAlign = "center";
         header1.appendChild(th);
-    }
-    trackRecords.appendChild(header1);
+    });
+    table.appendChild(header1);
 
     // ===== CONTESTANTS =====
-    let cast;
-    if (phase === "bracket") {
-        cast = currentCast;
-    } else {
-        cast = fullCast;
+    switch (groupName) {
+        case "Bracket A": cast = BracketA; break;
+        case "Bracket B": cast = BracketB; break;
+        case "Bracket C": cast = BracketC; break;
+        case "Mergers": cast = Mergers; break;
+        default: cast = [];
     }
-    cast.forEach(contestantData => {
-        let contestantRow = document.createElement("tr");
 
-        let rankCell = document.createElement("td");
+    cast.forEach(contestantData => {
+        const row = document.createElement("tr");
+
+        // Rank
+        const rankCell = document.createElement("td");
         rankCell.style.backgroundColor = "#f5ebf5";
         rankCell.style.fontWeight = "bold";
         rankCell.innerHTML = "TBA";
+        if (contestantData.ogPlace2 !== undefined) rankCell.innerHTML += `<br><small>(Orig. ${contestantData.ogPlace2}th)</small>`;
+        if (contestantData.ogPlace !== 0) rankCell.innerHTML += `<br><small>(Orig. ${contestantData.ogPlace}th)</small>`;
+        row.appendChild(rankCell);
 
-        if (contestantData.ogPlace2 !== undefined) {
-            rankCell.innerHTML += `<br><small>(Orig. ${contestantData.ogPlace2}th)</small>`;
-        }
-        if (contestantData.ogPlace !== 0) {
-            rankCell.innerHTML += `<br><small>(Orig. ${contestantData.ogPlace}th)</small>`;
-        }
-
-        contestantRow.appendChild(rankCell);
-
-        let nameCell = document.createElement("td");
+        // Name
+        const nameCell = document.createElement("td");
         nameCell.className = "nameTR";
         nameCell.textContent = contestantData.getName();
-        contestantRow.appendChild(nameCell);
+        row.appendChild(nameCell);
 
-        let photoCell = document.createElement("td");
+        // Photo
+        const photoCell = document.createElement("td");
         photoCell.className = "placement";
         photoCell.style.background = `url(${contestantData.image}) center/cover no-repeat`;
-        contestantRow.appendChild(photoCell);
+        row.appendChild(photoCell);
 
-        contestantData.trackRecord.forEach(performance => {
-            let td = document.createElement("td");
+        const trackSlice = contestantData.trackRecord.slice(epStart, epEnd);
+        trackSlice.forEach(performance => {
+            const td = document.createElement("td");
             td.innerHTML = performance;
+            td.style.textAlign = "center";
 
-            // === Styling by placement ===
+            // --- Coloring logic ---
             switch (performance.toUpperCase()) {
-                case "WIN":
-                    td.style.backgroundColor = "royalblue";
-                    td.style.color = "white";
-                    td.style.fontWeight = "bold";
-                    break;
-                case " WIN":
-                    td.style.backgroundColor = "deepskyblue";
-                    td.style.fontWeight = "bold";
-                    break;
-                case " WIN ":
-                    td.style.backgroundColor = "darkblue";
-                    td.style.color = "white";
-                    td.style.fontWeight = "bold";
-                    break;
-                case "HIGH":
-                    td.style.backgroundColor = "lightblue";
-                    td.style.color = "black";
-                    td.style.fontWeight = "normal";
-                    break;
-                case "LOW":
-                    td.style.backgroundColor = "pink";
-                    td.style.color = "black";
-                    td.style.fontWeight = "normal";
-                    break;
+                case "WIN": td.style.backgroundColor = "royalblue"; td.style.color = "white"; td.style.fontWeight = "bold"; break;
+                case " WIN": td.style.backgroundColor = "deepskyblue"; td.style.fontWeight = "bold"; break;
+                case " WIN ": td.style.backgroundColor = "darkblue"; td.style.color = "white"; td.style.fontWeight = "bold"; break;
+                case "HIGH": td.style.backgroundColor = "lightblue"; break;
+                case "LOW": td.style.backgroundColor = "pink"; break;
                 case "BTM":
                 case "BTM2":
                 case "BTM3":
-                case "BTM4":
-                    td.style.backgroundColor = "tomato";
-                    td.style.fontWeight = "normal";
-                    break;
-                case "SAFE":
-                    td.style.backgroundColor = "white";
-                    td.style.color = "black";
-                    td.style.fontWeight = "normal";
-                    break;
+                case "BTM4": td.style.backgroundColor = "tomato"; break;
+                case "SAFE": td.style.backgroundColor = "white"; break;
                 case "BTM4ELIM":
+                case "ELIM": td.style.backgroundColor = "red"; td.innerHTML = 'ELIM'; td.style.fontWeight = "bold"; break;
                 case "WINELIM":
                 case " WINELIM":
-                case " WIN ELIM":
-                case "ELIM":
-                    td.style.backgroundColor = "red";
-                    td.style.fontWeight = "bold";
-                    td.innerHTML = 'ELIM';
-                    break;
-                case "RTRN":
-                    td.style.backgroundColor = "orange";
-                    td.style.color = "black";
-                    td.style.textEmphasis = "bold";
-                    break;
-                case "WINNER":
-                    td.style.backgroundColor = "yellow";
-                    td.style.color = "white";
-                    td.style.textEmphasis = "bold";
-                    break;
-                case "RUNNER-UP":
-                    td.style.backgroundColor = "silver";
-                    td.style.color = "black";
-                    td.style.textEmphasis = "bold";
-                    break;
-                default:
-                    td.style.backgroundColor = "gray";
-                    break;
+                case " WIN ELIM": td.style.backgroundColor = "red";  td.style.color = "black";  td.innerHTML = 'WIN<br>+<br>ELIM'; td.style.fontWeight = "bold"; break;
+                case "RTRNWIN": td.style.backgroundColor = "darkblue";  td.style.color = "white";  td.innerHTML = 'RTRN<br>+<br>WIN';  td.style.fontWeight = "bold"; break;
+                case "RTRN WIN ": td.style.backgroundColor = "darkblue"; td.innerHTML = '<b>RTRN</b><br>+<br>WIN'; break;
+                case "RTRNHIGH": td.style.backgroundColor = "lightblue"; td.innerHTML = '<b>RTRN</b><br>+<br>HIGH'; break;
+                case "RTRNSAFE": td.style.backgroundColor = "orange"; td.innerHTML = '<b>RTRN</b><br>+<br>SAFE'; break;
+                case "RTRNLOW": td.style.backgroundColor = "lightpink"; td.innerHTML = '<b>RTRN</b><br>+<br>LOW'; break;
+                case "RTRNBTM2": td.style.backgroundColor = "tomato"; td.innerHTML = '<b>RTRN</b><br>+<br>BTM2'; break;
+                case "RTRNELIM": td.style.backgroundColor = "red"; td.innerHTML = 'RTRN<br>+<br>ELIM';  td.style.fontWeight = "bold"; break;
+                case "RTRN": td.style.backgroundColor = "orange"; break;
+                case "WINNER": td.style.backgroundColor = "yellow"; td.style.color = "white"; break;
+                case "RUNNER-UP": td.style.backgroundColor = "silver"; break;
+                default: td.style.backgroundColor = "gray"; break;
             }
-
-            td.style.fontWeight = "bold";
-            td.style.textAlign = "center";
-
-            contestantRow.appendChild(td);
+            row.appendChild(td);
         });
-
-        let ppeCell = document.createElement("td");
+        // PPE
+        const ppeCell = document.createElement("td");
         const ppeCalculated = contestantData.ppe / contestantData.episodesOn;
         const formattedPPE = isNaN(ppeCalculated) ? "-" : ppeCalculated.toFixed(2);
         ppeCell.innerHTML = `${formattedPPE} - ${contestantData.stars}`;
-        contestantRow.appendChild(ppeCell);
+        row.appendChild(ppeCell);
 
-        trackRecords.appendChild(contestantRow);
+        table.appendChild(row);
     });
 
-    centering.appendChild(trackRecords);
-    main.appendChild(centering);
-
-    screen.createButton("Proceed", "episodeProcessing()");
+    return table;
 }
