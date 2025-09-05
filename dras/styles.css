@@ -391,6 +391,85 @@ img {
     color: #eee;
 }
 
+.trtable {
+    background-color: #f5ebf5;
+    color: #202122;
+    border: 1px solid #a2a9b1;
+    border-collapse: collapse;
+    font-family: Source Sans Pro, sans-serif
+}
+
+table {
+    text-indent: initial;
+    border-spacing: 2px;
+    color: #202122;
+    border: 1px solid #a2a9b1;
+    border-collapse: collapse;
+    font-size: .7rem;
+    text-align: center;
+}
+
+tbody {
+    display: table-row-group;
+    vertical-align: middle;
+    border-color: inherit;
+}
+
+tr {
+    display: table-row;
+    vertical-align: middle;
+    border-color: inherit;
+}
+
+th {
+    display: table-cell;
+    font-weight: bold;
+    background-color: #e9dfe9;
+    text-align: center;
+    border: 1px solid #a2a9b1;
+    padding: 0.2em 0.4em;
+}
+
+td {
+    display: table-cell;
+    text-align: center;
+    border: 1px solid #a2a9b1;
+    padding: 0.2em 0.4em;
+    vertical-align: middle;
+}
+
+.placement {
+    height: 110px;
+    width: 40px;
+    font-size: 12px;
+}
+
+.rumocracy {
+    height: 45px;
+    width: 45px;
+}
+.song {
+    width: max-content;
+    font-size: 0.8rem;
+}
+
+.nameTR{
+    background-color: #f5ebf5;
+    font-weight: bold;
+    font-size: .8rem;
+}
+
+.episodeTR {
+    background-color: #e9dfe9;
+    font-weight: bold;
+}
+
+.ppeTR{
+    background-color: #e9dfe9;
+    font-weight: bold;
+}
+
+
 @media (max-width: 768px) {
     #main-header {
         flex-direction: column;

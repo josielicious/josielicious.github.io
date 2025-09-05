@@ -1530,17 +1530,47 @@ function episodeProcessing() {
     episodeCount++;
 
     if (phase === "bracket") {
+        if (currentBracketIndex === 0) {
+            BracketB.forEach(q => {
+                q.addToTrackRecord("");
+            })
+            BracketC.forEach(q => {
+                q.addToTrackRecord("");
+            })
+        }
+        else if (currentBracketIndex === 1) {
+            BracketA.forEach(q => {
+                q.addToTrackRecord("");
+            })
+            BracketC.forEach(q => {
+                q.addToTrackRecord("");
+            })
+        }
+        else if (currentBracketIndex === 2) {
+            BracketA.forEach(q => {
+                q.addToTrackRecord("");
+            })
+            BracketB.forEach(q => {
+                q.addToTrackRecord("");
+            })
+        }
         loadCurrentBracket();
+        currentCast.forEach(q => q.episodesOn += 1);
         console.log(`Bracket Phase - Episode ${episodeCount}`);
         newEpisode();
         return;
     } else if (phase === "merge") {
         console.log(`Merge Phase - Episode ${episodeCount}`);
+        eliminatedCast.forEach(q => {
+            q.addToTrackRecord("");
+        })
         if (episodeCount === 12) {
             startFinale();
+            currentCast.forEach(q => q.episodesOn += 1);
             return;
         }
         newEpisode();
+        currentCast.forEach(q => q.episodesOn += 1);
         return;
     }
 }
@@ -1570,7 +1600,7 @@ function announcePassers() {
     if (currentBracketIndex < 2) {
         currentBracketIndex++;
         loadCurrentBracket();
-        screen.createButton("Next Bracket", "episodeProcessing()");
+        screen.createButton("Next Bracket", "contestantProgress()");
         return;
     }
 
@@ -1703,6 +1733,7 @@ function judging() {
         nonTops.forEach(q => {
             if (nonTops.length === 4) q.addToTrackRecord("BTM4");
             else if (nonTops.length === 3) q.addToTrackRecord("BTM3");
+            q.ppe += 1;
         });
     } else {
         // Top 3 / Bottom 3
@@ -1722,7 +1753,10 @@ function judgingScreen() {
     if (phase === "bracket") {
         const totaljudged = shuffle([...topQueens]);
 
-        totaljudged.forEach(q => screen.createImage(q.image, "cyan"));
+        totaljudged.forEach(q => {
+            screen.createImage(q.image, "cyan")
+            q.stars += 2;
+        });
         screen.createBold(
             `${totaljudged.map(q => q.getName()).join(", ")}, you represent the top two All Stars of the week.`,
             "judged"
@@ -1753,6 +1787,10 @@ function judgingScreen() {
         screen.createParagraph(
             `${safeQueens.map(q => q.getName()).join(", ")}, you are safe.`,
         );
+        safeQueens.forEach(q => {
+            q.addToTrackRecord("SAFE");
+            q.ppe += 3;
+        })
 
         screen.createButton("Proceed", "winAndBtms()");
     }
@@ -1859,11 +1897,11 @@ function generateLipsyncPerformances(lipsyncers) {
     let screen = new Scene();
 
     const performanceGroups = [
-        { id: "slay",   filter: q => q.lipsyncScore > 12,                        color: "darkblue",  message: "slayed the lip-sync!" },
+        { id: "slay",   filter: q => q.lipsyncScore >= 12,                        color: "darkblue",  message: "slayed the lip-sync!" },
         { id: "great",  filter: q => q.lipsyncScore >= 8 && q.lipsyncScore < 12, color: "royalblue", message: "had a great lip-sync!" },
         { id: "good",   filter: q => q.lipsyncScore >= 4 && q.lipsyncScore < 8,  color: "black",     message: "had a good lip-sync." },
-        { id: "bad",    filter: q => q.lipsyncScore >= 2 && q.lipsyncScore < 4,  color: "pink",      message: "had a bad lip-sync..." },
-        { id: "flop",   filter: q => q.lipsyncScore < 2,color: "tomato",    message: "flopped the lip-sync..." }
+        { id: "bad",    filter: q => q.lipsyncScore > 2 && q.lipsyncScore < 4,  color: "pink",      message: "had a bad lip-sync..." },
+        { id: "flop",   filter: q => q.lipsyncScore <= 2,color: "tomato",    message: "flopped the lip-sync..." }
     ];
 
     performanceGroups.forEach(group => {
@@ -1897,22 +1935,21 @@ function top2Win() {
             screen.createImage(q.image, "darkblue");
             q.favoritism += 5;
             q.ppe += 5;
-            q.stars += 3;
-            q.addToTrackRecord("WIN");
+            q.stars += 1;
+            q.addToTrackRecord(" WIN ");
         });
         screen.createBold("Condragulations, you're both winners, baby!");
     } else {
         queen1.favoritism += 5;
         queen1.ppe += 5;
-        queen1.stars += 3;
+        queen1.stars += 1;
         queen1.addToTrackRecord("WIN");
         screen.createImage(queen1.image, "royalblue");
         screen.createBold(`${queen1.getName()}, you're a winner, baby!`);
 
         queen2.favoritism += 4;
         queen2.ppe += 5;
-        queen2.stars += 2;
-        queen2.addToTrackRecord("SAFE");
+        queen2.addToTrackRecord(" WIN");
         screen.createImage(queen2.image, "cyan");
         screen.createParagraph(`${queen2.getName()}, you are safe.`);
     }
@@ -1920,7 +1957,7 @@ function top2Win() {
     if (phase === "bracket" && (episodeCount % 3 === 0)) {
         screen.createButton("Announce Passers", "announcePassers()");
     } else {
-        screen.createButton("Proceed", "episodeProcessing()");
+        screen.createButton("Proceed", "contestantProgress()");
     }
 }
 
@@ -2021,56 +2058,18 @@ function lipsyncDesc() {
         bottomQueens[i].lipsyncScore = (bottomQueens[i].lipsyncScore - bottomQueens[i].favoritism) + bottomQueens[i].unfavoritism;
     }
 
-    screen.createBigText("The time has come...");
-    screen.createBold("For you to lip-sync... for your lives! Good luck, and don't fuck it up.");
-    let song = lsSong().toString();
-    screen.createHorizontalLine();
-    if (randomNumber(0, 1000) >= 999 && !disqOrDept && bottomQueens.length == 2) {
-        let quitterQueen = bottomQueens[randomNumber(0, bottomQueens.length - 1)];
-        screen.createImage(quitterQueen.image, "red");
-        screen.createBold(quitterQueen.getName() + ", shockingly has left the runway, they decided that they won't lipsync.");
-        if (quitterQueen.getName() == bottomQueens[0].getName()) {
-            bottomQueens[0].addToTrackRecord("QUIT");
-            bottomQueens[0].unfavoritism += 5;
-            bottomQueens[0].queenDisqOrDept = true;
-            bottomQueens[0].minqdd = "<small>(Quit)</small>";
-            bottomQueens[1].addToTrackRecord("BTM2");
-            bottomQueens[1].unfavoritism += 3;
-            bottomQueens[1].ppe += 1;
-        } else {
-            bottomQueens[0].addToTrackRecord("BTM2");
-            bottomQueens[0].unfavoritism += 3;
-            bottomQueens[0].ppe += 1;
-            bottomQueens[1].addToTrackRecord("QUIT");
-            bottomQueens[1].unfavoritism += 5;
-            bottomQueens[1].queenDisqOrDept = true;
-            bottomQueens[1].minqdd = "<small>(Quit)</small>";
-        }
-        eliminatedCast.unshift(quitterQueen);
-        currentCast.splice(currentCast.indexOf(quitterQueen), 1);
-        disqOrDept = true;
-        for (let i = 0; i < bottomQueens.length; i++) {
-            if (bottomQueens[i].maxiT == true) {
-                bottomQueens[i].trackRecord[bottomQueens[i].trackRecord.length - 2] += bottomQueens[i].trackRecord[bottomQueens[i].trackRecord.length - 1];
-                bottomQueens[i].trackRecord.splice([bottomQueens[i].trackRecord.length - 1], 1);
-                bottomQueens[i].maxiT = false;
-            }
-        }
-        screen.createButton("Proceed", "untucked()");
-    } else {
-        let event = checkForLipsyncEvent(bottomQueens);
-        if (event != false) {
-            let eventQueen = bottomQueens.find( (q) => {
-                return q.getName() == event.queen.getName()
-            });
-            eventQueen.lipsyncScore += event.points;
-        }
-        for (let i = 0; i < bottomQueens.length; i++) {
-            bottomQueens[i].lipsyncScore = (bottomQueens[i].lipsyncScore + bottomQueens[i].favoritism) - bottomQueens[i].unfavoritism;
-        }
-        generateLipsyncPerformances(bottomQueens);
-        screen.createButton("Show result", "lipSync()");
+    let event = checkForLipsyncEvent(bottomQueens);
+    if (event != false) {
+        let eventQueen = bottomQueens.find( (q) => {
+            return q.getName() == event.queen.getName()
+        });
+        eventQueen.lipsyncScore += event.points;
     }
+    for (let i = 0; i < bottomQueens.length; i++) {
+        bottomQueens[i].lipsyncScore = (bottomQueens[i].lipsyncScore + bottomQueens[i].favoritism) - bottomQueens[i].unfavoritism;
+    }
+    generateLipsyncPerformances(bottomQueens);
+    screen.createButton("Show result", "lipSync()");
 }
 
 function lipSync() {
@@ -2093,7 +2092,7 @@ function lipSync() {
     eliminatedCast.unshift(bottomQueens[1]);
     currentCast.splice(currentCast.indexOf(bottomQueens[1]), 1);
 
-    screen.createButton("Proceed", "episodeProcessing()");
+    screen.createButton("Proceed", "contestantProgress()");
 }
 
 function startMerge() {
@@ -2206,7 +2205,212 @@ function resolveSmackdownFinal() {
     finalMatch.forEach(q => screen.createImage(q.image, q === winner ? "gold" : "silver"));
     screen.createBold(`The crown goes to ${winner.getName()}!`);
 
-    winner.addToTrackRecord("WIN");
-    winner.favoritism += 10;
-    winner.stars += 5;
+    winner.addToTrackRecord("WINNER");
+}
+
+function ordinalSuffix(n) {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+function assignPlacements(cast, eliminated) {
+    let placements = {};
+
+    let finalCount = cast.length;
+    cast.forEach((queen, i) => {
+        let place = i + 1; // 1st, 2nd, 3rd…
+        placements[queen.getName()] = ordinalSuffix(place);
+    });
+
+    let placeCounter = cast.length + 1;
+    eliminated.forEach((elimRound, i) => {
+        if (Array.isArray(elimRound)) {
+            elimRound.forEach(q => {
+                placements[q.getName()] = ordinalSuffix(placeCounter);
+            });
+            placeCounter += elimRound.length;
+        } else {
+            placements[elimRound.getName()] = ordinalSuffix(placeCounter);
+            placeCounter++;
+        }
+    });
+    return placements;
+}
+
+function contestantProgress() {
+    let screen = new Scene();
+    screen.clean();
+
+    let main = document.querySelector("div#simulation-block");
+    let centering = document.createElement("center");
+    let trackRecords = document.createElement("table");
+    trackRecords.id = "trackRecord";
+    trackRecords.className = "trtable";
+    trackRecords.border = "2";
+
+    // ===== HEADER ROW =====
+    let header = document.createElement("tr");
+    [
+        {text: "Rank", rowspan: 2, width: null},
+        {text: "Contestant", rowspan: 2, width: "100px"},
+        {text: "Photo", rowspan: 2, width: null}
+    ].forEach(cell => {
+        let th = document.createElement("th");
+        th.innerHTML = cell.text;
+        th.style.fontWeight = "bold";
+        if (cell.width) th.style.width = cell.width;
+        if (cell.rowspan) th.rowSpan = cell.rowspan;
+        header.appendChild(th);
+    });
+
+    for (let i = 0; i < episodeChallenges.length; i++) {
+        let th = document.createElement("th");
+        th.innerHTML = "Ep. " + (i + 1);
+        th.style.fontWeight = "bold";
+        header.appendChild(th);
+    }
+
+    let thPPE = document.createElement("th");
+    thPPE.className = "ppeTR";
+    thPPE.rowSpan = 2;
+    thPPE.innerHTML = "PPE - MVQ";
+    header.appendChild(thPPE);
+
+    trackRecords.appendChild(header);
+
+    // ===== SUBHEADER ROW (Episode names) =====
+    let header1 = document.createElement("tr");
+    for (let i = 0; i < episodeChallenges.length; i++) {
+        let th = document.createElement("th");
+        th.innerHTML = `<small>${episodeChallenges[i]}</small>`;
+        th.className = "episodeTR";
+        header1.appendChild(th);
+    }
+    trackRecords.appendChild(header1);
+
+    // ===== CONTESTANTS =====
+    let cast;
+    if (phase === "bracket") {
+        cast = currentCast;
+    } else {
+        cast = fullCast;
+    }
+    cast.forEach(contestantData => {
+        let contestantRow = document.createElement("tr");
+
+        let rankCell = document.createElement("td");
+        rankCell.style.backgroundColor = "#f5ebf5";
+        rankCell.style.fontWeight = "bold";
+        rankCell.innerHTML = "TBA";
+
+        if (contestantData.ogPlace2 !== undefined) {
+            rankCell.innerHTML += `<br><small>(Orig. ${contestantData.ogPlace2}th)</small>`;
+        }
+        if (contestantData.ogPlace !== 0) {
+            rankCell.innerHTML += `<br><small>(Orig. ${contestantData.ogPlace}th)</small>`;
+        }
+
+        contestantRow.appendChild(rankCell);
+
+        let nameCell = document.createElement("td");
+        nameCell.className = "nameTR";
+        nameCell.textContent = contestantData.getName();
+        contestantRow.appendChild(nameCell);
+
+        let photoCell = document.createElement("td");
+        photoCell.className = "placement";
+        photoCell.style.background = `url(${contestantData.image}) center/cover no-repeat`;
+        contestantRow.appendChild(photoCell);
+
+        contestantData.trackRecord.forEach(performance => {
+            let td = document.createElement("td");
+            td.innerHTML = performance;
+
+            // === Styling by placement ===
+            switch (performance.toUpperCase()) {
+                case "WIN":
+                    td.style.backgroundColor = "royalblue";
+                    td.style.color = "white";
+                    td.style.fontWeight = "bold";
+                    break;
+                case " WIN":
+                    td.style.backgroundColor = "deepskyblue";
+                    td.style.fontWeight = "bold";
+                    break;
+                case " WIN ":
+                    td.style.backgroundColor = "darkblue";
+                    td.style.color = "white";
+                    td.style.fontWeight = "bold";
+                    break;
+                case "HIGH":
+                    td.style.backgroundColor = "lightblue";
+                    td.style.color = "black";
+                    td.style.fontWeight = "normal";
+                    break;
+                case "LOW":
+                    td.style.backgroundColor = "pink";
+                    td.style.color = "black";
+                    td.style.fontWeight = "normal";
+                    break;
+                case "BTM":
+                case "BTM2":
+                case "BTM3":
+                case "BTM4":
+                    td.style.backgroundColor = "tomato";
+                    td.style.fontWeight = "normal";
+                    break;
+                case "SAFE":
+                    td.style.backgroundColor = "white";
+                    td.style.color = "black";
+                    td.style.fontWeight = "normal";
+                    break;
+                case "BTM4ELIM":
+                case "WINELIM":
+                case " WINELIM":
+                case " WIN ELIM":
+                case "ELIM":
+                    td.style.backgroundColor = "red";
+                    td.style.fontWeight = "bold";
+                    td.innerHTML = 'ELIM';
+                    break;
+                case "RTRN":
+                    td.style.backgroundColor = "orange";
+                    td.style.color = "black";
+                    td.style.textEmphasis = "bold";
+                    break;
+                case "WINNER":
+                    td.style.backgroundColor = "yellow";
+                    td.style.color = "white";
+                    td.style.textEmphasis = "bold";
+                    break;
+                case "RUNNER-UP":
+                    td.style.backgroundColor = "silver";
+                    td.style.color = "black";
+                    td.style.textEmphasis = "bold";
+                    break;
+                default:
+                    td.style.backgroundColor = "gray";
+                    break;
+            }
+
+            td.style.fontWeight = "bold";
+            td.style.textAlign = "center";
+
+            contestantRow.appendChild(td);
+        });
+
+        let ppeCell = document.createElement("td");
+        const ppeCalculated = contestantData.ppe / contestantData.episodesOn;
+        const formattedPPE = isNaN(ppeCalculated) ? "-" : ppeCalculated.toFixed(2);
+        ppeCell.innerHTML = `${formattedPPE} - ${contestantData.stars}`;
+        contestantRow.appendChild(ppeCell);
+
+        trackRecords.appendChild(contestantRow);
+    });
+
+    centering.appendChild(trackRecords);
+    main.appendChild(centering);
+
+    screen.createButton("Proceed", "episodeProcessing()");
 }
