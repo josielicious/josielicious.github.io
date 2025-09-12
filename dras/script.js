@@ -1,16 +1,3 @@
-document.addEventListener("contextmenu", e => e.preventDefault());
-
-document.addEventListener("keydown", e => {
-    if (e.key === "F12" ||
-        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
-        (e.ctrlKey && e.key === "U")) {
-        e.preventDefault();
-    }
-});
-
-document.querySelectorAll("[contenteditable]")
-    .forEach(el => el.setAttribute("contenteditable", "false"));
-
 class Queen {
     constructor(name, acting, comedy, dance, design, improv, runway, lipsync, image = "noimage", custom = false) {
         this.trackRecord = [];
@@ -1575,6 +1562,12 @@ function episodeProcessing() {
     }
 }
 
+function toOrdinal(n) {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
 function announcePassers() {
     let screen = new Scene();
     screen.clean();
@@ -1590,9 +1583,15 @@ function announcePassers() {
         screen.createBold(`${q.getName()} passes with ${q.stars} MVQ Points!`);
     });
 
-    eliminated.forEach(q => {
+    const bracketElims = eliminated;
+
+    const elimStart = eliminatedCast.length + 1; // rank of first eliminated in this bracket
+    const elimEnd = elimStart + bracketElims.length - 1; // rank of last eliminated
+
+    bracketElims.forEach(q => {
         if (!eliminatedCast.includes(q)) eliminatedCast.push(q);
         q.editTrackRecord("ELIM");
+        q.rankP = `${toOrdinal(elimStart)}–${toOrdinal(elimEnd)}`;
         screen.createImage(q.image, "sienna");
         screen.createBold(`${q.getName()} has been eliminated.`);
     });
@@ -1908,11 +1907,11 @@ function generateLipsyncPerformances(lipsyncers) {
     let screen = new Scene();
 
     const performanceGroups = [
-        { id: "slay",   filter: q => q.lipsyncScore >= 12,                        color: "darkblue",  message: "slayed the lip-sync!" },
-        { id: "great",  filter: q => q.lipsyncScore >= 8 && q.lipsyncScore < 12, color: "royalblue", message: "had a great lip-sync!" },
+        { id: "slay",   filter: q => q.lipsyncScore >= 12,                        color: "black",  message: "slayed the lip-sync!" },
+        { id: "great",  filter: q => q.lipsyncScore >= 8 && q.lipsyncScore < 12, color: "black", message: "had a great lip-sync!" },
         { id: "good",   filter: q => q.lipsyncScore >= 4 && q.lipsyncScore < 8,  color: "black",     message: "had a good lip-sync." },
-        { id: "bad",    filter: q => q.lipsyncScore > 2 && q.lipsyncScore < 4,  color: "pink",      message: "had a bad lip-sync..." },
-        { id: "flop",   filter: q => q.lipsyncScore <= 2,color: "tomato",    message: "flopped the lip-sync..." }
+        { id: "bad",    filter: q => q.lipsyncScore > 2 && q.lipsyncScore < 4,  color: "black",      message: "had a bad lip-sync..." },
+        { id: "flop",   filter: q => q.lipsyncScore <= 2, color: "black",    message: "flopped the lip-sync..." }
     ];
 
     performanceGroups.forEach(group => {
@@ -1933,7 +1932,7 @@ function top2Win() {
     screen.createBigText("Ladies, I've made my decision...");
 
     const [queen1, queen2] = topQueens;
-    topQueens.sort((a, b) => a.lipsyncScore - b.lipsyncScore);
+    topQueens.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
 
     const isDoubleWinner =
         queen1.lipsyncScore === queen2.lipsyncScore &&
@@ -2127,6 +2126,8 @@ function lipSync() {
 
     screen.createImage(bottomQueens[1].image, "red");
     screen.createBold(bottomQueens[1].getName() + ", sashay away...");
+    const elimStart = currentCast.length - eliminatedCast.length + 1;
+    bottomQueens[1].rankRange = toOrdinal(elimStart);
     bottomQueens[1].unfavoritism += 5;
     eliminatedCast.unshift(bottomQueens[1]);
     currentCast.splice(currentCast.indexOf(bottomQueens[1]), 1);
@@ -2328,7 +2329,6 @@ function contestantProgress() {
     screen.createButton("Proceed", "episodeProcessing()");
 }
 
-// Helper to generate table for a bracket or mergers
 function createTrackRecordTable(groupName) {
     const table = document.createElement("table");
     table.className = "trtable";
@@ -2387,7 +2387,16 @@ function createTrackRecordTable(groupName) {
     const thPPE = document.createElement("th");
     thPPE.className = "ppeTR";
     thPPE.rowSpan = 2;
-    thPPE.innerHTML = "PPE - MVQ";
+    switch (groupName) {
+        case "Bracket A":
+        case "Bracket B":
+        case "Bracket C":
+            thPPE.innerHTML = "PPE - MVQ";
+            break;
+        case "Mergers":
+            thPPE.innerHTML = "PPE";
+            break;
+    }
     header.appendChild(thPPE);
 
     table.appendChild(header);
@@ -2419,7 +2428,11 @@ function createTrackRecordTable(groupName) {
         const rankCell = document.createElement("td");
         rankCell.style.backgroundColor = "#f5ebf5";
         rankCell.style.fontWeight = "bold";
-        rankCell.innerHTML = "TBA";
+        if (contestantData.rankP) {
+            rankCell.innerHTML = contestantData.rankP;
+        } else {
+            rankCell.innerHTML = "TBA";
+        }
         if (contestantData.ogPlace2 !== undefined) rankCell.innerHTML += `<br><small>(Orig. ${contestantData.ogPlace2}th)</small>`;
         if (contestantData.ogPlace !== 0) rankCell.innerHTML += `<br><small>(Orig. ${contestantData.ogPlace}th)</small>`;
         row.appendChild(rankCell);
@@ -2476,8 +2489,17 @@ function createTrackRecordTable(groupName) {
         // PPE
         const ppeCell = document.createElement("td");
         const ppeCalculated = contestantData.ppe / contestantData.episodesOn;
-        const formattedPPE = isNaN(ppeCalculated) ? "-" : ppeCalculated.toFixed(2);
-        ppeCell.innerHTML = `${formattedPPE} - ${contestantData.stars}`;
+        const formattedPPE = isNaN(ppeCalculated) ? "TBA" : ppeCalculated.toFixed(2);
+        switch (groupName) {
+            case "Bracket A":
+            case "Bracket B":
+            case "Bracket C":
+                ppeCell.innerHTML = `${formattedPPE} - ${contestantData.stars}`;
+                break;
+            case "Mergers":
+                ppeCell.innerHTML = `${formattedPPE}`;
+                break;
+        }
         row.appendChild(ppeCell);
 
         table.appendChild(row);

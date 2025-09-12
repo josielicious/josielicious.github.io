@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag Race Simulator</title>
+    <link rel="icon" href="image/favicon.ico">
+    <link rel="stylesheet" href="css/style.light.css">
+    <script defer src="javascript/index.js"></script>
+    <script src="https://kit.fontawesome.com/65fd17a1f9.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header id="header" class="header">
+        <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+
+            <a href="index.html" class="logo d-flex align-items-center">
+              <img src="image/logodiscord.png" alt="">
+              <h1>Drag Race Simulator</h1>
+            </a>
+      
+            <i class="mobile-nav-toggle mobile-nav-show bi bi-list"><svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+              </svg></i>
+            <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+              </svg></i>
+            <nav id="navbar" class="navbar">
+              <ul>
+                <li><a href="index.html" id="inblock">Home</a></li>
+                <li><a href="predef.html" class="active">Predefined Casts</a></li>
+                <li><a href="custom.html" id="inblock">Custom</a></li>
+                <li><a href="https://forms.gle/yM4fWVpARyArTKKi8" id="inblock" target=_blank>Suggest Songs</a></li>
+                <li><a href="https://discord.gg/cKaA8hvcAr" target=_blank>Discord Server</a></li>
+              </ul>
+            </nav>
+      
+          </div>
+    </header>
+
+    <div class="dMainTitle">
+        <h1 id="MainTitle"></h1>
+    </div>
+
+
+    <div id ="MainBlock">
+        <div class="tabs-container">
+            <div>
+                <ul class="tab-box">
+                    <il class="tab-btn active">USA</il>
+                    <il class="tab-btn">All Stars</il>
+                    <il class="tab-btn">Global</il>
+                    <il class="tab-btn">UK</il>
+                    <il class="tab-btn">Canada</il>
+                    <il class="tab-btn">España</il>
+                    <il class="tab-btn">Down Under</il>
+                    <il class="tab-btn">France</il>
+                    <il class="tab-btn">Italia</il>
+                    <il class="tab-btn">Philippines</il>
+                    <il class="tab-btn">Thailand</il>
+                    <il class="tab-btn">Holland</il>
+                    <il class="tab-btn">Belgique</il>
+                    <il class="tab-btn">México</il>
+                    <il class="tab-btn">Brasil</il>
+                    <il class="tab-btn">Sverige</il>
+                    <il class="tab-btn">Germany</il>
+                </ul>
+            </div>
+            <div class="tab-arrow-left isVisible">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                </svg>
+            </div>
+            <div class="tab-arrow-right isVisible">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                </svg>
+            </div>
+        </div>
+        <div class="content-tab-box">
+            <div class="content-tab active">
+                <h2><img src="image/flags/USAFlag.webp" class="countryFlag"> Drag Race US <img src="image/flags/USAFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">US Season 1</h3>
+                        <button onclick="predefCast(us_season1, 'regular', 'top3')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="usseason1"></div>
+                    </div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">US Season 2</h3>
+                        <button onclick="predefCast(us_season2, 'regular', 'top3')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="usseason2"></div>
+                    </div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">US Season 3</h3>
+                        <button onclick="predefCast(us_season3, 'regular', 'top3', '', 'return')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="usseason3"></div>
+                    </div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">US Season 4</h3>
+                        <button onclick="predefCast(us_season4, 'regular', 'top3', '', 'return')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="usseason4"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">US Season 5</h3>
+                        <button onclick="predefCast(us_season5, 'regular', 'top3')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="usseason5"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">US Season 6</h3>
+                        <button onclick="predefCast(us_season6, 'regular', 'top4', 's6-premiere')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="usseason6"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">US Season 7</h3>
+                        <button onclick="predefCast(us_season7, 'regular', 'top4', '', 'conjoined-queens')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="usseason7"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">US Season 8</h3>
+                        <button onclick="predefCast(us_season8, 'regular', 'top4', '', 'return')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="usseason8"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">US Season 9</h3>
+                        <button onclick="predefCast(us_season9, 'regular', 'LFTC', 's9-premiere')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="usseason9"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">US Season 10</h3>
+                        <button onclick="predefCast(us_season10, 'regular', 'LFTC')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="usseason10"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">US Season 11</h3>
+                        <button onclick="predefCast(us_season11, 'regular', 'LFTC')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="usseason11"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">US Season 12</h3>
+                        <button onclick="predefCast(us_season12, 'regular', 'top3', 's12-premiere')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="usseason12"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">US Season 13</h3>
+                        <button onclick="predefCast(us_season13, 'regular', 'LFTC', 'porkchop')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="usseason13"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">US Season 14</h3>
+                        <button onclick="predefCast(us_season14, 'regular', 'top5', 's14-premiere')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="usseason14"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">US Season 15</h3>
+                        <button onclick="predefCast(us_season15, 'regular', 'teams')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="usseason15"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">US Season 16</h3>
+                        <button onclick="predefCast(us_season16, 'regular', 'top3', 'rateaqueen')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="usseason16"></div></div>
+                    <div class="content-season">
+                            <h3 class="content-season-title">US Season 17</h3>
+                            <button onclick="predefCast(us_season17, 'regular', 'top3')">Simulate</button>
+                            <div class="content-season_overlay" aria-hidden="true" id="usseason17"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-tab">
+                <h2><img src="image/flags/StarFlag.webp" class="countryFlag"> All Stars <img src="image/flags/StarFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">All Stars Season 1</h3>
+                        <button onclick="predefCast(allstars_1, 'team', 'teams')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="asseason1"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">All Stars Season 2</h3>
+                        <button onclick="predefCast(allstars_2, 'all-stars', 'top4', '', 'queensofcomedy')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="asseason2"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">All Stars Season 3</h3>
+                        <button onclick="predefCast(allstars_3, 'all-stars', 'jury', '', 'kittygirlgroup')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="asseason3"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">All Stars Season 4</h3>
+                        <button onclick="predefCast(allstars_4, 'all-stars', 'teams', '', 'lalaparuza')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="asseason4"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">All Stars Season 5</h3>
+                        <button onclick="predefCast(allstars_5, 'lipsync-assassin', 'top3')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="asseason5"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">All Stars Season 6</h3>
+                        <button onclick="predefCast(allstars_6, 'lipsync-assassin', 'top4', '', 'smackdown')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="asseason6"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">All Stars Season 7</h3>
+                        <button onclick="predefCast(allstars_7, 'all-winners', 'LFTC', '', '')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="asseason7"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">All Stars Season 8</h3>
+                        <button onclick="predefCast(allstars_8, 'lipsync-assassin', 'top2')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="asseason8"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">All Stars Season 9</h3>
+                        <button onclick="predefCast(allstars_9, 'all-winners', 'LFTC', '', '')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="asseason9"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">All Stars Season 10</h3>
+                        <button onclick="predefCast(allstars_10, 'all-stars', 'top4', '', '')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="asseason10"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">All Stars Season 11</h3>
+                        <button onclick="predefCast(AS11_Cast, 'all-stars', 'top4', '', '')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="asseason11"></div></div>
+                </div>
+            </div>
+            <div class="content-tab">
+                <h2><img src="image/flags/GlobalFlag.webp" class="countryFlag"><img src="image/flags/StarFlag.webp" class="countryFlag">Global All Stars<img src="image/flags/StarFlag.webp" class="countryFlag"><img src="image/flags/GlobalFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">Global All Stars Season 1</h3>
+                        <button onclick="predefCast(gas_1, 'regular', 'teams')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="gasseason1"></div></div>
+                </div>
+            </div>
+            <div class="content-tab">
+                <h2><img src="image/flags/UKFlag.webp" class="countryFlag"> Drag Race UK <img src="image/flags/UKFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">UK Season 1</h3>
+                        <button onclick="predefCast(uk_season1, 'regular', 'top3')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="ukseason1"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">UK Season 2</h3>
+                        <button onclick="predefCast(uk_season2, 'regular', 'top4', '', 'vote')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="ukseason2"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">UK Season 3</h3>
+                        <button onclick="predefCast(uk_season3, 'regular', 'top3', 'uk3-premiere')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="ukseason3"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">UK Season 4</h3>
+                        <button onclick="predefCast(uk_season4, 'regular', 'teams')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="ukseason4"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">UK Season 5</h3>
+                        <button onclick="predefCast(uk_season5, 'regular', 'top3', 'slayers-premiere')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="ukseason5"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">UK Season 6</h3>
+                        <button onclick="predefCast(uk_season6, 'regular', 'top3', 'slayers-premiere')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="ukseason6"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">UK Season 7</h3>
+                        <button onclick="predefCast(UK7_Cast, 'regular', 'teams', 'slayers-premiere')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="ukseason7"></div></div>
+                    </div>
+                    <h2><img src="image/flags/GlobalFlag.webp" class="countryFlag">UK vs The World<img src="image/flags/GlobalFlag.webp" class="countryFlag"></h2>
+                    <div class="content-seasons">
+                        <div class="content-season">
+                            <h3 class="content-season-title">UK vs The World 1</h3>
+                            <button onclick="predefCast(ukvstw_1, 'all-stars', 'LFTC')">Simulate</button>
+                            <div class="content-season_overlay" aria-hidden="true" id="ukvstwseason1"></div></div>
+                        <div class="content-season">
+                            <h3 class="content-season-title">UK vs The World 2</h3>
+                            <button onclick="predefCast(ukvstw_2, 'all-stars', 'LFTC')">Simulate</button>
+                            <div class="content-season_overlay" aria-hidden="true" id="ukvstwseason2"></div></div>
+                    </div>
+            </div>
+            <div class="content-tab">
+                <h2><img src="image/flags/CanadaFlag.webp" class="countryFlag"> Canada's Drag Race <img src="image/flags/CanadaFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">CAN Season 1</h3>
+                        <button onclick="predefCast(can_season1, 'regular', 'top3')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="canseason1"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">CAN Season 2</h3>
+                        <button onclick="predefCast(can_season2, 'regular', 'LFTF')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="canseason2"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">CAN Season 3</h3>
+                        <button onclick="predefCast(can_season3, 'regular', 'teams')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="canseason3"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">CAN Season 4</h3>
+                        <button onclick="predefCast(can_season4, 'regular', 'teams', 'slayers-premiere')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="canseason4"></div></div>
+                    <div class="content-season">
+                            <h3 class="content-season-title">CAN Season 5</h3>
+                            <button onclick="predefCast(can_season5, 'regular', 'top3')">Simulate</button>
+                            <div class="content-season_overlay" aria-hidden="true" id="canseason5"></div></div>
+                </div>
+                <h2><img src="image/flags/GlobalFlag.webp" class="countryFlag">Canada vs The World<img src="image/flags/GlobalFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">Canada vs The World 1</h3>
+                        <button onclick="predefCast(canvstw_1, 'all-stars', 'LFTC')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="canvstwseason1"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">Canada vs The World 2</h3>
+                        <button onclick="predefCast(canvstw_2, 'regular', 'LFTC')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="canvstwseason2"></div></div>
+                </div>
+            </div>
+            <div class="content-tab">
+                <h2><img src="image/flags/SpainFlag.webp" class="countryFlag"> Drag Race España <img src="image/flags/SpainFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">ES Season 1</h3>
+                        <button onclick="predefCast(dres_season1, 'regular', 'top3')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="esseason1"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">ES Season 2</h3>
+                        <button onclick="predefCast(dres_season2, 'regular', 'top4')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="esseason2"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">ES Season 3</h3>
+                        <button onclick="predefCast(dres_season3, 'regular', 'teams', '', 'reinasdelacomedia')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="esseason3"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">ES Season 4</h3>
+                        <button onclick="predefCast(dres_season4, 'regular', 'top3')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="esseason4"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">ES Season 5</h3>
+                        <button onclick="predefCast(ES5_Cast, 'regular', 'teams', 'slayers-premiere')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="esseason5"></div></div>
+                </div>
+                <h2><img src="image/flags/StarFlag.webp" class="countryFlag"><img src="image/flags/SpainFlag.webp" class="countryFlag"> Drag Race España All Stars <img src="image/flags/SpainFlag.webp" class="countryFlag"><img src="image/flags/StarFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">ES All Stars Season 1</h3>
+                        <button onclick="predefCast(allstars_es1, 'all-stars', 'LFTC')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="esasseason1"></div></div>
+                </div>
+            </div>
+            <div class="content-tab">
+                <h2><img src="image/flags/AustraliaFlag.webp" class="countryFlag"> <img src="image/flags/NewZealandFlag.webp" class="countryFlag"> Drag Race Down Under <img src="image/flags/AustraliaFlag.webp" class="countryFlag"> <img src="image/flags/NewZealandFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">DU Season 1</h3>
+                        <button onclick="predefCast(drdu_season1, 'regular', 'top4', '' , 'return')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="duseason1"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">DU Season 2</h3>
+                        <button onclick="predefCast(drdu_season2, 'regular', 'top3')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="duseason2"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">DU Season 3</h3>
+                        <button onclick="predefCast(drdu_season3, 'regular', 'top3')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="duseason3"></div></div>
+                    <div class="content-season">
+                            <h3 class="content-season-title">DU Season 4</h3>
+                            <button onclick="predefCast(drdu_season4, 'regular', 'top3', 'par-premiere')">Simulate</button>
+                            <div class="content-season_overlay" aria-hidden="true" id="duseason4"></div></div>
+                </div>
+            </div>
+            <div class="content-tab">
+                <h2><img src="image/flags/FranceFlag.webp" class="countryFlag"> Drag Race France <img src="image/flags/FranceFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">FR Season 1</h3>
+                        <button onclick="predefCast(drfr_season1, 'regular', 'LFTF')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="frseason1"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">FR Season 2</h3>
+                        <button onclick="predefCast(drfr_season2, 'regular', 'teams', '', 'attentionggroup')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="frseason2"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">FR Season 3</h3>
+                        <button onclick="predefCast(drfr_season3, 'regular', 'teams')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="frseason3"></div></div>
+                </div>
+                <h2><img src="image/flags/StarFlag.webp" class="countryFlag"><img src="image/flags/FranceFlag.webp" class="countryFlag"> Drag Race France All Stars <img src="image/flags/FranceFlag.webp" class="countryFlag"><img src="image/flags/StarFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">FR All Stars Season 1</h3>
+                        <button onclick="predefCast(allstars_fr1, 'all-stars', 'LFTC')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="frasseason1"></div></div>
+                </div>
+            </div>
+            <div class="content-tab">
+                <h2><img src="image/flags/ItalyFlag.webp" class="countryFlag"> Drag Race Italia <img src="image/flags/ItalyFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">ITA Season 1</h3>
+                        <button onclick="predefCast(drita, 'regular', 'top4', 'par-premiere')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="itaseason1"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">ITA Season 2</h3>
+                        <button onclick="predefCast(drita_season2, 'regular', 'top4')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="itaseason2"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">ITA Season 3</h3>
+                        <button onclick="predefCast(drita_season3, 'regular', 'teams')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="itaseason3"></div></div>
+                </div>
+            </div>
+            <div class="content-tab">
+                <h2><img src="image/flags/PhilippinesFlag.webp" class="countryFlag"> Drag Race Philippines <img src="image/flags/PhilippinesFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">PH Season 1</h3>
+                        <button onclick="predefCast(drph_season1, 'regular', 'LFTC')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="phseason1"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">PH Season 2</h3>
+                        <button onclick="predefCast(drph_season2, 'regular', 'LFTC', 'ph2-premiere')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="phseason2"></div></div>
+                        <div class="content-season">
+                            <h3 class="content-season-title">PH Season 3</h3>
+                            <button onclick="predefCast(drph_season3, 'regular', 'top3', 'slayers-premiere')">Simulate</button>
+                            <div class="content-season_overlay" aria-hidden="true" id="phseason3"></div></div>
+                </div>
+            </div>
+            <div class="content-tab">
+                <h2><img src="image/flags/ThailandFlag.webp" class="countryFlag"> Drag Race Thailand <img src="image/flags/ThailandFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">THAI Season 1</h3>
+                        <button onclick="predefCast(drt_season1, 'thailand', 'top3')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="thaseason1"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">THAI Season 2</h3>
+                        <button onclick="predefCast(drt_season2, 'thailand', 'top3', '' , 'return')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="thaseason2"></div></div>
+                    <div class="content-season">
+                            <h3 class="content-season-title">THAI Season 3</h3>
+                            <button onclick="predefCast(drt_season3, 'regular', 'top3', 'par-premiere')">Simulate</button>
+                            <div class="content-season_overlay" aria-hidden="true" id="thaseason3"></div></div>
+                </div>
+            </div>
+            <div class="content-tab">
+                <h2><img src="image/flags/NetherlandsFlag.webp" class="countryFlag"> Drag Race Holland <img src="image/flags/NetherlandsFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">HOLL Season 1</h3>
+                        <button onclick="predefCast(hol_season1, 'regular', 'top4')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="holseason1"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">HOLL Season 2</h3>    
+                        <button onclick="predefCast(hol_season2, 'regular', 'top3')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="holseason2"></div></div>
+                </div>
+            </div>
+            <div class="content-tab">
+                <h2><img src="image/flags/BelgiumFlag.webp" class="countryFlag"> Drag Race Belgique <img src="image/flags/BelgiumFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">BE Season 1</h3>
+                        <button onclick="predefCast(drbl_season1, 'regular', 'top3')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="beseason1"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">BE Season 2</h3>
+                        <button onclick="predefCast(drbl_season2, 'regular', 'LFTC', 'par-premiere')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="beseason2"></div></div>
+                </div>
+            </div>
+            <div class="content-tab">
+                <h2><img src="image/flags/MexicoFlag.webp" class="countryFlag"> Drag Race México <img src="image/flags/MexicoFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">MX Season 1</h3>
+                        <button onclick="predefCast(drmx_season1, 'regular', 'top4', 'par-premiere')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="mxseason1"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">MX Season 2</h3>
+                        <button onclick="predefCast(drmx_season2, 'regular', 'top3')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="mxseason2"></div></div>
+                </div>
+            </div>
+            <div class="content-tab">
+                <h2><img src="image/flags/BrazilFlag.webp" class="countryFlag"> Drag Race Brasil <img src="image/flags/BrazilFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">BR Season 1</h3>
+                        <button onclick="predefCast(drbr_season1, 'regular', 'top4')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="brseason1"></div></div>
+                    <div class="content-season">
+                        <h3 class="content-season-title">BR Season 2</h3>
+                        <button onclick="predefCast(drbr_season2, 'regular', 'top3')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="brseason2"></div></div>
+                </div>
+            </div>
+            <div class="content-tab">
+                <h2><img src="image/flags/SwedenFlag.webp" class="countryFlag"> Drag Race Sverige <img src="image/flags/SwedenFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">SV Season 1</h3>
+                        <button onclick="predefCast(drsv, 'regular', 'top3', '' , 'readingIF')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="svseason1"></div></div>
+                </div>
+            </div>
+            <div class="content-tab">
+                <h2><img src="image/flags/GermanyFlag.webp" class="countryFlag"> Drag Race Germany <img src="image/flags/GermanyFlag.webp" class="countryFlag"></h2>
+                <div class="content-seasons">
+                    <div class="content-season">
+                        <h3 class="content-season-title">GR Season 1</h3>
+                        <button onclick="predefCast(drgr, 'regular', 'top3', 'par-premiere')">Simulate</button>
+                        <div class="content-season_overlay" aria-hidden="true" id="grseason1"></div></div>
+                </div>
+            </div>
+        </div>
+        
+
+
+        <div id="result"></div>
+    </div>
+    <div class="optContainer">
+        <input type="checkbox" id="showOpt">
+        <div class="options">
+            <div class="all-options">
+                <div class="aoitem">
+                    <h3>Disable:</h3>
+                    <p><input type="checkbox" id="disableDouble">Double Shantays and Sashays</p>
+                    <p><div class="tooltip">&#x1F6C8;
+                        <span class="tooltiptext">Whoever does the best for the challenge and runway wins.</span>
+                    </div><input type="checkbox" id="riggory">Challenge Riggory</p>
+                    <p><div class="tooltip">&#x1F6C8;
+                        <span class="tooltiptext">Whoever does the best in the lipsync wins.</span>
+                    </div><input type="checkbox" id="riggoryLipsync">Lipsync Riggory</p>
+                    <h3>Twists:</h3>
+                    <p><input type="checkbox" id="immunity">Immunity</p>
+                    <p><input type="checkbox" id="beaver">Golden Beaver</p>
+                    <h3>Fame Games:</h3>
+                    <p><input type="checkbox" id="famegames"></p>
+                </div>
+                <div class="aoitem">
+                    <h3>Lipsync Challenge:</h3>
+                    <p><input type="checkbox" id="lipSyncCha">LaLaPaRUza Smackdown</p>
+                    <p><input type="checkbox" id="canLipSync">Slay Off Extravaganza</p>
+                    <p><input type="checkbox" id="reuls">Reunion Smackdown</p>
+                    <h3>Chocolate Bar Twist:</h3>
+                    <p><input type="checkbox" id="chocolateBar"> Random</p>
+                    <p><input type="checkbox" id="chocolateBarChoosable"> Choosable</p>
+                    <h3>Style:</h3>
+                    <p><input type="checkbox" id="background"> Solid background</p>
+                </div>
+            </div>
+        </div>
+        <div class="btn-mas">
+            <label for="showOpt" class="optTxt"> Options</label>
+        </div>
+    </div>
+    <a href="#" class="toTop">
+        <i class="fa-solid fa-angle-up"></i>
+    </a>
+    <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+    <script>
+        kofiWidgetOverlay.draw('arainbow4u', {
+        'type': 'floating-chat',
+        'floating-chat.donateButton.text': 'Tip Me',
+        'floating-chat.donateButton.background-color': '#5bc0de',
+        'floating-chat.donateButton.text-color': '#323842'
+        });
+    </script>
+</body>
+</html>
