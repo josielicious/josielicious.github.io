@@ -83,7 +83,6 @@ class MiniChallenge {
                     eliminatedCast.splice(eliminatedCast.indexOf(winner), 1);
                     winner.miniEpisode.push(episodeCount);
                     winner.miniWinner = true;
-                    winner.ppe += 1;
                     if (s14Premiere && winner.retEp != 0) {
                         winner.retEp2 = episodeCount;
                     } else {
@@ -96,7 +95,6 @@ class MiniChallenge {
                 } else if (fameGames && !fgCheck && fgFlag && (currentCast.length == 5 && top5 || currentCast.length == 4 && top4 || currentCast.length == 3 && top3 || currentCast.length == 2 && top2F || currentCast.length == 4 && canFinale || currentCast.length == 4 && teamsF && !team || currentCast.length == 4 && lftc || currentCast.length == 4 && allstars3Finale)) {
                     let fmread = [...currentCast, ...eliminatedCast];
                     let winner = fmread[randomNumber(0, fmread.length - 1)];
-                    winner.ppe += 1;
                     screen.createImage(winner.image, "royalblue");
                     screen.createBold(`${winner.getName()} won the mini-challenge!`);
                     winner.miniEpisode.push(episodeCount);
@@ -104,7 +102,6 @@ class MiniChallenge {
                 } else if (randomNumber(0, 100) <= 90) {
                     let winner = currentCast[randomNumber(0, currentCast.length - 1)];
                     screen.createImage(winner.image, "royalblue");
-                    winner.ppe += 1;
                     let wadv = randomNumber(0, 10);
                     if (wadv >= 10) {
                         screen.createBold(`${winner.getName()} won the mini-challenge! And they will get a huge advantage for the maxi challenge!`);
@@ -122,12 +119,10 @@ class MiniChallenge {
                     winner.miniWinner = true;
                 } else {
                     let winner = randomNumber(0, currentCast.length - 1);
-                    winner.ppe += 1;
                     let second;
                     do{
                         second = randomNumber(0, currentCast.length - 1);
                     }while (second == winner);
-                    second.ppe += 1;
                     screen.createImage(currentCast[winner].image, "royalblue");
                     screen.createImage(currentCast[second].image, "royalblue");
                     screen.createBold(`${currentCast[winner].getName()} and ${currentCast[second].getName()} won the mini-challenge!`);
@@ -12779,16 +12774,16 @@ let shannon = new Queen("Shannon Skarllet", 10, 8, 10, 7, 7, 10, 11, "ShannonSka
 let tristan = new Queen("Tristan Soledade", 6, 6, 8, 6, 6, 6, 6, "TristanSoledade");
 let drbr_season1 = [aquarela, betina, dallas, diva, hellena, melusine, miranda, naza, organzza, rubi, shannon, tristan];
 //DRAG RACE BRASIL 2
-let adora = new Queen("Adora Black", 7, 7, 7, 7, 7, 7, 7, "AdoraBlack");
-let bhelchi = new Queen("Bhelchi", 7, 7, 7, 7, 7, 7, 7, "Bhelchi");
-let chanelbr = new Queen("Chanel", 7, 7, 7, 7, 7, 7, 7, "Chanelbr");
-let desiree = new Queen("DesiRée Beck", 7, 7, 7, 7, 7, 7, 7, "DesiReeBeck");
-let melina = new Queen("Melina Blley", 7, 7, 7, 7, 7, 7, 7, "MelinaBlley");
-let mellody = new Queen("Mellody Queen", 7, 7, 7, 7, 7, 7, 7, "MellodyQueen");
-let mercedez = new Queen("Mercedez Vulcão", 7, 7, 7, 7, 7, 7, 7, "MercedezVulcao");
-let paola = new Queen("Paola Hoffmann Van Cartier", 7, 7, 7, 7, 7, 7, 7, "PaolaHoffmannVanCartier");
-let poseidon = new Queen("Poseidon Drag", 7, 7, 7, 7, 7, 7, 7, "PoseidonDrag");
-let rubyNox = new Queen("Ruby Nox", 7, 7, 7, 7, 7, 7, 7, "RubyNox");
+let adora = new Queen("Adora Black", 6, 5, 7, 15, 5, 12, 6, "AdoraBlack");
+let bhelchi = new Queen("Bhelchi", 9, 9, 8, 8, 11, 10, 8, "Bhelchi");
+let chanelbr = new Queen("Chanel", 4, 4, 8, 4, 4, 4, 4, "Chanelbr");
+let desiree = new Queen("DesiRée Beck", 6, 10, 5, 6, 10, 8, 7, "DesiReeBeck");
+let melina = new Queen("Melina Blley", 7, 7, 6, 7, 8, 8, 9, "MelinaBlley");
+let mellody = new Queen("Mellody Queen", 6, 6, 10, 5, 6, 8, 10, "MellodyQueen");
+let mercedez = new Queen("Mercedez Vulcão", 8, 6, 7, 7, 7, 6, 7, "MercedezVulcao");
+let paola = new Queen("Paola Hoffmann Van Cartier", 5, 4, 5, 7, 4, 7, 4, "PaolaHoffmannVanCartier");
+let poseidon = new Queen("Poseidon Drag", 8, 8, 7, 6, 7, 8, 9, "PoseidonDrag");
+let rubyNox = new Queen("Ruby Nox", 7, 9, 9, 8, 8, 11, 7, "RubyNox");
 let drbr_season2 = [adora, bhelchi, chanelbr, desiree, melina, mellody, mercedez, paola, poseidon, rubyNox];
 //DRAG RACE GERMANY
 let barbie = new Queen("Barbie Q", 4, 4, 4, 4, 4, 9, 4, "BarbieQ");
