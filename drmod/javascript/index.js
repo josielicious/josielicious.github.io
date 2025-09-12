@@ -17197,11 +17197,12 @@ function readingChallenge(cast) {
 
 function downloadTR() {
     let table = document.getElementById("trackRecord");
-    html2canvas(table).then((canvas) => {
+
+    html2canvas(table, {useCORS: true, allowTaint: false}).then((canvas) => {
         let img = canvas.toDataURL("image/png");
         let a = document.createElement('a');
         a.setAttribute("href", img);
-        a.setAttribute("download","TrackRecord.png");
+        a.setAttribute("download", "TrackRecord.png");
         a.click();
         a.remove();
     });
