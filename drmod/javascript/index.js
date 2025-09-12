@@ -12268,7 +12268,7 @@ let crystaluk = new Queen("Crystal", 6, 5, 6, 9, 4, 8, 6, "Crystal");
 let divina = new Queen("Divina De Campo", 11, 6, 9, 12, 9, 9, 9, "Divina");
 let gothy = new Queen("Gothy Kendoll", 9, 7, 5, 8, 5, 9, 4, "Gothy");
 let scaredy = new Queen("Scaredy Kat", 3, 5, 6, 4, 4, 7, 5, "Scaredy");
-let sumting = new Queen("Sum Ting Wong", 8, 6, 6, 7, 6, 9, 8, "Sum");
+let sumting = new Queen("Sum Ting Wong", 7, 5, 5, 6, 5, 7, 6, "Sum");
 let viv = new Queen("The Vivienne", 12, 13, 8, 10, 14, 11, 12, "TVivienne");
 let vinegar = new Queen("Vinegar Strokes", 7, 6, 6, 4, 4, 6, 6, "Vinegar");
 let uk_season1 = [baga, blu, cheryl, crystaluk, divina, gothy, scaredy, sumting, viv, vinegar];
@@ -12464,17 +12464,17 @@ let tormai = new Queen("Tormai", 6, 5, 5, 6, 5, 7, 7, "Tormai");
 let vanda = new Queen("Vanda Miss Joaquim", 11, 10, 8, 8, 9, 9, 9, "Vanda");
 let drt_season2 = [angele, bandit, genie, kana, kandyz, katy, m, maya, mocha, gimhuay, silver, srimala, tormai, vanda];
 //DRT SEASON 3
-let benze = new Queen("Benze Diva", 7, 7, 7, 7, 7, 7, 7, "BenzeDiva");
-let frankie = new Queen("Frankie Wonga", 7, 7, 7, 7, 7, 7, 7, "FrankieWonga");
-let gawdland = new Queen("Gawdland", 7, 7, 7, 7, 7, 7, 7, "Gawdland");
-let gigiF = new Queen("Gigi Ferocious", 7, 7, 7, 7, 7, 7, 7, "GigiFerocious");
-let kara = new Queen("Kara Might", 7, 7, 7, 7, 7, 7, 7, "KaraMight");
-let nane = new Queen("Nane Sphera", 7, 7, 7, 7, 7, 7, 7, "NaneSphera");
-let shortgun = new Queen("Shortgun", 7, 7, 7, 7, 7, 7, 7, "Shortgun");
-let siam = new Queen("Siam Phusri", 7, 7, 7, 7, 7, 7, 7, "SiamPhusri");
-let spicy = new Queen("Spicy Sunshine", 7, 7, 7, 7, 7, 7, 7, "SpicySunshine");
-let srirasha = new Queen("Srirasha Hotsauce", 7, 7, 7, 7, 7, 7, 7, "SrirashaHotsauce");
-let zepee = new Queen("Zepee", 7, 7, 7, 7, 7, 7, 7, "Zepee");
+let frankie = new Queen("Frankie Wonga", 8, 9, 10, 8, 12, 11, 8, "FrankieWonga");
+let zepee = new Queen("Zepee", 10, 8, 11, 10, 7, 12, 11, "Zepee");
+let gawdland = new Queen("Gawdland", 9, 9, 10, 8, 9, 10, 9, "Gawdland");
+let spicy = new Queen("Spicy Sunshine", 6, 9, 7, 6, 9, 6, 10, "SpicySunshine");
+let nane = new Queen("Nane Sphera", 6, 6, 8, 10, 6, 10, 7, "NaneSphera");
+let gigiF = new Queen("Gigi Ferocious", 5, 5, 8, 7, 5, 8, 9, "GigiFerocious");
+let benze = new Queen("Benze Diva", 4, 5, 7, 8, 5, 8, 7, "BenzeDiva");
+let shortgun = new Queen("Shortgun", 4, 4, 5, 6, 5, 9, 5, "Shortgun");
+let siam = new Queen("Siam Phusri", 9, 5, 6, 6, 5, 11, 6, "SiamPhusri");
+let kara = new Queen("Kara Might", 5, 5, 5, 5, 5, 6, 5, "KaraMight");
+let srirasha = new Queen("Srirasha Hotsauce", 4, 4, 4, 4, 4, 4, 4, "SrirashaHotsauce");
 let drt_season3 = [benze, frankie, gawdland, gigiF, kara, nane, shortgun, siam, spicy, srirasha, zepee];
 //DRAG RACE DOWN UNDER SEASON 1
 let anita = new Queen("Anita Wigl'it", 6, 9, 8, 6, 10, 8, 5, "Anita");
@@ -12509,7 +12509,7 @@ let gabriella = new Queen("Gabriella Labucci", 7, 8, 9, 7, 10, 8, 9, "GabriellaL
 let hollywould = new Queen("Hollywould Star", 7, 7, 11, 9, 8, 10, 9, "HollywouldStar");
 let isis = new Queen("Isis Avis Loren", 8, 10, 10, 11, 9, 11, 10, "IsisAvisLoren");
 let ivanna = new Queen("Ivanna Drink", 6, 6, 7, 6, 6, 8, 8, "IvannaDrink");
-let ivory = new Queen("Ivory Glaze", 4, 4, 5, 5, 4, 6, 7, "IvoryGlaze");
+let ivory = new Queen("Ivory Glaze", 4, 4, 4, 4, 4, 7, 6, "IvoryGlaze");
 let ritaMenu = new Queen("Rita Menu", 6, 6, 8, 6, 5, 8, 10, "RitaMenu");
 let drdu_season3 = [amyl, ashley, bumpa, flor, gabriella, hollywould, isis, ivanna, ivory, ritaMenu];
 // DRAG RACE DOWN UNDER SEASON 4
@@ -12633,7 +12633,7 @@ let drfr_season1 = [elips, kam, bigbertha, briochee, grandedame, kahena, lolita,
 let cookie = new Queen("Cookie Kunty", 8, 6, 8, 10, 5, 11, 10, "CookieKunty");
 let gingerB = new Queen("Ginger Bitch", 7, 6, 7, 6, 8, 8, 9, "GingerBitch");
 let keiona = new Queen("Keiona", 11, 10, 15, 11, 11, 13, 13, "Keiona");
-let kittyS = new Queen("Kitty Space", 6, 6, 5, 6, 5, 9, 9, "KittySpace");
+let kittyS = new Queen("Kitty Space", 6, 6, 7, 10, 7, 10, 9, "KittySpace");
 let mami = new Queen("Mami Watta", 9, 7, 9, 9, 8, 10, 9, "MamiWatta");
 let moon = new Queen("Moon", 9, 9, 9, 6, 8, 10, 9, "Moon");
 let piche = new Queen("Piche", 7, 6, 11, 7, 8, 9, 11, "Piche");
@@ -12673,7 +12673,7 @@ let drph_season1 = [brigiding, corazon, eva, gigiEra, morgana, marinaSummers, mi
 //DRAG RACE PHILIPPINES 2
 let arizona = new Queen("Arizona Brandy", 8, 9, 9, 6, 10, 8, 11, "ArizonaBrandy");
 let astrid = new Queen("Astrid Mercury", 4, 4, 4, 4, 4, 4, 4, "AstridMercury");
-let bernie = new Queen("Bernie", 8, 7, 11, 9, 10, 13, 11, "Bernie");
+let bernie = new Queen("Bernie", 7, 6, 9, 9, 8, 10, 9, "Bernie");
 let katkat = new Queen("Captivating Katkat", 10, 10, 11, 8, 11, 13, 10, "CaptivatingKatkat");
 let deedee = new Queen("Dee Dee Marié Holliday", 6, 6, 10, 9, 6, 9, 8, "DeeDeeMarieHolliday");
 let hana = new Queen("Hana Beshie", 9, 9, 6, 9, 9, 10, 9, "HanaBeshie");
@@ -19073,3 +19073,133 @@ function chismoso(cast) {
 
 
 ///// REUNION
+function contestantStats() {
+    const mainBlock = document.querySelector("#MainBlock");
+    mainBlock.innerHTML = ""; // Clear previous content
+
+    document.body.style.backgroundImage = "url('image/bg.png')";
+
+    let table = document.createElement("table");
+    table.id = "trackRecord";
+    table.className = "trtable";
+    table.border = "2";
+
+    let headerRow = document.createElement("tr");
+    const headers = ["Rank", "Contestant", "Photo", "Acting", "Comedy", "Dance", "Design", "Improv", "Runway", "Lipsync", "Total"];
+    headers.forEach(text => {
+        let th = document.createElement("th");
+        th.style.fontWeight = "bold";
+        th.textContent = text;
+        headerRow.appendChild(th);
+    });
+    table.appendChild(headerRow);
+
+    let rankedQueens = allQueens.map(q => {
+        let total = q._actingStat + q._comedyStat + q._danceStat + q._designStat +
+            q._improvStat + q._runwayStat + q._lipsyncStat;
+        return {
+            name: q._name,
+            image: q.image,
+            acting: q._actingStat,
+            comedy: q._comedyStat,
+            dance: q._danceStat,
+            design: q._designStat,
+            improv: q._improvStat,
+            runway: q._runwayStat,
+            lipsync: q._lipsyncStat,
+            total: total
+        };
+    });
+
+    rankedQueens.sort((a, b) => b.total - a.total);
+
+    let ranks = [];  // will store rank strings per queen
+
+    let startRank = 1;   // rank of the first queen in a tie group
+    let tieCount = 1;    // number of queens tied currently
+
+    for (let i = 0; i < rankedQueens.length; i++) {
+        if (i === 0) {
+            ranks[i] = "1st";
+            continue;
+        }
+
+        if (rankedQueens[i].total === rankedQueens[i - 1].total) {
+            tieCount++;
+            ranks[i] = null; // placeholder, will update later
+        } else {
+            if (tieCount > 1) {
+                let rankStr = `${startRank}${getOrdinalSuffix(startRank)}-${startRank + tieCount - 1}${getOrdinalSuffix(startRank + tieCount - 1)}`;
+                for (let j = i - tieCount; j < i; j++) {
+                    ranks[j] = rankStr;
+                }
+            }
+            startRank = i + 1;
+            tieCount = 1;
+            ranks[i] = `${startRank}${getOrdinalSuffix(startRank)}`;
+        }
+    }
+
+    if (tieCount > 1) {
+        let rankStr = `${startRank}${getOrdinalSuffix(startRank)}-${startRank + tieCount - 1}${getOrdinalSuffix(startRank + tieCount - 1)}`;
+        for (let j = rankedQueens.length - tieCount; j < rankedQueens.length; j++) {
+            ranks[j] = rankStr;
+        }
+    }
+
+    function getOrdinalSuffix(n) {
+        if (n % 100 >= 11 && n % 100 <= 13) return "th";
+        switch (n % 10) {
+            case 1: return "st";
+            case 2: return "nd";
+            case 3: return "rd";
+            default: return "th";
+        }
+    }
+
+    rankedQueens.forEach((queen, idx) => {
+        let row = document.createElement("tr");
+
+        if (idx === 0 || ranks[idx] !== ranks[idx - 1]) {
+            let tieGroupSize = 1;
+            for (let j = idx + 1; j < ranks.length && ranks[j] === ranks[idx]; j++) {
+                tieGroupSize++;
+            }
+            let tdRank = document.createElement("td");
+            tdRank.textContent = ranks[idx];
+            if (tieGroupSize > 1) {
+                tdRank.rowSpan = tieGroupSize;
+            }
+            row.appendChild(tdRank);
+        }
+
+        let tdName = document.createElement("td");
+        tdName.textContent = queen.name;
+        tdName.setAttribute("class", "nameTR");
+        row.appendChild(tdName);
+
+        let tdImage = document.createElement("td");
+        tdImage.setAttribute("style", "background: url("+ queen.image +"); background-size: cover; background-position: center; background-repeat: no-repeat;");
+        tdImage.setAttribute("class", "placement");
+        row.appendChild(tdImage);
+
+        ["acting", "comedy", "dance", "design", "improv", "runway", "lipsync"].forEach(stat => {
+            let td = document.createElement("td");
+            td.textContent = queen[stat];
+            row.appendChild(td);
+        });
+
+        let tdTotal = document.createElement("td");
+        tdTotal.textContent = queen.total;
+        row.appendChild(tdTotal);
+
+        table.appendChild(row);
+    });
+
+    let center = document.createElement("center");
+    center.appendChild(table);
+    mainBlock.appendChild(center);
+}
+if (document.location.pathname.includes("stats.html")) {
+    contestantStats();
+}
