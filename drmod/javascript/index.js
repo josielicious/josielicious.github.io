@@ -12866,7 +12866,7 @@ let leandraRose = new Queen("Leandra Rose", 4, 4, 6, 4, 4, 6, 6, "https://static
 let gvajardo = new Queen("Gvajardo", 8, 7, 7, 7, 8, 11, 9, "https://i.postimg.cc/J4J2DwJ9/IMG-6380.jpg");
 let soroNasty = new Queen("Soro Nasty", 10, 8, 10, 10, 8, 14, 9, "https://i.postimg.cc/RFMP2qDm/IMG-6371.jpg");
 
-let LMD2_Cast = [alexis3XL, sophiaJimnez, gvajardo, jobStar, soroNasty, ameliaWaldorf, redRabbitDuo, leandraRose, ninaD]
+let LMD2_Cast = [alexis3XL, sophiaJimnez, gvajardo, jobStar, soroNasty, ameliaWaldorf, redRabbitDuo, leandraRose, ninaD];
 
 let aviescWho = new Queen("Aviesc Who?", 7, 6, 4, 15, 6, 15, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cf/AviescWhoLMD3CastMug.jpg");
 let ragaDiamante = new Queen("Raga Diamante", 10, 9, 10, 7, 10, 9, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/5/5d/RagaDiamanteLMD3CastMug.jpg");
@@ -12897,6 +12897,7 @@ let georgiana = new Queen("Georgiana", 9, 10, 10, 8, 10, 12, 9, "https://i.posti
 let cPher = new Queen("C-Pher", 12, 8, 13, 15, 8, 15, 10, "https://i.postimg.cc/vmyX6cMn/IMG-6370.jpg");
 
 let LMD4_Cast = [auroraWonders, cPher, elektraV, georgiana, irisXC, laCarrera, laMorraLisa, leexa, lupitaKush, paperCut, rebelMrk, sirena, tiresias,  veraCruz];
+
 
 let lightKing = new Queen("Light King", 5, 4, 6, 10, 8, 9, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cd/LightKingLMD5CastMug.jpg");
 let humaKyle = new Queen("Huma Kyle", 8, 8, 5, 4, 4, 7, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/6e/HumaKyleLMD5CastMug.jpg");
@@ -13002,7 +13003,13 @@ let allQueens = [
     adora, bhelchi, chanelbr, desiree, melina, mellody, mercedez, paola, poseidon, rubyNox,
     barbie, kellyH, lele, loreley, metamorkid, nikita, pandoraNox, tessa, naomy, victoriaShakespears, yvonne,
     pangina, BonesUK7, BonnieAnnClydeUK7, CatrinFeelingsUK7, ChaiTGrandeUK7, ElleVosqueUK7, NyongbellaUK7, PaigeThreeUK7, PastyUK7, SallyTMUK7, SilllexaDictionUK7, TayrisMongardiUK7, ViolaUK7,
-    AlexandraDelRavalES5, DafneMuglerES5, DenebolaMurnauES5, EvaHarringtonES5, FerrxnES5, KrystalForeverES5, LaEscandaloES5, LacaUdilaES5, MargaritaKalifataES5, NixES5, NoriES5, SatinGrecoES5
+    AlexandraDelRavalES5, DafneMuglerES5, DenebolaMurnauES5, EvaHarringtonES5, FerrxnES5, KrystalForeverES5, LaEscandaloES5, LacaUdilaES5, MargaritaKalifataES5, NixES5, NoriES5, SatinGrecoES5,
+    deborahLaGrande, margaret, evaB, barbaraDurango, lanaBoswell, debraMen, cordeliaDurango,
+    alexis3XL, sophiaJimnez, gvajardo, jobStar, soroNasty, ameliaWaldorf, redRabbitDuo, leandraRose, ninaD,
+    aviescWho, huntyyB, ivizaLioza, lunaL, madisonBasrey, memoReyri, mistaBoo, ragaDiamante, reginaBronx, rudyReyes, stupidrag, wynter, yayoiBowery,
+    auroraWonders, cPher, elektraV, georgiana, irisXC, laCarrera, laMorraLisa, leexa, lupitaKush, paperCut, rebelMrk, sirena, tiresias,  veraCruz,
+    aishaDollkills, deseosFab, fifEstah, grethaWhite, hiddenMistake, humaKyle, isabellaYCatalina, lightKing, lizaZanZuzzi, paperCut, pekeBalderas, santaLuca,
+    cattriona, juanaGuadalupe, electraWalpurgis, aries, kellyLMD, laKyliezz, dimittra, shantelle, arielLMD, alexisMvgler, purga, braulio8000, ankCosart, mizzPeaches
 ].concat(allCustomQueens).sort((a, b) => a.getName().toLowerCase().localeCompare(b.getName().toLowerCase()));
 /*/Drag-Race-Simulator*/
 if (document.location.pathname.includes("custom.html")) {
