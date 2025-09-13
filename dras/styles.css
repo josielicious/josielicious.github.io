@@ -553,3 +553,63 @@ td {
         padding: 0.8rem;
     }
 }
+
+.season-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 2rem;
+}
+
+.season {
+    position: relative;
+    width: 220px;
+    height: 300px;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 1.2rem;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 0 rgba(0,0,0,0.3);
+}
+
+.season img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    height: 100%;
+    max-width: none;
+    max-height: 100%;
+    transform: translate(-50%, -50%);
+    object-fit: contain;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+    filter: saturate(120%) blur(2px);
+}
+
+.season h3,
+.season button {
+    position: relative;
+    z-index: 1;
+}
+
+.season::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgb(0, 0, 0), transparent);
+    z-index: 0;
+}
+
+.season:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}

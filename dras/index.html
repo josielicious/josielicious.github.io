@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/Logo.svg">
 </head>
 <body>
     <header id="main-header">
@@ -35,6 +36,16 @@
                 <option value="merge">Merge Wildcard</option>
                 <option value="finale">Finale Wildcard</option>
             </select>
+            <div class="season-container">
+                <div class="season">
+                    <img src="images/seasons/allstars10.webp" alt="allstars10">
+                    <h3>All Stars 10</h3>
+                    <button onclick="loadCast(allstars_10)">Load Cast</button>
+                </div><div class="season">
+                <img src="images/seasons/allstars11.webp" alt="allstars11">
+                <h3>All Stars 11</h3>
+                <button onclick="loadCast(allstars_11)">Load Cast</button>
+            </div>
         </section>
 
         <section id="casting-block">
@@ -72,7 +83,7 @@
         // END DONATION
 
         // SITE VERSION CHECKER
-        const siteVersion = "1.7";
+        const siteVersion = "1.8";
 
         async function checkVersion() {
             try {

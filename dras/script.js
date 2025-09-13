@@ -389,6 +389,7 @@ let us_season17 = [acacia, arrietty, crystalE, hormona, jewels, joella, kori, la
 let allstars_9 = [angeria, mik, jorgeous, ninaw, plastique, roxxxy, shannel, vanessa];
 // ALL STARS 10
 let allstars_10 = [acid, aja, bosco, alyssaH, cynthia, daya, olivia, phoenix, tina, deja, denali, ginger, irene, jorgeous, kerri, nicole, mistress, lydia];
+let allstars_11 = [akeria, dawn, lucky, morgan, morphine, mystique, april, auraMayari, crystal, salina, silky, vivacious, hershii, jasmineK, joey, kennedy, samStar, shuga];
 //DRUK SEASON 1
 let baga = new Queen("Baga Chipz", 13, 12, 5, 5, 13, 8, 7, "Baga");
 let blu = new Queen("Blu Hydrangea", 5, 9, 8, 10, 10, 12, 9, "Blu");
@@ -1496,6 +1497,11 @@ function createStartButton() {
     document.getElementById("casting-block").appendChild(btn);
 }
 
+function loadCast(cast) {
+    currentCast = cast;
+    updateCastScreen();
+}
+
 function startSimulation() {
     fullCast = [...currentCast];
     BracketA = fullCast.filter(q => q.assignedBracket === "A");
@@ -2309,12 +2315,10 @@ function resolveSmackdownPrelims() {
         smackdownWinners.push(winner);
         eliminated.push(loser);
 
-        const song = lsSong().toString();
-
         screen.createHorizontalLine();
         screen.createBigText("The time has come...");
         screen.createBold("For you to lip-sync... for the crown! Good luck, and don't fuck it up.");
-        screen.createBold(`${song}`);
+        const song = lsSong().toString();
         screen.createParagraph(`${winner.getName()} V.S. ${loser.getName()}`);
         screen.createImage(winner.image, "darkblue");
         screen.createImage(loser.image, "lightgrey");
@@ -2362,12 +2366,10 @@ function resolveSmackdownSemis() {
         semiWinners.push(winner);
         eliminated.push(loser);
 
-        const song = lsSong().toString();
-
         screen.createHorizontalLine();
         screen.createBigText("The time has come...");
         screen.createBold("For you to lip-sync... for the crown! Good luck, and don't fuck it up.");
-        screen.createBold(`${song}`);
+        const song = lsSong().toString();
         screen.createParagraph(`${winner.getName()} V.S. ${loser.getName()}`);
         screen.createImage(winner.image, "darkblue");
         screen.createImage(loser.image, "lightgrey");
@@ -2385,7 +2387,7 @@ function resolveSmackdownSemis() {
     const eliminatedThisRound = eliminated.length;
     const elimStart = totalContestants - eliminatedSoFar - eliminatedThisRound + 1;
     const elimEnd = totalContestants - eliminatedSoFar;
-    const placementRange = `${toOrdinal(elimStart)}–${toOrdinal(elimEnd)}`;
+    const placementRange = `${toOrdinal(elimStart)}/${toOrdinal(elimEnd)}`;
 
     eliminated.forEach(q => {
         if (!eliminatedCast.includes(q)) eliminatedCast.push(q);
@@ -2407,12 +2409,11 @@ function resolveSmackdownFinal() {
 
     const winner = finalMatch[0];
     const loser = finalMatch[1];
-    const song = lsSong().toString();
 
     screen.createHorizontalLine();
     screen.createBigText("The time has come...");
     screen.createBold("For you to lip-sync... for the crown! Good luck, and don't fuck it up.");
-    screen.createBold(song);
+    const song = lsSong().toString();
     screen.createParagraph(`${winner.getName()} V.S. ${loser.getName()}`);
     screen.createImage(winner.image, "gold");
     screen.createImage(loser.image, "silver");

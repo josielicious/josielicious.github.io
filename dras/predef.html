@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tournament Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/Logo.svg">
+</head>
+<body>
+<header id="main-header">
+    <div id="header-title">
+        <img src="images/Logo.svg" alt="logo">
+        <h1>Tournament Simulator</h1>
+    </div>
+    <nav id="header-buttons">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="predef.html">Predefined Casts</a></li>
+        </ul>
+    </nav>
+</header>
+<div id="main-block">
+    <section id="settings-block">
+        <div class="season-container">
+        </div>
+    </section>
+
+    <section id="casting-block">
+        <img id="logo" src="images/Logo.svg" alt="logo">
+    </section>
+</div>
+<a href="#" class="toTop active">
+    <i class="fa-solid fa-angle-up"></i>
+</a>
+<script src="script.js"></script>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+    // DONATION
+    kofiWidgetOverlay.draw('belikejosie', {
+        'type': 'floating-chat',
+        'floating-chat.donateButton.text': 'Tip Me',
+        'floating-chat.donateButton.background-color': '#ff38b8',
+        'floating-chat.donateButton.text-color': '#fff'
+    });
+    // END DONATION
+
+    // SITE VERSION CHECKER
+    const siteVersion = "1.8";
+
+    async function checkVersion() {
+        try {
+            const res = await fetch("version.json", { cache: "no-store" });
+            const data = await res.json();
+
+            if (data.latest !== siteVersion) {
+                showOutdatedBanner(data.latest);
+            }
+        } catch (e) {
+            console.error("Version check failed", e);
+        }
+    }
+
+    function showOutdatedBanner(latest) {
+        if (document.getElementById("outdated-banner")) return;
+        const banner = document.createElement("div");
+        banner.id = "outdated-banner";
+        banner.innerHTML = `
+            This site is outdated (new version: ${latest}).
+              <a href="" style="color:white;text-decoration:underline;">Refresh</a>
+            `;
+        banner.style.cssText = `
+                  position: fixed;
+                  top: 0; left: 0; right: 0;
+                  background: #ff4d4d;
+                  color: white;
+                  padding: 12px;
+                  text-align: center;
+                  font-weight: bold;
+                  z-index: 9999;
+                `;
+        document.body.prepend(banner);
+    }
+
+    checkVersion();
+
+    setInterval(checkVersion, 30000);
+    // END SITE VERSION CHECKER
+</script>
+</body>
+</html>
