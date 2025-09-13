@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="icon" href="images/Logo.svg">
 </head>
 <body>
@@ -41,10 +42,12 @@
                     <img src="images/seasons/allstars10.webp" alt="allstars10">
                     <h3>All Stars 10</h3>
                     <button onclick="loadCast(allstars_10)">Load Cast</button>
-                </div><div class="season">
-                <img src="images/seasons/allstars11.webp" alt="allstars11">
-                <h3>All Stars 11</h3>
-                <button onclick="loadCast(allstars_11)">Load Cast</button>
+                </div>
+                <div class="season">
+                    <img src="images/seasons/allstars11.webp" alt="allstars11">
+                    <h3>All Stars 11</h3>
+                    <button onclick="loadCast(allstars_11)">Load Cast</button>
+                </div>
             </div>
         </section>
 
@@ -81,49 +84,6 @@
             'floating-chat.donateButton.text-color': '#fff'
         });
         // END DONATION
-
-        // SITE VERSION CHECKER
-        const siteVersion = "1.8";
-
-        async function checkVersion() {
-            try {
-                const res = await fetch("version.json", { cache: "no-store" });
-                const data = await res.json();
-
-                if (data.latest !== siteVersion) {
-                    showOutdatedBanner(data.latest);
-                }
-            } catch (e) {
-                console.error("Version check failed", e);
-            }
-        }
-
-        function showOutdatedBanner(latest) {
-            if (document.getElementById("outdated-banner")) return;
-            const banner = document.createElement("div");
-            banner.id = "outdated-banner";
-            banner.innerHTML = `
-            This site is outdated (new version: ${latest}).
-              <a href="" style="color:white;text-decoration:underline;">Refresh</a>
-            `;
-                banner.style.cssText = `
-                  position: fixed;
-                  top: 0; left: 0; right: 0;
-                  background: #ff4d4d;
-                  color: white;
-                  padding: 12px;
-                  text-align: center;
-                  font-weight: bold;
-                  z-index: 9999;
-                `;
-            document.body.prepend(banner);
-            }
-
-        checkVersion();
-
-        setInterval(checkVersion, 30000);
-        // END SITE VERSION CHECKER
     </script>
-
 </body>
 </html>

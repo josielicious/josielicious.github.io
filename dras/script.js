@@ -2483,7 +2483,6 @@ function contestantProgress() {
     contentContainer.className = "tab-contents";
 
     tabs.forEach((tabName, index) => {
-        // Tab button
         const btn = document.createElement("button");
         btn.textContent = tabName;
         btn.className = "tab-btn";
@@ -2513,9 +2512,52 @@ function contestantProgress() {
         contentContainer.appendChild(tabContent);
     });
 
+    const downloadBtn = document.createElement("button");
+    downloadBtn.textContent = "Download Progress";
+    downloadBtn.style.marginTop = "10px";
+
+    downloadBtn.onclick = () => {
+        const activeTab = document.querySelector(".tab-content[style*='block']");
+        if (!activeTab) {
+            alert("No active tab found!");
+            return;
+        }
+
+        const table = activeTab.querySelector("table.trtable");
+        if (!table) {
+            alert("No table found in the active tab!");
+            return;
+        }
+
+        const originalOverflow = activeTab.style.overflow;
+        activeTab.style.overflow = "visible";
+
+        const scale = window.devicePixelRatio || 1;
+
+        html2canvas(table, { scale: scale }).then(canvas => {
+            canvas.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = activeTab.id.replace(/\s+/g, "_") + "_table.png";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                activeTab.style.overflow = originalOverflow;
+            });
+        }).catch(err => {
+            alert("Failed to capture image: " + err);
+            activeTab.style.overflow = originalOverflow;
+        });
+    };
+
+
+
     main.appendChild(tabContainer);
     main.appendChild(contentContainer);
-
+    main.appendChild(downloadBtn);
     screen.createButton("Proceed", "episodeProcessing()");
 }
 
