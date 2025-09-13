@@ -13008,7 +13008,7 @@ let allQueens = [
     alexis3XL, sophiaJimnez, gvajardo, jobStar, soroNasty, ameliaWaldorf, redRabbitDuo, leandraRose, ninaD,
     aviescWho, huntyyB, ivizaLioza, lunaL, madisonBasrey, memoReyri, mistaBoo, ragaDiamante, reginaBronx, rudyReyes, stupidrag, wynter, yayoiBowery,
     auroraWonders, cPher, elektraV, georgiana, irisXC, laCarrera, laMorraLisa, leexa, lupitaKush, paperCut, rebelMrk, sirena, tiresias,  veraCruz,
-    aishaDollkills, deseosFab, fifEstah, grethaWhite, hiddenMistake, humaKyle, isabellaYCatalina, lightKing, lizaZanZuzzi, paperCut, pekeBalderas, santaLuca,
+    aishaDollkills, deseosFab, fifEstah, grethaWhite, hiddenMistake, humaKyle, isabellaYCatalina, lightKing, lizaZanZuzzi, pekeBalderas, santaLuca,
     cattriona, juanaGuadalupe, electraWalpurgis, aries, kellyLMD, laKyliezz, dimittra, shantelle, arielLMD, alexisMvgler, purga, braulio8000, ankCosart, mizzPeaches
 ].concat(allCustomQueens).sort((a, b) => a.getName().toLowerCase().localeCompare(b.getName().toLowerCase()));
 /*/Drag-Race-Simulator*/
@@ -18541,15 +18541,6 @@ queenCardContainer.addEventListener("click", e => {
         }
         updateCast();
         resetSearch();
-        let button = document.getElementById("randomK");
-        let button1 = document.getElementById("moreK");
-        if (currentCast.length == 20) {
-            searchInput.setAttribute("readonly", true);
-            searchInput.removeAttribute("placeholder");
-            searchInput.setAttribute("placeholder", "You can't choose more than 20 contestants");
-            button.classList.toggle("hide", true);
-            button1.classList.toggle("hide", false);
-        }
         let big = document.getElementById("castBig");
         if (currentCast.length != 0) {
             big.classList.toggle("hide", false);
@@ -18661,14 +18652,6 @@ function addRandomContestant() {
     }
     currentCast.push(randomContestant);
     updateCast();
-    if (currentCast.length >= 20) {
-        searchInput.setAttribute("readonly", true);
-        searchInput.removeAttribute("placeholder");
-        searchInput.setAttribute("placeholder", "You can't choose more than 20 contestants");
-        button.classList.toggle("hide", true);
-        button1.classList.toggle("hide", false);
-        button2.classList.toggle("hide", true);
-    }
     let big = document.getElementById("castBig");
     if (currentCast.length != 0) {
         big.classList.toggle("hide", false);

@@ -1129,6 +1129,23 @@ class Scene {
         if (id) button.id = id;
         button.setAttribute("onclick", method);
         this._MainBlock.appendChild(button);
+        if (text === "Proceed" || text === "Show result") {
+            let textField = document.getElementById("inputRightKey");
+            textField.focus();
+            textField.addEventListener("keydown", (e) => {
+                let key = e.key;
+                if (key === "ArrowRight" && document.querySelector("button[onclick='`${method}`']") == button) {
+                    e.target.remove();
+                    button.click();
+                    this.goToTop();
+                }
+            }, {once: true});
+            document.addEventListener("click", e => {
+                if (e.target.matches('div#simulation-block') === false && e.target.matches('select') === false) {
+                    textField.focus();
+                }
+            });
+        }
     }
 
     createHorizontalLine() {
@@ -1177,7 +1194,7 @@ class MiniChallenge extends Challenge {
         const winner = currentCast[randomNumber(0, currentCast.length - 1)];
 
         screen.createImage(winner.image);
-        winner.miniEpisode.push(episodeCount);
+        winner.miniEpisode.push(episodeCount - 1);
         screen.createBold(`${winner.getName()} won the mini-challenge!`);
     }
 }
@@ -1568,6 +1585,27 @@ function toOrdinal(n) {
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 
+function pointCeremony() {
+    let screen = new Scene();
+    screen.clean();
+    screen.createBigText("The point ceremony")
+    screen.createHorizontalLine();
+    bottomQueens.forEach(q => {
+        let eligible = bottomQueens.filter(c => c !== q);
+        let chosenQueen = eligible[randomNumber(0, eligible.length - 1)];
+        screen.createImage(q.image);
+        screen.createImage(chosenQueen.image);
+        screen.createBold(`${q.getName()} has give her point to ${chosenQueen.getName()}`);
+        chosenQueen.stars += 1;
+    });
+    screen.createHorizontalLine();
+    if (phase === "bracket" && (episodeCount % 3 === 0)) {
+        screen.createButton("Announce Passers", "announcePassers()");
+    } else {
+        screen.createButton("Proceed", "contestantProgress()");
+    }
+}
+
 function announcePassers() {
     let screen = new Scene();
     screen.clean();
@@ -1583,18 +1621,21 @@ function announcePassers() {
         screen.createBold(`${q.getName()} passes with ${q.stars} MVQ Points!`);
     });
 
-    const bracketElims = eliminated;
+    const totalContestants = 18;
+    const eliminatedSoFar = eliminatedCast.length;
+    const eliminatedThisRound = eliminated.length;
 
-    const elimStart = eliminatedCast.length + 1; // rank of first eliminated in this bracket
-    const elimEnd = elimStart + bracketElims.length - 1; // rank of last eliminated
+    const elimStart = totalContestants - eliminatedSoFar - eliminatedThisRound + 1;  // e.g. 16
+    const elimEnd = totalContestants - eliminatedSoFar;                            // e.g. 18
 
-    bracketElims.forEach(q => {
+    eliminated.forEach(q => {
         if (!eliminatedCast.includes(q)) eliminatedCast.push(q);
         q.editTrackRecord("ELIM");
         q.rankP = `${toOrdinal(elimStart)}–${toOrdinal(elimEnd)}`;
         screen.createImage(q.image, "sienna");
         screen.createBold(`${q.getName()} has been eliminated.`);
     });
+
 
     if (currentBracketIndex < 2) {
         currentBracketIndex++;
@@ -1648,10 +1689,77 @@ function miniChallenge() {
 function addWildcard() {
     const screen = new Scene();
 
-    const wildcard = eliminatedCast[randomNumber(0, currentCast.length - 1)];
+    const wildcard = eliminatedCast[randomNumber(0, eliminatedCast.length - 1)];
+    const originalRank = wildcard.rankP;
+
     eliminatedCast = eliminatedCast.filter(q => q !== wildcard);
-    Mergers.push(wildcard);
-    currentCast.push(wildcard);
+
+    if (originalRank && originalRank.includes("–")) {
+        const sharedElims = eliminatedCast.filter(q =>
+            q.rankP === originalRank &&
+            q.assignedBrackets === wildcard.assignedBrackets &&
+            !Mergers.includes(q)
+        );
+
+        if (sharedElims.length === 1) {
+            const onlyQueen = sharedElims[0];
+            const match = originalRank.match(/\d+/g);
+            if (match && match.length === 2) {
+                const newRank = Math.max(parseInt(match[0]), parseInt(match[1]));
+                onlyQueen.rankP = toOrdinal(newRank);
+            }
+        } else if (sharedElims.length > 1) {
+            const match = originalRank.match(/\d+/g);
+            if (match && match.length === 2) {
+                const start = parseInt(match[0]);
+                const end = parseInt(match[1]);
+                const numNow = sharedElims.length;
+                const newStart = end - numNow + 1;
+                const newEnd = end;
+                const newRank = `${toOrdinal(newStart)}–${toOrdinal(newEnd)}`;
+                sharedElims.forEach(q => {
+                    q.rankP = newRank;
+                });
+            }
+        }
+    }
+
+    if (originalRank) {
+        const match = originalRank.match(/\d+/g);
+        if (match && match.length === 2) {
+            const originalMax = parseInt(match[1]);
+
+            eliminatedCast.forEach(q => {
+                if (!q.rankP || Mergers.includes(q)) return; // skip merged queens
+
+                const qMatch = q.rankP.match(/^(\d+)(?:st|nd|rd|th)$/); // single ranks only
+                if (qMatch) {
+                    const qRank = parseInt(qMatch[1]);
+                    if (qRank < originalMax) {
+                        q.rankP = toOrdinal(qRank + 1);
+                    }
+                } else {
+                    const rangeMatch = q.rankP.match(/^(\d+)[–-](\d+)$/);
+                    if (rangeMatch) {
+                        let start = parseInt(rangeMatch[1]);
+                        let end = parseInt(rangeMatch[2]);
+                        if (end < originalMax) {
+                            start += 1;
+                            end += 1;
+                            q.rankP = `${toOrdinal(start)}–${toOrdinal(end)}`;
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    if (!Mergers.includes(wildcard)) Mergers.push(wildcard);
+    if (!currentCast.includes(wildcard)) currentCast.push(wildcard);
+
+    wildcard.ogPlace = originalRank;
+    wildcard.rankP = null;
+    wildcard.rankRange = null;
 
     if (wildcard.trackRecord.length > 0) {
         wildcard.trackRecord.pop();
@@ -1660,7 +1768,7 @@ function addWildcard() {
     wildcard.addToTrackRecord("RTRN");
 
     screen.createImage(wildcard.image, "orange");
-    screen.createBold(wildcard.getName() + ", has been chosen by the wheel to be a wildcard!");
+    screen.createBold(`${wildcard.getName()}, has been chosen by the wheel to be a wildcard!`);
 }
 
 function generateChallenge() {
@@ -1964,11 +2072,7 @@ function top2Win() {
         screen.createParagraph(`${queen2.getName()}, you are safe.`);
     }
 
-    if (phase === "bracket" && (episodeCount % 3 === 0)) {
-        screen.createButton("Announce Passers", "announcePassers()");
-    } else {
-        screen.createButton("Proceed", "contestantProgress()");
-    }
+    screen.createButton("Proceed", "pointCeremony()");
 }
 
 function winAndBtms() {
@@ -1989,7 +2093,6 @@ function winAndBtms() {
         randomNumber(0, 100) < 60
     ) {
         [topQueens[0], topQueens[1]].forEach(q => {
-            q.addToTrackRecord(" WIN");
             q.favoritism += 5;
             q.ppe += 5;
             screen.createImage(q.image, "darkblue");
@@ -1997,7 +2100,7 @@ function winAndBtms() {
             if (q.trackRecord[lastIndex].toUpperCase() === "RTRN") {
                 q.editTrackRecord("WIN");
             } else {
-                q.addToTrackRecord("WIN");
+                q.addToTrackRecord(" WIN ");
             }
         });
 
@@ -2007,7 +2110,8 @@ function winAndBtms() {
 
         topQueens.splice(0, 2);
     } else {
-        let winner = topQueens.shift();
+        let winner = topQueens[0];
+        topQueens.splice(0, 1);
         const lastIndex = winner.trackRecord.length - 1;
         if (winner.trackRecord[lastIndex].toUpperCase() === "RTRN") {
             winner.editTrackRecord("WIN");
@@ -2025,7 +2129,6 @@ function winAndBtms() {
     if (topQueens.length > 0) {
         topQueens.forEach(q => {
             screen.createImage(q.image, "lightblue");
-            q.addToTrackRecord("HIGH");
             q.favoritism += 1;
             q.ppe += 4;
             const lastIndex = q.trackRecord.length - 1;
@@ -2061,7 +2164,6 @@ function winAndBtms() {
 
     // First safe out of the bottoms
     let safeQueen = bottomQueens.shift();
-    safeQueen.addToTrackRecord("LOW");
     safeQueen.unfavoritism += 1;
     safeQueen.ppe += 2;
 
@@ -2110,9 +2212,10 @@ function lipSync() {
     screen.clean();
 
     if (bottomQueens[0].lipsyncScore < 2 && randomNumber(0, 10) >= 6) {
-        screen.createBold("Meh...")
+        screen.createBold("Meh...");
         screen.createHorizontalLine();
     }
+
     screen.createImage(bottomQueens[0].image, "tomato");
     screen.createBold(bottomQueens[0].getName() + ", shantay you stay.");
     bottomQueens[0].unfavoritism += 3;
@@ -2126,17 +2229,22 @@ function lipSync() {
 
     screen.createImage(bottomQueens[1].image, "red");
     screen.createBold(bottomQueens[1].getName() + ", sashay away...");
-    const elimStart = currentCast.length - eliminatedCast.length + 1;
-    bottomQueens[1].rankRange = toOrdinal(elimStart);
-    bottomQueens[1].unfavoritism += 5;
-    eliminatedCast.unshift(bottomQueens[1]);
-    currentCast.splice(currentCast.indexOf(bottomQueens[1]), 1);
+
+    const totalContestants = fullCast.length;
+    const eliminatedSoFar = eliminatedCast.length;
+
+    const rankNum = totalContestants - eliminatedSoFar;
+
     const lastIndex2 = bottomQueens[1].trackRecord.length - 1;
     if (bottomQueens[1].trackRecord[lastIndex2].toUpperCase() === "RTRN") {
         bottomQueens[1].editTrackRecord("ELIM");
     } else {
         bottomQueens[1].addToTrackRecord("ELIM");
     }
+    bottomQueens[1].rankP = toOrdinal(rankNum);
+
+    eliminatedCast.unshift(bottomQueens[1]);
+    currentCast.splice(currentCast.indexOf(bottomQueens[1]), 1);
 
     screen.createButton("Proceed", "contestantProgress()");
 }
@@ -2148,6 +2256,7 @@ function startMerge() {
 
 function startFinale() {
     phase = "finale";
+    episodeChallenges.push("Finale");
     currentCast = fullCast.filter(q => !eliminatedCast.includes(q));
 
     top8Smackdown();
@@ -2161,13 +2270,13 @@ function top8Smackdown() {
         addWildcard();
         wildcardUsed = true;
     }
+
     let lipsyncers = shuffle([...currentCast]);
     smackdownRounds = [];
 
     for (let i = 0; i < 4; i++) {
         const q1 = lipsyncers[i * 2];
         const q2 = lipsyncers[i * 2 + 1];
-
         if (q1 && q2) {
             smackdownRounds.push([q1, q2]);
         }
@@ -2178,7 +2287,7 @@ function top8Smackdown() {
     screen.createBigText("The preliminaries are...");
 
     smackdownRounds.forEach((match, i) => {
-        match.forEach(q => screen.createImage(q.image, "royalblue"));
+        match.forEach(q => screen.createImage(q.image, "black"));
         screen.createParagraph(`Round ${i + 1}: ${match[0].getName()} vs ${match[1].getName()}`);
     });
 
@@ -2191,16 +2300,29 @@ function resolveSmackdownPrelims() {
     smackdownWinners = [];
 
     smackdownRounds.forEach((match, i) => {
-
         match.forEach(q => q.getASLipsync());
-
         match.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
 
         const winner = match[0];
+        const loser = match[1];
         smackdownWinners.push(winner);
 
+        let song = lsSong().toString();
+
+        screen.createHorizontalLine();
+        screen.createBigText("The time has come...");
+        screen.createBold("For you to lip-sync... for the crown! Good luck, and don't fuck it up.");
+        screen.createBold(`${song}`);
+        screen.createParagraph(`${winner.getName()} V.S. ${loser.getName()}`);
         screen.createImage(winner.image, "darkblue");
-        screen.createParagraph(`Round ${i + 1} Winner: ${winner.getName()}`);
+        screen.createImage(loser.image, "lightgrey");
+        screen.createBold(` ${winner.getName()} wins Round ${i + 1}!`);
+        const lastIndex = loser.trackRecord.length - 1;
+        if (loser.trackRecord[lastIndex].toUpperCase() === "RTRN") {
+            loser.editTrackRecord("LR1");
+        } else {
+            loser.addToTrackRecord("LR1");
+        }
     });
 
     smackdownRounds = [
@@ -2208,8 +2330,9 @@ function resolveSmackdownPrelims() {
         [smackdownWinners[2], smackdownWinners[3]]
     ];
 
-    screen.createButton("Resolve semifinals", "resolveSmackdownSemis()");
+    screen.createButton("Proceed", "resolveSmackdownSemis()");
 }
+
 
 function resolveSmackdownSemis() {
     const screen = new Scene();
@@ -2219,16 +2342,33 @@ function resolveSmackdownSemis() {
     smackdownRounds.forEach((match, i) => {
         match.forEach(q => q.getASLipsync());
         match.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
+
         const winner = match[0];
+        const loser = match[1];
         semiWinners.push(winner);
 
+        let song = lsSong().toString();
+
+        screen.createHorizontalLine();
+        screen.createBigText("The time has come...");
+        screen.createBold("For you to lip-sync... for the crown! Good luck, and don't fuck it up.");
+        screen.createBold(`${song}`);
+        screen.createParagraph(`${winner.getName()} V.S. ${loser.getName()}`);
         screen.createImage(winner.image, "darkblue");
-        screen.createParagraph(`Semifinal ${i + 1} Winner: ${winner.getName()}`);
+        screen.createImage(loser.image, "lightgrey");
+        screen.createBold(` ${winner.getName()} wins The Semifinal Round ${i + 1}!`);
+
+        const lastIndex = loser.trackRecord.length - 1;
+        if (loser.trackRecord[lastIndex].toUpperCase() === "RTRN") {
+            loser.editTrackRecord("LR2");
+        } else {
+            loser.addToTrackRecord("LR2");
+        }
     });
 
     smackdownRounds = [[semiWinners[0], semiWinners[1]]];
 
-    screen.createButton("Resolve final", "resolveSmackdownFinal()");
+    screen.createButton("Proceed", "resolveSmackdownFinal()");
 }
 
 function resolveSmackdownFinal() {
@@ -2240,11 +2380,32 @@ function resolveSmackdownFinal() {
     finalMatch.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
 
     const winner = finalMatch[0];
+    const loser = finalMatch[1];
+    let song = lsSong().toString();
 
-    finalMatch.forEach(q => screen.createImage(q.image, q === winner ? "gold" : "silver"));
-    screen.createBold(`The crown goes to ${winner.getName()}!`);
+    screen.createHorizontalLine();
+    screen.createBigText("The time has come...");
+    screen.createBold("For you to lip-sync... for the crown! Good luck, and don't fuck it up.");
+    screen.createBold(`${song}`);
+    screen.createParagraph(`${winner.getName()} V.S. ${loser.getName()}`);
+    screen.createImage(winner.image, "gold");
+    screen.createImage(loser.image, "silver");
+    screen.createBold(` ${winner.getName()}, condragulations! You're a winner baby`);
 
-    winner.addToTrackRecord("WINNER");
+    const lastIndex = winner.trackRecord.length - 1;
+    if (winner.trackRecord[lastIndex].toUpperCase() === "RTRN") {
+        winner.editTrackRecord("WINNER");
+    } else {
+        winner.addToTrackRecord("WINNER");
+    }
+    const lastIndex2 = loser.trackRecord.length - 1;
+    if (loser.trackRecord[lastIndex2].toUpperCase() === "RTRN") {
+        loser.editTrackRecord("LR3");
+    } else {
+        loser.addToTrackRecord("LR3");
+    }
+
+    screen.createButton("Proceed", "contestantProgress()");
 }
 
 function ordinalSuffix(n) {
@@ -2334,7 +2495,7 @@ function createTrackRecordTable(groupName) {
     table.className = "trtable";
     table.border = "2";
 
-    let epStart = 1, epEnd = episodeChallenges.length;
+    let epStart = 0, epEnd = episodeChallenges.length;
     let cast;
     switch (groupName) {
         case "Bracket A": epStart = 0; epEnd = 3; cast = BracketA; break;
@@ -2345,18 +2506,22 @@ function createTrackRecordTable(groupName) {
     }
 
     if (groupName === "Mergers") {
-        const rankOrder = ["RTRNWINNER", "WINNER", "RTRNWIN", "RTRN WIN", "RTRN WIN ", "WIN", "RTRNLR3", "LR3", "RTRNL2R", "LR2", "RTRNL1R", "L1R", "RTRNHIGH", "HIGH", "RTRNSAFE", "SAFE", "RTRNLOW", "LOW", "RTRNBTM2", "BTM2", "RTRNELIM", "ELIM", ""];
+        const rankOrder = ["RTRNWINNER", "WINNER", "RTRNWIN", "RTRN WIN", "RTRN WIN ", "WIN", "RTRNLR3", "LR3", "RTRNLR2", "LR2", "RTRNLR1", "LR1", "RTRNHIGH", "HIGH", "RTRNSAFE", "SAFE", "RTRNLOW", "LOW", "RTRNBTM2", "BTM2", "RTRNELIM", "ELIM", ""];
 
         cast.sort((a, b) => {
-            const aPerf = a.trackRecord.filter(p => !["CHOC","RTRN"].includes(p)).slice(-1)[0] || "SAFE";
-            const bPerf = b.trackRecord.filter(p => !["CHOC","RTRN"].includes(p)).slice(-1)[0] || "SAFE";
+            const validA = a.trackRecord.filter(p => p && !["", "CHOC", "RTRN"].includes(p));
+            const validB = b.trackRecord.filter(p => p && !["", "CHOC", "RTRN"].includes(p));
+
+            const aPerf = validA.at(-1) || "SAFE";
+            const bPerf = validB.at(-1) || "SAFE";
 
             let aRank = rankOrder.findIndex(r => aPerf.toUpperCase().includes(r));
             let bRank = rankOrder.findIndex(r => bPerf.toUpperCase().includes(r));
 
-            if (aRank === rankOrder.length-1 && bRank === rankOrder.length-1) {
+            if (aRank === rankOrder.length - 1 && bRank === rankOrder.length - 1) {
                 return eliminatedCast.indexOf(a) - eliminatedCast.indexOf(b);
             }
+
             return aRank - bRank;
         });
     }
@@ -2450,13 +2615,21 @@ function createTrackRecordTable(groupName) {
         row.appendChild(photoCell);
 
         const trackSlice = contestantData.trackRecord.slice(epStart, epEnd);
-        trackSlice.forEach(performance => {
+        trackSlice.forEach((performance, index) => {
             const td = document.createElement("td");
             td.innerHTML = performance;
             td.style.textAlign = "center";
 
             // --- Coloring logic ---
             switch (performance.toUpperCase()) {
+                case "RTRNWINNER": td.style.backgroundColor = "yellow"; td.style.fontWeight = "bold"; td.innerHTML = 'RTRN<br>+<br>WINNER';break;
+                case "WINNER": td.style.backgroundColor = "yellow"; td.style.color = "black"; td.style.fontWeight = "bold"; break;
+                case "RTRNLR3": td.style.backgroundColor = "#ffd100"; td.style.fontWeight = "bold"; td.innerHTML = 'RTRN<br>+<br>LOST<br>3RD<br>ROUND';break;
+                case "LR3": td.style.backgroundColor = "#ffd100"; td.style.fontWeight = "bold"; td.innerHTML = 'LOST<br>3RD<br>ROUND';break;
+                case "RTRNLR2": td.style.backgroundColor = "#ffae00"; td.style.fontWeight = "bold"; td.innerHTML = 'RTRN<br>+<br>LOST<br>2ND<br>ROUND';break;
+                case "LR2": td.style.backgroundColor = "#ffae00"; td.style.fontWeight = "bold"; td.innerHTML = 'LOST<br>2ND<br>ROUND';break;
+                case "RTRNLR1": td.style.backgroundColor = "#ff7c00"; td.style.fontWeight = "bold"; td.innerHTML = 'RTRN<br>+<br>LOST<br>1ST<br>ROUND';break;
+                case "LR1": td.style.backgroundColor = "#ff7c00"; td.style.fontWeight = "bold"; td.innerHTML = 'LOST<br>1ST<br>ROUND';break;
                 case "WIN": td.style.backgroundColor = "royalblue"; td.style.color = "white"; td.style.fontWeight = "bold"; break;
                 case " WIN": td.style.backgroundColor = "deepskyblue"; td.style.fontWeight = "bold"; break;
                 case " WIN ": td.style.backgroundColor = "darkblue"; td.style.color = "white"; td.style.fontWeight = "bold"; break;
@@ -2479,10 +2652,15 @@ function createTrackRecordTable(groupName) {
                 case "RTRNLOW": td.style.backgroundColor = "lightpink"; td.innerHTML = '<b>RTRN</b><br>+<br>LOW'; break;
                 case "RTRNBTM2": td.style.backgroundColor = "tomato"; td.innerHTML = '<b>RTRN</b><br>+<br>BTM2'; break;
                 case "RTRNELIM": td.style.backgroundColor = "red"; td.innerHTML = 'RTRN<br>+<br>ELIM';  td.style.fontWeight = "bold"; break;
-                case "RTRN": td.style.backgroundColor = "orange"; break;
-                case "WINNER": td.style.backgroundColor = "yellow"; td.style.color = "white"; break;
-                case "RUNNER-UP": td.style.backgroundColor = "silver"; break;
                 default: td.style.backgroundColor = "gray"; break;
+            }
+
+            const actualEp = epStart + index;
+            const miniWins = contestantData.miniEpisode || [];
+            const wonMini = miniWins.includes(actualEp);
+
+            if (wonMini) {
+                td.innerHTML += "<br><small><i>Mini<br>Chall.<br>Winner</i></small>";
             }
             row.appendChild(td);
         });
