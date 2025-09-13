@@ -12332,20 +12332,20 @@ let sapphira = new Queen("Sapphira Cristál", 8, 11, 12, 10, 11, 13, 13, "Sapphi
 let xunami = new Queen("Xunami Muse", 7, 6, 8, 8, 6, 10, 8, "XunamiMuse");
 let us_season16 = [amandaTori, dawn, geneva, hershii, megami, mhiya, mirage, morphine, nymphia, jane, plasma, qQueen, sapphira, xunami];
 // SEASON 17
-let acacia = new Queen("Acacia Forgot", 9, 8, 6, 6, 7, 9, 7, "AcaciaForgot");
-let arrietty = new Queen("Arrietty", 4, 4, 4, 4, 4, 15, 6, "Arrietty");
-let crystalE = new Queen("Crystal Envy", 9, 5, 10, 10, 5, 13, 8, "CrystalEnvy");
-let hormona = new Queen("Hormona Lisa", 7, 6, 5, 6, 7, 6, 6, "HormonaLisa");
-let jewels = new Queen("Jewels Sparkles", 6, 8, 11, 6, 9, 13, 8, "JewelsSparkles");
-let joella = new Queen("Joella", 5, 4, 4, 5, 4, 5, 4, "Joella");
-let kori = new Queen("Kori King", 6, 8, 6, 5, 8, 7, 5, "KoriKing");
-let lana = new Queen("Lana Ja'Rae", 6, 7, 8, 7, 5, 11, 6, "LanaJaRae");
-let lexi = new Queen("Lexi Love", 9, 8, 8, 9, 7, 13, 13, "LexiLove");
-let lucky = new Queen("Lucky Starzzz", 4, 4, 5, 4, 4, 8, 7, "LuckyStarzzz");
-let lydia = new Queen("Lydia B Kollins", 10, 8, 9, 7, 8, 12, 12, "LydiaBKollins");
-let onya = new Queen("Onya Nurve", 14, 13, 9, 7, 13, 8, 8, "OnyaNurve");
-let samStar = new Queen("Sam Star", 10, 11, 10, 9, 11, 13, 10, "SamStar");
-let suzie = new Queen("Suzie Toot", 13, 7, 11, 6, 8, 11, 9, "SuzieToot");
+let onya = new Queen("Onya Nurve", 14, 13, 9, 7, 13, 8, 8, "OnyaNurve"); // 56
+let samStar = new Queen("Sam Star", 10, 11, 10, 13, 11, 13, 10, "SamStar"); // 55
+let lexi = new Queen("Lexi Love", 9, 8, 13, 11, 7, 13, 13, "LexiLove"); // 48
+let jewels = new Queen("Jewels Sparkles", 6, 8, 11, 12, 9, 13, 11 "JewelsSparkles"); // 46
+let suzie = new Queen("Suzie Toot", 13, 7, 11, 6, 7, 11, 9 "SuzieToot"); // 45
+let lydia = new Queen("Lydia B Kollins", 4, 10, 9, 10, 7, 12, 12, "LydiaBKollins"); // 40
+let crystalE = new Queen("Crystal Envy", 9, 5, 10, 10, 5, 13, 8, "CrystalEnvy"); // 39
+let acacia = new Queen("Acacia Forgot", 9, 8, 6, 6, 8, 9, 7, "AcaciaForgot"); // 39
+let kori = new Queen("Kori King", 6, 8, 8, 5, 8, 7, 13, "KoriKing"); // 35
+let hormona = new Queen("Hormona Lisa", 9, 5, 6, 8, 6, 9, 6, "HormonaLisa"); // 33
+let lana = new Queen("Lana Ja'Rae", 6, 7, 8, 7, 5, 11, 13, "LanaJaRae"); // 33
+let arrietty = new Queen("Arrietty", 4, 4, 4, 15, 4, 15, 6, "Arrietty"); // 52
+let joella = new Queen("Joella", 5, 5, 6, 5, 5, 6, 6, "Joella"); // 26
+let lucky = new Queen("Lucky Starzzz", 4, 4, 5, 4, 4, 8, 7, "LuckyStarzzz"); // 21
 let us_season17 = [acacia, arrietty, crystalE, hormona, jewels, joella, kori, lana, lexi, lucky, lydia, onya, samStar, suzie];
 //ALL STARS 9
 let allstars_9 = [angeria, mik, jorgeous, ninaw, plastique, roxxxy, shannel, vanessa];
@@ -12939,7 +12939,7 @@ let konnykortez = new Queen("Konny Kortez", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.
 let patypiñata = new Queen("Paty Piñata", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/qMrvsv4N/IMG-3948.jpg");
 let brightystun = new Queen("Brighty Stun", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/nWcjw6M/IMG-3949.jpg");
 let ricurasantana = new Queen("Ricura Santana", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/S4kLc5DF/IMG-3946.jpg");
-let mоon = new Queen("Mоon", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/8L2WnjTW/IMG-3950.jpg");
+let mоonLMD = new Queen("Mоon", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/8L2WnjTW/IMG-3950.jpg");
 let deetoxalanis = new Queen("Deetox Alanis", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/VsygcZL/IMG-3951.jpg");
 let tulsawalpurgis = new Queen("Tulsa Walpurgis", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/fVc8y9RW/IMG-3945.jpg");
 let gretagrimm = new Queen("Greta Grimm", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/NddFZnb6/IMG-3952.jpg");
@@ -13019,7 +13019,7 @@ let LMD3_Cast = [aviescwho, huntyyb, ivizalioza, lunaL, madisonbasrey, memoreyri
 let LMD4_Cast = [aurorawonders, cpher, elektraV, georgiana, irisxc, lacarrera, lamorralisa, leexa, lupitakush, papercut, rebelmörk, sirena, tiresias,  veracruz];
 let LMD5_Cast = [aishadollkills, deseosfab, fifíestah, grethawhite, hiddenmistake, humakyle, isabellaycatalina, lightking, lizazanzuzzi, papercut, pekebalderas, santalucía];
 let LMD6_Cast = [cattriona, juanaguadalupe, electrawalpurgis, aries, kellycaracas, lakyliezz, dimittra, shantelle, arielLMD, alexismvgler, purga, braulio8000, ankcosart, mizzpeaches];
-let LMD7_Cast = [konnykortez, patypiñata, brightystun, ricurasantana, mоon, deetoxalanis, tulsawalpurgis, gretagrimm, nayladowns, oslo, calypso, caoslascivia, candelayeye, axelledevil];
+let LMD7_Cast = [konnykortez, patypiñata, brightystun, ricurasantana, mоonLMD, deetoxalanis, tulsawalpurgis, gretagrimm, nayladowns, oslo, calypso, caoslascivia, candelayeye, axelledevil];
 let SLM1_Cast = [cpher, georgiana, gvajardo, madisonbasrey, rudyreyes, sirena, soronasty, velvetine];
 //all possible queens:
 let allCustomQueens = [];
@@ -13095,7 +13095,14 @@ let allQueens = [
     barbie, kellyH, lele, loreley, metamorkid, nikita, pandoraNox, tessa, naomy, victoriaShakespears, yvonne,
     pangina, BonesUK7, BonnieAnnClydeUK7, CatrinFeelingsUK7, ChaiTGrandeUK7, ElleVosqueUK7, NyongbellaUK7, PaigeThreeUK7, PastyUK7, SallyTMUK7, SilllexaDictionUK7, TayrisMongardiUK7, ViolaUK7,
     AlexandraDelRavalES5, DafneMuglerES5, DenebolaMurnauES5, EvaHarringtonES5, FerrxnES5, KrystalForeverES5, LaEscandaloES5, LacaUdilaES5, MargaritaKalifataES5, NixES5, NoriES5, SatinGrecoES5,
-
+    deborahlagrande, margaret, bárbaradurango, lanaboswell, debramen, cordeliadurango,
+    alexis3xl, sophiajimenez, gvajardo, jobstar, soronasty, ameliawaldorf, redrabbitduo, leandrarose,
+    aviescwho, huntyyb, ivizalioza, lunaL, madisonbasrey, memoreyri, mistaboo, ragadiamante, reginabronx, rudyreyes, stupidrag, wynter, yayoibowery,
+    aurorawonders, cpher, elektraV, georgiana, irisxc, lacarrera, lamorralisa, leexa, lupitakush, papercut, rebelmörk, sirena, tiresias,  veracruz,
+    aishadollkills, deseosfab, fifíestah, grethawhite, hiddenmistake, humakyle, isabellaycatalina, lightking, lizazanzuzzi, papercut, pekebalderas, santalucía,
+    cattriona, juanaguadalupe, electrawalpurgis, aries, kellycaracas, lakyliezz, dimittra, shantelle, arielLMD, alexismvgler, purga, braulio8000, ankcosart, mizzpeaches,
+    konnykortez, patypiñata, brightystun, ricurasantana, mоonLMD, deetoxalanis, tulsawalpurgis, gretagrimm, nayladowns, oslo, calypso, caoslascivia, candelayeye, axelledevil,
+    velvetine
 ].concat(allCustomQueens).sort((a, b) => a.getName().toLowerCase().localeCompare(b.getName().toLowerCase()));
 /*/Drag-Race-Simulator*/
 if (document.location.pathname.includes("custom.html")) {
