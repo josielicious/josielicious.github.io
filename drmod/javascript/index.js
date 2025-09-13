@@ -4214,18 +4214,33 @@ function finaleTeamJudging() {
         screen.createImage(currentCast[3].image, "sienna");
         screen.createBold(currentCast[2].getName() + ", " + currentCast[3].getName() + ". I'm sorry my dears but it's not your time. I must ask you both to sashay away...");
         screen.createHorizontalLine();
-        if (currentCast[2].mxcon != undefined) {
-            currentCast[2].addToTrackRecord("MSCON3RDPLACE");
+        if (lmdfinale) {
+            if (currentCast[2].mxcon != undefined) {
+                currentCast[2].addToTrackRecord("MSCON3RDPLACE");
+            } else {
+                currentCast[2].addToTrackRecord("3RDPLACE");
+            }
+            if (currentCast[3].mxcon != undefined) {
+                currentCast[3].addToTrackRecord("MSCON4THPLACE");
+            } else {
+                currentCast[3].addToTrackRecord("4THPLACE");
+            }
+            currentCast[2].rankP = "3LMD";
+            currentCast[3].rankP ="4LMD";
         } else {
-            currentCast[2].addToTrackRecord("3RDPLACE");
+            if (currentCast[2].mxcon != undefined) {
+                currentCast[2].addToTrackRecord("MSCONELIMINATED");
+            } else {
+                currentCast[2].addToTrackRecord("ELIMINATED");
+            }
+            if (currentCast[3].mxcon != undefined) {
+                currentCast[3].addToTrackRecord("MSCONELIMINATED");
+            } else {
+                currentCast[3].addToTrackRecord("ELIMINATED");
+            }
+            currentCast[2].rankP = "34";
+            currentCast[3].rankP ="34";
         }
-        if (currentCast[3].mxcon != undefined) {
-            currentCast[3].addToTrackRecord("MSCON4THPLACE");
-        } else {
-            currentCast[3].addToTrackRecord("4THPLACE");
-        }
-        currentCast[2].rankP = "3LMD";
-        currentCast[3].rankP ="4LMD";
         eliminatedCast.unshift(currentCast[3]);
         eliminatedCast.unshift(currentCast[2]);
         finalists.splice(finalists.indexOf(currentCast[2]), 1);
