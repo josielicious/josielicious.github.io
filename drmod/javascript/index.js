@@ -1818,6 +1818,7 @@ function runway() {
     } else if (currentCast.length == 4 && top3 || currentCast.length == 4 && (top4 || lftc || canFinale || allstars3Finale) || currentCast.length == 5 && top5 || currentCast.length == 3 && top3 || currentCast.length == 2 && (top2F || team)) {
         runwayScreen.createParagraph("Category is... best drag!");
     }
+
     for (let i = 0; i < currentCast.length; i++) {
         currentCast[i].getRunway();
     }
@@ -3876,7 +3877,11 @@ function finale() {
         currentCast[1].finaleScore = currentCast[0].finaleScore + 1;
     }
     currentCast.sort((a, b) => (b.finaleScore - a.finaleScore));
-    screen.createParagraph("Our Top "+ currentCast.length +" will participate in a music video for RuPaul's newest single!");
+    if (lmdfinale) {
+        screen.createParagraph("Our Top "+ currentCast.length +" will perform to an original song that they made, and walk the runway!");
+    } else {
+        screen.createParagraph("Our Top "+ currentCast.length +" will participate in a music video for RuPaul's newest single!");
+    }
     screen.createButton("Proceed", "runway()", "button2");
 }
 function finaleTeam() {
@@ -3904,7 +3909,11 @@ function finaleTeam() {
     screen.createImage(currentCast[1].image, "black");
     screen.createImage(currentCast[2].image, "black");
     screen.createImage(currentCast[3].image, "black");
-    screen.createParagraph("Our Top 4 will participate in a music video for RuPaul's newest single!");
+    if (lmdfinale) {
+        screen.createParagraph("Our Top "+ currentCast.length +" will perform to an original song that they made, and walk the runway!");
+    } else {
+        screen.createParagraph("Our Top "+ currentCast.length +" will participate in a music video for RuPaul's newest single!");
+    }
     screen.createButton("Proceed", "finaleTeamJudging()", "button2");
 }
 function finaleT5() {
@@ -3938,14 +3947,16 @@ function finaleJudging() {
     screen.clean();
     screen.createHeader("The final minutes...");
     screen.createBold("Ladies, it's time to decide The Next Drag Superstar, and...");
-    if (regularFormat || thailandFormat) {
-        episodeCount++;
-        episodeChallenges.push("Music Video");
-        for (let i = 0; i < eliminatedCast.length; i++) {
-            eliminatedCast[i].trackRecord.splice(eliminatedCast[i].trackRecord.length - 1, 0, "");
-        }
-        for (let i = 0; i < currentCast.length; i++) {
-            currentCast[i].addToTrackRecord("TOP " + currentCast.length);
+    if (!lmdfinale) {
+        if (regularFormat || thailandFormat) {
+            episodeCount++;
+            episodeChallenges.push("Music Video");
+            for (let i = 0; i < eliminatedCast.length; i++) {
+                eliminatedCast[i].trackRecord.splice(eliminatedCast[i].trackRecord.length - 1, 0, "");
+            }
+            for (let i = 0; i < currentCast.length; i++) {
+                currentCast[i].addToTrackRecord("TOP " + currentCast.length);
+            }
         }
     }
     screen.createHorizontalLine();
@@ -3988,33 +3999,43 @@ function finaleTop3Judging() {
             }
         }
     } else {
-        if (regularFormat || thailandFormat) {
-            episodeCount++;
-            episodeChallenges.push("Music Video");
-            for (let i = 0; i < eliminatedCast.length; i++) {
-                eliminatedCast[i].trackRecord.splice(eliminatedCast[i].trackRecord.length - 1, 0, "");
-            }
-            for (let i = 0; i < currentCast.length; i++) {
-                currentCast[i].addToTrackRecord("TOP " + currentCast.length);
+        if (!lmdfinale) {
+            if (regularFormat || thailandFormat) {
+                episodeCount++;
+                episodeChallenges.push("Music Video");
+                for (let i = 0; i < eliminatedCast.length; i++) {
+                    eliminatedCast[i].trackRecord.splice(eliminatedCast[i].trackRecord.length - 1, 0, "");
+                }
+                for (let i = 0; i < currentCast.length; i++) {
+                    currentCast[i].addToTrackRecord("TOP " + currentCast.length);
+                }
             }
         }
     }
     screen.createHorizontalLine();
     let finalists = shuffle(currentCast.slice());
-    if (currentCast[0].finaleScore - currentCast[2].finaleScore <= 10 && currentCast[2].finaleScore > 5) {
+    if (currentCast[0].finaleScore - currentCast[2].finaleScore <= 10 && currentCast[2].finaleScore > 5 && lmdfinale == false) {
         screen.createImage(finalists[0].image, "silver");
         screen.createImage(finalists[1].image, "silver");
         screen.createImage(finalists[2].image, "silver");
         screen.createBold(finalists[0].getName() + ", " + finalists[1].getName() + " and " + finalists[2].getName() + ", the three of you will lipsync for your lives!!");
         isThisA3Way = true;
     } else {
+        if (lmdfinale) {
+            if (currentCast[2].mxcon != undefined) {
+                currentCast[2].addToTrackRecord("MSCON3RDPLACE");
+            } else {
+                currentCast[2].addToTrackRecord("3RDPLACE");
+            }
+        } else {
+            if (currentCast[2].mxcon != undefined) {
+                currentCast[2].addToTrackRecord("MSCONELIMINATED");
+            } else {
+                currentCast[2].addToTrackRecord("ELIMINATED");
+            }
+        }
         screen.createImage(currentCast[2].image, "sienna");
         screen.createBold(currentCast[2].getName() + ", I'm sorry my dear, this is not your time... Now, sashay away..");
-        if (currentCast[2].mxcon != undefined) {
-            currentCast[2].addToTrackRecord("MSCONELIMINATED");
-        } else {
-            currentCast[2].addToTrackRecord("ELIMINATED");
-        }
         eliminatedCast.unshift(currentCast[2]);
         finalists.splice(finalists.indexOf(currentCast[2]), 1);
         currentCast.splice(2, 1);
@@ -4092,10 +4113,12 @@ function finaleTop4Judging() {
         screen.createBold(finalists[0].getName() + ", " + finalists[1].getName() + ", " + finalists[2].getName() + " and " + finalists[3].getName() + ", the four of you will lipsync for your lives!!");
         finaleof4gurl = true;
     }
-    if (regularFormat || thailandFormat || canFinale && (all_stars || lipsync_assassin)) {
-        episodeChallenges.push("Music Video");
-        for (let i = 0; i < currentCast.length; i++) {
-            currentCast[i].addToTrackRecord("TOP " + currentCast.length);
+    if (!lmdfinale) {
+        if (regularFormat || thailandFormat || canFinale && (all_stars || lipsync_assassin)) {
+            episodeChallenges.push("Music Video");
+            for (let i = 0; i < currentCast.length; i++) {
+                currentCast[i].addToTrackRecord("TOP " + currentCast.length);
+            }
         }
     }
     let song = lsSong().toString();
@@ -4192,21 +4215,21 @@ function finaleTeamJudging() {
         screen.createBold(currentCast[2].getName() + ", " + currentCast[3].getName() + ". I'm sorry my dears but it's not your time. I must ask you both to sashay away...");
         screen.createHorizontalLine();
         if (currentCast[2].mxcon != undefined) {
-            currentCast[2].addToTrackRecord("MSCONELIMINATED");
+            currentCast[2].addToTrackRecord("MSCON3RDPLACE");
         } else {
-            currentCast[2].addToTrackRecord("ELIMINATED");
+            currentCast[2].addToTrackRecord("3RDPLACE");
         }
         if (currentCast[3].mxcon != undefined) {
-            currentCast[3].addToTrackRecord("MSCONELIMINATED");
+            currentCast[3].addToTrackRecord("MSCON4THPLACE");
         } else {
-            currentCast[3].addToTrackRecord("ELIMINATED");
+            currentCast[3].addToTrackRecord("4THPLACE");
         }
-        currentCast[2].rankP = 34;
-        currentCast[3].rankP = 34;
-        eliminatedCast.unshift(currentCast[2]);
+        currentCast[2].rankP = "3LMD";
+        currentCast[3].rankP ="4LMD";
         eliminatedCast.unshift(currentCast[3]);
-        finalists.splice(finalists.indexOf(currentCast[3]), 1);
+        eliminatedCast.unshift(currentCast[2]);
         finalists.splice(finalists.indexOf(currentCast[2]), 1);
+        finalists.splice(finalists.indexOf(currentCast[3]), 1);
         screen.createImage(finalists[0].image, "silver");
         screen.createImage(finalists[1].image, "silver");
         if (team && randomNumber(0, 100) <= 80) {
@@ -5394,6 +5417,18 @@ function contestantProgress() {
             else if (placement.innerHTML == "ELIMINATED") {
                 placement.setAttribute("style", "font-weight: bold; background-color: sienna; color: white;");
                 placement.innerHTML = "ELIM";
+            } else if (placement.innerHTML == "3RDPLACE") {
+                placement.setAttribute("style", "font-weight: bold; background-color: #ae782a; color: white;");
+                placement.innerHTML = "THIRD<br>PLACE";
+            } else if (placement.innerHTML == "MSCON3RDPLACE") {
+                placement.setAttribute("style", "font-weight: bold; background-color: #ae782a; color: white;");
+                placement.innerHTML = "MISS<br>CON<br>+<br>THIRD<br>PLACE";
+            } else if (placement.innerHTML == "4THPLACE") {
+                placement.setAttribute("style", "font-weight: bold; background-color: #483210; color: white;");
+                placement.innerHTML = "FOURTH<br>PLACE";
+            } else if (placement.innerHTML == "MSCON4THPLACE") {
+                placement.setAttribute("style", "font-weight: bold; background-color: #483210; color: white;");
+                placement.innerHTML = "MISS<br>CON<br>+<br>FOURTH<br>PLACE";
             }
             else if (placement.innerHTML == "WINNER ") {
                 placement.setAttribute("style", "font-weight: bold; background-color: #C7DDB5;");
@@ -5774,6 +5809,18 @@ function contestantProgress() {
                 else if (placement.innerHTML == "ELIMINATED") {
                     placement.setAttribute("style", "font-weight: bold; background-color: sienna; color: white;");
                     placement.innerHTML = "ELIM";
+                } else if (placement.innerHTML == "3RDPLACE") {
+                    placement.setAttribute("style", "font-weight: bold; background-color: #ae782a; color: white;");
+                    placement.innerHTML = "THIRD<br>PLACE";
+                } else if (placement.innerHTML == "MSCON3RDPLACE") {
+                    placement.setAttribute("style", "font-weight: bold; background-color: #ae782a; color: white;");
+                    placement.innerHTML = "MISS<br>CON<br>+<br>THIRD<br>PLACE";
+                } else if (placement.innerHTML == "4THPLACE") {
+                    placement.setAttribute("style", "font-weight: bold; background-color: #483210; color: white;");
+                    placement.innerHTML = "FOURTH<br>PLACE";
+                } else if (placement.innerHTML == "MSCON4THPLACE") {
+                    placement.setAttribute("style", "font-weight: bold; background-color: #483210; color: white;");
+                    placement.innerHTML = "MISS<br>CON<br>+<br>FOURTH<br>PLACE";
                 }
                 else if (placement.innerHTML == "WINNER ") {
                     placement.setAttribute("style", "font-weight: bold; background-color: #C7DDB5;");
@@ -6069,7 +6116,12 @@ function contestantProgress() {
             rank.innerHTML += "2nd<br><small>(Runner-Up)</small>";
         } else if (eliminatedCast[i].rankP == 3) {
             rank.innerHTML += "3rd<br><small>(Runner-Up)</small>";
-        } else if (eliminatedCast[i].rankP == 234) {
+        } else if (eliminatedCast[i].rankP == "3LMD") {
+            rank.innerHTML += "3rd";
+        } else if (eliminatedCast[i].rankP == "4LMD") {
+            rank.innerHTML += "4th";
+        }
+        else if (eliminatedCast[i].rankP == 234) {
             rank.innerHTML += "2nd-4th<br><small>(Runner-Up)</small>";
         } else if (eliminatedCast[i].rankP == 432) {
             rank.innerHTML += "3rd/4th<br><small>(Runner-Up)</small>";
@@ -6204,6 +6256,18 @@ function contestantProgress() {
                 if (allstars3Finale) {
                     placement.innerHTML += " <br><small> (" + eliminatedCast[i].votes + " points) </small>";
                 }
+            } else if (placement.innerHTML == "3RDPLACE") {
+                placement.setAttribute("style", "font-weight: bold; background-color: #ae782a; color: white;");
+                placement.innerHTML = "THIRD<br>PLACE";
+            } else if (placement.innerHTML == "MSCON3RDPLACE") {
+                placement.setAttribute("style", "font-weight: bold; background-color: #ae782a; color: white;");
+                placement.innerHTML = "MISS<br>CON<br>+<br>THIRD<br>PLACE";
+            } else if (placement.innerHTML == "4THPLACE") {
+                placement.setAttribute("style", "font-weight: bold; background-color: #483210; color: white;");
+                placement.innerHTML = "FOURTH<br>PLACE";
+            } else if (placement.innerHTML == "MSCON4THPLACE") {
+                placement.setAttribute("style", "font-weight: bold; background-color: #483210; color: white;");
+                placement.innerHTML = "MISS<br>CON<br>+<br>FOURTH<br>PLACE";
             }
             else if (placement.innerHTML == "WINNER ") {
                 placement.setAttribute("style", "font-weight: bold; background-color: #C7DDB5;");
@@ -6763,6 +6827,7 @@ let regularFormat = false;
 let top2F = false;
 let top3 = false;
 let top4 = false;
+let lmdfinale = false;
 let top5 = false;
 let teamsF = false;
 let canFinale = false;
@@ -6810,6 +6875,12 @@ function predefCast(cast, format, finale, premiere = '', returning = '') {
         canFinale = true;
     } else if (finale == "jury") {
         allstars3Finale = true;
+    } else if (finale == "top3lmd") {
+        top3 = true;
+        lmdfinale = true;
+    } else if (finale == "top4lmd") {
+        teamsF = true;
+        lmdfinale = true;
     }
     if (premiere == "s6-premiere") {
         s6Premiere = true;
@@ -7234,6 +7305,7 @@ let imgTxtPrdf = [
     {id: "lmd4", link: "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/0e/LMD4Promo1.jpg"},
     {id: "lmd5", link: "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/f3/LMD5.jpg"},
     {id: "lmd6", link: "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/7/7a/LMD6.jpg"},
+    {id: "lmd7", link: "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/c3/LMD7Logo.jpg"},
     {id: "slm1", link: "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/2/22/LMDSLM1.jpg"}
 ];
 function addImagesToPredef() {
@@ -7279,6 +7351,12 @@ function startSimulation(challenge = "") {
             top5 = true;
         } else if (select4.options[select4.selectedIndex].value == "top4") {
             top4 = true;
+        } else if (select4.options[select4.selectedIndex].value == "top4lmd") {
+            teamsF = true;
+            lmdfinale = true;
+        } else if (select4.options[select4.selectedIndex].value == "top3lmd") {
+            top3 = true;
+            lmdfinale = true;
         } else if (select4.options[select4.selectedIndex].value == "top3") {
             top3 = true;
         } else if (select4.options[select4.selectedIndex].value == "top2") {
@@ -7297,7 +7375,7 @@ function startSimulation(challenge = "") {
                 team = false;
                 return
             } else {
-                let randomNumberFinale = randomNumber(0, 7);
+                let randomNumberFinale = randomNumber(0, 9);
                 switch (randomNumberFinale) {
                     case 0:
                         top5 = true;
@@ -7322,6 +7400,14 @@ function startSimulation(challenge = "") {
                         break;
                     case 7:
                         top2F = true;
+                        break;
+                    case 7:
+                        top3 = true;
+                        lmdfinale = true;
+                        break;
+                    case 7:
+                        top4 = true;
+                        lmdfinale = true;
                         break;
                     default:
                         top3 = true;
@@ -12849,87 +12935,92 @@ let SatinGrecoES5 = new Queen("Satin Greco", 7, 7, 7, 7, 7, 7, 7, "https://stati
 let ES5_Cast = [AlexandraDelRavalES5, DafneMuglerES5, DenebolaMurnauES5, EvaHarringtonES5, FerrxnES5, KrystalForeverES5, LaEscandaloES5, LacaUdilaES5, MargaritaKalifataES5, NixES5, NoriES5, SatinGrecoES5];
 
 // CUSTOM LMD QUEENS
-let deborahLaGrande = new Queen("Deborah La Grande", 9, 9, 7, 5, 9, 6, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/05/DeborahLaGrandeLMD1CastMug.png");
-let barbaraDurango = new Queen("Bárbara Durango", 11, 7, 7, 8, 7, 9, 9,  "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/0a/BárbaraDurangoLMD1CastMug.png");
-let lanaBoswell = new Queen("Lana Boswell", 5, 5, 5, 8, 5, 10, 6,  "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/d/d1/LanaLMD1CastMug.png");
-let cordeliaDurango = new Queen("Cordelia Durango", 4, 4, 4, 4, 4, 7, 5,  "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/b/b4/CordeliaDurangoLMD1CastMug.png");
-let debraMen = new Queen("Debra Men", 6, 7, 7, 5, 5, 5, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/18/DebraMenLMD1CastMug.png");
-
-let LMD1_Cast = [deborahLaGrande, margaret, evaB, barbaraDurango, lanaBoswell, debraMen, cordeliaDurango];
-
-let alexis3XL = new Queen("Alexis 3XL", 7, 12, 7, 15, 9, 15, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/7/75/Alexis3XLCastMug.jpg");
-let sophiaJimnez = new Queen("Sophia Jiménez", 9, 8, 15, 10, 7, 10, 13, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/d/d0/SophiaJiménezLMD2CastMug.jpg");
-let jobStar = new Queen("Job Star", 7, 6, 7, 5, 7, 7, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/8/81/JobStarLMD2CastMug.jpg");
-let ameliaWaldorf = new Queen("Amelia Waldorf", 7, 6, 7, 10, 6, 9, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/6e/AmeliaWaldorfLMD2CastMug.png");
-let redRabbitDuo = new Queen("Red Rabbit Duo", 6, 5, 11, 6, 6, 9, 12, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/5/56/RedRabbitDuoLMD2CastMug.jpg");
-let leandraRose = new Queen("Leandra Rose", 4, 4, 6, 4, 4, 6, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/8/8b/LeandraRoseLMD2CastMug.jpg");
-let gvajardo = new Queen("Gvajardo", 8, 7, 7, 7, 8, 11, 9, "https://i.postimg.cc/J4J2DwJ9/IMG-6380.jpg");
-let soroNasty = new Queen("Soro Nasty", 10, 8, 10, 10, 8, 14, 9, "https://i.postimg.cc/RFMP2qDm/IMG-6371.jpg");
-
-let LMD2_Cast = [alexis3XL, sophiaJimnez, gvajardo, jobStar, soroNasty, ameliaWaldorf, redRabbitDuo, leandraRose, ninaD];
-
-let aviescWho = new Queen("Aviesc Who?", 7, 6, 4, 15, 6, 15, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cf/AviescWhoLMD3CastMug.jpg");
-let ragaDiamante = new Queen("Raga Diamante", 10, 9, 10, 7, 10, 9, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/5/5d/RagaDiamanteLMD3CastMug.jpg");
-let mistaBoo = new Queen("Mista Boo", 9, 8, 6, 7, 8, 8, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/2/24/MistaBooLMD3CastMug.jpg");
-let memoReyri = new Queen("Memo Reyri", 7, 9, 7, 7, 10, 8, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/7/79/MemoReyriLMD3CastMug.jpg");
-let reginaBronx = new Queen("Regina Bronx", 8, 9, 8, 7, 10, 8, 11, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/4/44/ReginaBronxLMD3CastMug.jpg");
-let ivizaLioza = new Queen("Iviza Lioza", 7, 6, 7, 6, 7, 7, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/0e/IvizaLiozaLMD3CastMug.jpg");
-let wynter = new Queen("Wynter", 7, 7, 6, 5, 6, 7, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/18/WynterLMD3CastMug.jpg");
-let huntyyB = new Queen("Huntyy B", 6, 6, 7, 8, 6, 10, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/d/db/HuntyyBLMD3CastMug.jpg");
-let stupidrag = new Queen("Stupidrag", 4, 4, 6, 4, 4, 6, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/f9/StupiDragLMD3CastMug.jpg");
-let yayoiBowery = new Queen("Yayoi Bowery", 4, 4, 4, 4, 4, 7, 4,  "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/a4/YayoiBoweryLMD3CastMug.jpg");
-let rudyReyes = new Queen("Rudy Reyes", 9, 7, 13, 7, 7, 10, 13, "https://i.postimg.cc/fbMjRpjj/IMG-6375.jpg");
-let madisonBasrey = new Queen("Madison Basrey", 13, 10, 12, 8, 10, 12, 10, "https://i.postimg.cc/vTT0HkyS/IMG-6372.jpg");
-
-let LMD3_Cast = [aviescWho, huntyyB, ivizaLioza, lunaL, madisonBasrey, memoReyri, mistaBoo, ragaDiamante, reginaBronx, rudyReyes, stupidrag, wynter, yayoiBowery]
-
-let paperCut = new Queen("Paper Cut", 9, 9, 9, 14, 10, 14, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/2/23/PaperCutLMD5CastMug.jpg");
-let rebelMrk = new Queen("Rebel Mörk", 9, 8, 9, 9, 7, 12, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cc/RebelMörkLMD4CastMug.jpg");
-let irisXC = new Queen("Iris XC", 10, 9, 7, 9, 9, 9, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/c3/IrisXCLMD4CastMug.jpg");
-let laMorraLisa = new Queen("La Morra Lisa", 8, 7, 7, 8, 7, 10, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/ae/LaMorraLisaLMD4CastMug.jpg");
-let lupitaKush = new Queen("Lupita Kush", 6, 6, 7, 5, 8, 7, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/e/e1/LupitaKushLMD4CastMug.jpg");
-let veraCruz = new Queen("Vera Cruz", 10, 12, 6, 6, 12, 9, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/9/9d/VeraCruzLMD4CastMug.jpg");
-let tiresias = new Queen("Tiresias", 5, 5, 9, 5, 5, 6, 11, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/6b/TiresiasLMD4CastMug.jpg");
-let laCarrera = new Queen("La Carrera", 5, 5, 4, 5, 4, 6, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/10/LaCarreraLMD4CastMug.jpg");
-let auroraWonders = new Queen("Aurora Wonders", 4, 4, 4, 4, 4, 3, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/12/AuroraWondersLMD4CastMug.jpg");
-let sirena = new Queen("Sirena", 12, 7, 12, 8, 10, 14, 12, "https://i.postimg.cc/BbRBZvMX/IMG-6373.jpg");
-let georgiana = new Queen("Georgiana", 9, 10, 10, 8, 10, 12, 9, "https://i.postimg.cc/ncQ1Rvh7/IMG-6374.jpg");
-let cPher = new Queen("C-Pher", 12, 8, 13, 15, 8, 15, 10, "https://i.postimg.cc/vmyX6cMn/IMG-6370.jpg");
-
-let LMD4_Cast = [auroraWonders, cPher, elektraV, georgiana, irisXC, laCarrera, laMorraLisa, leexa, lupitaKush, paperCut, rebelMrk, sirena, tiresias,  veraCruz];
-
-
-let lightKing = new Queen("Light King", 5, 4, 6, 10, 8, 9, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cd/LightKingLMD5CastMug.jpg");
-let humaKyle = new Queen("Huma Kyle", 8, 8, 5, 4, 4, 7, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/6e/HumaKyleLMD5CastMug.jpg");
-let isabellaYCatalina = new Queen("Isabella y Catalina", 5, 5, 10, 5, 4, 9, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/13/IsabellayCatalinaLMD5CastMug.jpg");
-let deseosFab = new Queen("Deseos Fab", 6, 9, 2, 10, 8, 9, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/0b/DeseosFabLMD5CastMug.jpg");
-let fifEstah = new Queen("Fifí Estah", 9, 7, 15, 6, 8, 11, 13, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/a1/FifiEstahLMD5CastMug.jpg");
-let lizaZanZuzzi = new Queen("Liza Zan Zuzzi", 12, 10, 8, 2, 12, 9, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cc/LizaZanZuzziLMD5CastMug.jpg");
-let hiddenMistake = new Queen("Hidden Mistake", 6, 5, 13, 12, 5, 13, 11, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/a4/HiddenMistakeLMD5CastMug.jpg");
-let santaLuca = new Queen("Santa Lucía", 7, 5, 8, 10, 5, 8, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/ff/SantaLucíaLMD5CastMug.jpg");
-let grethaWhite = new Queen("Gretha White", 9, 7, 9, 11, 8, 11, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cf/GrethaWhiteLMD5CastMug.jpg");
-let pekeBalderas = new Queen("Peke Balderas", 10, 9, 10, 8, 12, 10, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/9/98/PekeBalderasLMD5CastMug.jpg");
-let aishaDollkills = new Queen("Aisha Dollkills", 4, 4, 8, 5, 4, 8, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/b/bc/AishaDollkillsLMD5CastMug.jpg");
-let LMD5_Cast = [aishaDollkills, deseosFab, fifEstah, grethaWhite, hiddenMistake, humaKyle, isabellaYCatalina, lightKing, lizaZanZuzzi, paperCut, pekeBalderas, santaLuca];
-
-let dimittra = new Queen("Dimittra", 6, 7, 9, 9, 8, 11, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/8/84/DimittraLMD6CastMug.jpg");
-let cattriona = new Queen("Cattriona", 8, 8, 15, 11, 8, 12, 15, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/2/2f/CattrionaLMD6CastMug.jpg");
-let juanaGuadalupe = new Queen("Juana Guadalupe", 10, 11, 10, 8, 11, 14, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/19/JuanaGuadalupeLMD6CastMug.jpg");
-let aries = new Queen("Aries", 10, 9, 10, 13, 9, 15, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/3/39/AriesLMD6CastMug.jpg");
-let electraWalpurgis = new Queen("Electra Walpurgis", 9, 8, 9, 9, 8, 11, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/e/e0/ElectraWalpurgisLMD6CastMug.jpg");
-let laKyliezz = new Queen("La Kyliezz", 9, 8, 9, 5, 8, 9, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/fd/LaKyliezzLMD6CastMug.jpg");
-let kellyLMD = new Queen("Kelly", 8, 7, 10, 9, 7, 10, 11, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/9/96/KellyLMD6CastMug.jpg");
+let konnykortez = new Queen("Konny Kortez", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/Wvh1B0yH/IMG-3947.jpg");
+let patypiñata = new Queen("Paty Piñata", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/qMrvsv4N/IMG-3948.jpg");
+let brightystun = new Queen("Brighty Stun", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/nWcjw6M/IMG-3949.jpg");
+let ricurasantana = new Queen("Ricura Santana", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/S4kLc5DF/IMG-3946.jpg");
+let mоon = new Queen("Mоon", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/8L2WnjTW/IMG-3950.jpg");
+let deetoxalanis = new Queen("Deetox Alanis", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/VsygcZL/IMG-3951.jpg");
+let tulsawalpurgis = new Queen("Tulsa Walpurgis", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/fVc8y9RW/IMG-3945.jpg");
+let gretagrimm = new Queen("Greta Grimm", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/NddFZnb6/IMG-3952.jpg");
+let nayladowns = new Queen("Nayla Downs", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/WNdGyWTM/IMG-3959.jpg");
+let oslo = new Queen("Oslo", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/zWGmhzC6/IMG-3955.jpg");
+let calypso = new Queen("Calypso", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/ZpVdqcpL/IMG-3957.jpg");
+let caoslascivia = new Queen("Caos Lascivia", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/PvzL9f7h/IMG-3956.jpg");
+let candelayeye = new Queen("Candela Yeye", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/PJpbzxX/IMG-3954.jpg");
+let axelledevil = new Queen("Axelle De Vil", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/PsBZRBKH/IMG-3953.jpg");
+let cattriona = new Queen("Cattriona", 8, 7, 15, 10, 7, 10, 15, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/2/2f/CattrionaLMD6CastMug.jpg");
+let juanaguadalupe = new Queen("Juana Guadalupe", 9, 10, 8, 8, 9, 13, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/19/JuanaGuadalupeLMD6CastMug.jpg");
+let aries = new Queen("Aries", 10, 9, 8, 13, 8, 15, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/3/39/AriesLMD6CastMug.jpg");
+let electrawalpurgis = new Queen("Electra Walpurgis", 8, 7, 8, 9, 7, 11, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/e/e0/ElectraWalpurgisLMD6CastMug.jpg");
+let lakyliezz = new Queen("La Kyliezz", 9, 8, 9, 5, 7, 9, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/fd/LaKyliezzLMD6CastMug.jpg");
+let kellycaracas = new Queen("Kelly Caracas", 6, 6, 10, 9, 6, 10, 11, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/9/96/KellyLMD6CastMug.jpg");
 let shantelle = new Queen("Shantelle", 7, 8, 10, 6, 8, 9, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/64/ShantelleLMD6CastMug.jpg");
-let arielLMD = new Queen("Ariel", 6, 6, 9, 11, 6, 10, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/e/e7/ArielLMD6CastMug.jpg");
-let alexisMvgler = new Queen("Alexis Mvgler", 7, 6, 6, 8, 6, 7, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/19/AlexisMvglerLMD6CastMug.jpg");
-let purga = new Queen("Purga", 8, 8, 8, 5, 7, 8, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/f3/PurgaLMD6CastMug.jpg");
-let braulio8000 = new Queen("Braulio 8000", 6, 6, 6, 8, 6, 10, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/5/5f/Braulio8000LMD6CastMug.jpg");
-let ankCosart = new Queen("Ank Cosart", 4, 4, 4, 9, 4, 10, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/d/de/AnkCosartLMD6CastMug.jpg");
-let mizzPeaches = new Queen("Mizz Peaches", 4, 4, 6, 4, 4, 4, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/4/4a/MizzPeachesLMD6CastMug.jpg");
-let LMD6_Cast = [cattriona, juanaGuadalupe, electraWalpurgis, aries, kellyLMD, laKyliezz, dimittra, shantelle, arielLMD, alexisMvgler, purga, braulio8000, ankCosart, mizzPeaches]
+let arielLMD = new Queen("Ariel", 6, 6, 9, 10, 6, 11, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/e/e7/ArielLMD6CastMug.jpg");
+let alexismvgler = new Queen("Alexis Mvgler", 6, 5, 5, 6, 5, 6, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/19/AlexisMvglerLMD6CastMug.jpg");
+let purga = new Queen("Purga", 8, 8, 6, 5, 6, 8, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/f3/PurgaLMD6CastMug.jpg");
+let braulio8000 = new Queen("Braulio 8000", 6, 6, 5, 8, 6, 10, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/5/5f/Braulio8000LMD6CastMug.jpg");
+let ankcosart = new Queen("Ank Cosart", 4, 4, 4, 9, 4, 9, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/d/de/AnkCosartLMD6CastMug.jpg");
+let mizzpeaches = new Queen("Mizz Peaches", 4, 4, 4, 4, 4, 2, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/4/4a/MizzPeachesLMD6CastMug.jpg");
+let dimittra = new Queen("Dimittra", 6, 7, 9, 9, 8, 11, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/8/84/DimittraLMD6CastMug.jpg");
+let deseosfab = new Queen("Deseos Fab", 6, 9, 4, 10, 8, 10, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/0b/DeseosFabLMD5CastMug.jpg");
+let isabellaycatalina = new Queen("Isabella y Catalina", 5, 5, 10, 5, 4, 8, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/13/IsabellayCatalinaLMD5CastMug.jpg");
+let humakyle = new Queen("Huma Kyle", 8, 7, 5, 4, 4, 7, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/6e/HumaKyleLMD5CastMug.jpg");
+let lightking = new Queen("Light King", 4, 6, 4, 10, 8, 10, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cd/LightKingLMD5CastMug.jpg");
+let aishadollkills = new Queen("Aisha Dollkills", 4, 4, 8, 5, 4, 7, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/b/bc/AishaDollkillsLMD5CastMug.jpg");
+let pekebalderas = new Queen("Peke Balderas", 10, 9, 9, 8, 11, 10, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/9/98/PekeBalderasLMD5CastMug.jpg");
+let grethawhite = new Queen("Gretha White", 9, 8, 9, 11, 8, 11, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cf/GrethaWhiteLMD5CastMug.jpg");
+let santalucía = new Queen("Santa Lucía", 4, 4, 8, 10, 6, 8, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/ff/SantaLucíaLMD5CastMug.jpg");
+let hiddenmistake = new Queen("Hidden Mistake", 5, 4, 11, 11, 4, 12, 11, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/a4/HiddenMistakeLMD5CastMug.jpg");
+let lizazanzuzzi = new Queen("Liza Zan Zuzzi", 11, 10, 8, 2, 11, 8, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cc/LizaZanZuzziLMD5CastMug.jpg");
+let papercut = new Queen("Paper Cut", 7, 8, 8, 13, 10, 13, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/2/23/PaperCutLMD5CastMug.jpg");
+let fifíestah = new Queen("Fifí Estah", 8, 8, 14, 5, 9, 11, 14, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/a1/FifiEstahLMD5CastMug.jpg");
+let rebelmörk = new Queen("Rebel Mörk", 9, 8, 9, 9, 6, 13, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cc/RebelMörkLMD4CastMug.jpg");
+let cpher = new Queen("C-Pher", 8, 7, 11, 15, 7, 15, 9, "https://i.postimg.cc/vmyX6cMn/IMG-6370.jpg");
+let irisxc = new Queen("Iris XC", 9, 9, 8, 9, 9, 9, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/c3/IrisXCLMD4CastMug.jpg");
+let lamorralisa = new Queen("La Morra Lisa", 8, 7, 6, 7, 7, 10, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/ae/LaMorraLisaLMD4CastMug.jpg");
+let lupitakush = new Queen("Lupita Kush", 5, 6, 7, 6, 8, 7, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/e/e1/LupitaKushLMD4CastMug.jpg");
+let georgiana = new Queen("Georgiana", 7, 10, 8, 7, 10, 12, 7, "https://i.postimg.cc/ncQ1Rvh7/IMG-6374.jpg");
+let veracruz = new Queen("Vera Cruz", 10, 12, 6, 6, 12, 9, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/9/9d/VeraCruzLMD4CastMug.jpg");
+let tiresias = new Queen("Tiresias", 4, 4, 8, 4, 4, 7, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/6b/TiresiasLMD4CastMug.jpg");
+let sirena = new Queen("Sirena", 9, 7, 11, 8, 9, 13, 11, "https://i.postimg.cc/BbRBZvMX/IMG-6373.jpg");
+let lacarrera = new Queen("La Carrera", 5, 5, 4, 5, 4, 5, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/10/LaCarreraLMD4CastMug.jpg");
+let aurorawonders = new Queen("Aurora Wonders", 4, 4, 4, 4, 4, 2, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/12/AuroraWondersLMD4CastMug.jpg");
+let madisonbasrey = new Queen("Madison Basrey", 11, 10, 9, 7, 10, 11, 10, "https://i.postimg.cc/vTT0HkyS/IMG-6372.jpg");
+let rudyreyes = new Queen("Rudy Reyes", 8, 7, 11, 6, 7, 8, 12, "https://i.postimg.cc/fbMjRpjj/IMG-6375.jpg");
+let aviescwho = new Queen("Aviesc Who?", 7, 5, 5, 15, 5, 15, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cf/AviescWhoLMD3CastMug.jpg");
+let ragadiamante = new Queen("Raga Diamante", 10, 10, 8, 7, 10, 10, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/5/5d/RagaDiamanteLMD3CastMug.jpg");
+let mistaboo = new Queen("Mista Boo", 9, 8, 6, 7, 8, 8, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/2/24/MistaBooLMD3CastMug.jpg");
+let memoreyri = new Queen("Memo Reyri", 6, 9, 6, 7, 10, 8, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/7/79/MemoReyriLMD3CastMug.jpg");
+let reginabronx = new Queen("Regina Bronx", 8, 9, 8, 7, 10, 8, 11, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/4/44/ReginaBronxLMD3CastMug.jpg");
+let ivizalioza = new Queen("Iviza Lioza", 5, 6, 5, 5, 6, 6, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/0e/IvizaLiozaLMD3CastMug.jpg");
+let wynter = new Queen("Wynter", 6, 6, 5, 5, 5, 6, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/18/WynterLMD3CastMug.jpg");
+let huntyyb = new Queen("Huntyy B", 6, 6, 7, 8, 6, 10, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/d/db/HuntyyBLMD3CastMug.jpg");
+let stupidrag = new Queen("Stupidrag", 4, 4, 6, 4, 4, 6, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/f9/StupiDragLMD3CastMug.jpg");
+let yayoibowery = new Queen("Yayoi Bowery", 4, 4, 4, 4, 4, 7, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/a4/YayoiBoweryLMD3CastMug.jpg");
+let soronasty = new Queen("Soro Nasty", 8, 8, 9, 10, 8, 12, 10, "https://i.postimg.cc/RFMP2qDm/IMG-6371.jpg");
+let gvajardo = new Queen("Gvajardo", 8, 7, 7, 6, 8, 10, 9, "https://i.postimg.cc/J4J2DwJ9/IMG-6380.jpg");
+let alexis3xl = new Queen("Alexis 3XL", 7, 9, 6, 13, 9, 14, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/7/75/Alexis3XLCastMug.jpg");
+let leandrarose = new Queen("Leandra Rose", 4, 4, 5, 4, 4, 6, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/8/8b/LeandraRoseLMD2CastMug.jpg");
+let redrabbitduo = new Queen("Red Rabbit Duo", 6, 5, 9, 6, 6, 10, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/5/56/RedRabbitDuoLMD2CastMug.jpg");
+let ameliawaldorf = new Queen("Amelia Waldorf", 6, 6, 7, 10, 6, 10, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/6e/AmeliaWaldorfLMD2CastMug.png");
+let jobstar = new Queen("Job Star", 6, 6, 7, 5, 6, 7, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/8/81/JobStarLMD2CastMug.jpg");
+let deborahlagrande = new Queen("Deborah La Grande", 8, 9, 7, 6, 8, 7, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/05/DeborahLaGrandeLMD1CastMug.png");
+let bárbaradurango = new Queen("Bárbara Durango", 10, 8, 8, 8, 9, 9, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/0a/BárbaraDurangoLMD1CastMug.png");
+let lanaboswell = new Queen("Lana Boswell", 5, 5, 5, 8, 5, 10, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/d/d1/LanaLMD1CastMug.png");
+let cordeliadurango = new Queen("Cordelia Durango", 4, 4, 4, 4, 4, 8, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/b/b4/CordeliaDurangoLMD1CastMug.png");
+let debramen = new Queen("Debra Men", 6, 7, 7, 5, 5, 6, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/18/DebraMenLMD1CastMug.png");
+let velvetine = new Queen("Velvetine", 9, 9, 10, 7, 8, 9, 8, "https://i.postimg.cc/y6D5K3N6/IMG-6379.jpg");
+let sophiajimenez = new Queen("Sophia Jiménez", 7, 7, 7, 7, 7, 7, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/d/d0/SophiaJim%C3%A9nezLMD2CastMug.jpg");
 
-let velvetine = new Queen("Velvetine", 10, 9, 10, 7, 8, 10, 9, "https://i.postimg.cc/y6D5K3N6/IMG-6379.jpg");
-let SLM1_Cast = [cPher, georgiana, gvajardo, madisonBasrey, rudyReyes, sirena, soroNasty, velvetine]
+let LMD1_Cast = [deborahlagrande, margaret, evaB, bárbaradurango, lanaboswell, debramen, cordeliadurango];
+let LMD2_Cast = [alexis3xl, sophiajimenez, gvajardo, jobstar, soronasty, ameliawaldorf, redrabbitduo, leandrarose, ninaD];
+let LMD3_Cast = [aviescwho, huntyyb, ivizalioza, lunaL, madisonbasrey, memoreyri, mistaboo, ragadiamante, reginabronx, rudyreyes, stupidrag, wynter, yayoibowery]
+let LMD4_Cast = [aurorawonders, cpher, elektraV, georgiana, irisxc, lacarrera, lamorralisa, leexa, lupitakush, papercut, rebelmörk, sirena, tiresias,  veracruz];
+let LMD5_Cast = [aishadollkills, deseosfab, fifíestah, grethawhite, hiddenmistake, humakyle, isabellaycatalina, lightking, lizazanzuzzi, papercut, pekebalderas, santalucía];
+let LMD6_Cast = [cattriona, juanaguadalupe, electrawalpurgis, aries, kellycaracas, lakyliezz, dimittra, shantelle, arielLMD, alexismvgler, purga, braulio8000, ankcosart, mizzpeaches];
+let LMD7_Cast = [konnykortez, patypiñata, brightystun, ricurasantana, mоon, deetoxalanis, tulsawalpurgis, gretagrimm, nayladowns, oslo, calypso, caoslascivia, candelayeye, axelledevil];
+let SLM1_Cast = [cpher, georgiana, gvajardo, madisonbasrey, rudyreyes, sirena, soronasty, velvetine];
 //all possible queens:
 let allCustomQueens = [];
 
@@ -13004,12 +13095,7 @@ let allQueens = [
     barbie, kellyH, lele, loreley, metamorkid, nikita, pandoraNox, tessa, naomy, victoriaShakespears, yvonne,
     pangina, BonesUK7, BonnieAnnClydeUK7, CatrinFeelingsUK7, ChaiTGrandeUK7, ElleVosqueUK7, NyongbellaUK7, PaigeThreeUK7, PastyUK7, SallyTMUK7, SilllexaDictionUK7, TayrisMongardiUK7, ViolaUK7,
     AlexandraDelRavalES5, DafneMuglerES5, DenebolaMurnauES5, EvaHarringtonES5, FerrxnES5, KrystalForeverES5, LaEscandaloES5, LacaUdilaES5, MargaritaKalifataES5, NixES5, NoriES5, SatinGrecoES5,
-    deborahLaGrande, margaret, evaB, barbaraDurango, lanaBoswell, debraMen, cordeliaDurango,
-    alexis3XL, sophiaJimnez, gvajardo, jobStar, soroNasty, ameliaWaldorf, redRabbitDuo, leandraRose, ninaD,
-    aviescWho, huntyyB, ivizaLioza, lunaL, madisonBasrey, memoReyri, mistaBoo, ragaDiamante, reginaBronx, rudyReyes, stupidrag, wynter, yayoiBowery,
-    auroraWonders, cPher, elektraV, georgiana, irisXC, laCarrera, laMorraLisa, leexa, lupitaKush, paperCut, rebelMrk, sirena, tiresias,  veraCruz,
-    aishaDollkills, deseosFab, fifEstah, grethaWhite, hiddenMistake, humaKyle, isabellaYCatalina, lightKing, lizaZanZuzzi, pekeBalderas, santaLuca,
-    cattriona, juanaGuadalupe, electraWalpurgis, aries, kellyLMD, laKyliezz, dimittra, shantelle, arielLMD, alexisMvgler, purga, braulio8000, ankCosart, mizzPeaches
+
 ].concat(allCustomQueens).sort((a, b) => a.getName().toLowerCase().localeCompare(b.getName().toLowerCase()));
 /*/Drag-Race-Simulator*/
 if (document.location.pathname.includes("custom.html")) {
