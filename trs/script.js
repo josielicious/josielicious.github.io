@@ -1,36 +1,18 @@
 class Queen {
     constructor(name, acting, comedy, dance, design, improv, runway, lipsync, image = "noimage", custom = false) {
         this.trackRecord = [];
-        this.friends = [];
-        this.allies = [];
-        this.enemies = [];
-        this.sisters = [];
         this.miniEpisode = [];
-        this.gftdS = [];
-        this.tCaptain = [];
-        this.voteHerstory = [];
-        this.immuneEp = [];
         this.runwayScore = 0;
         this.lipsyncScore = 0;
         this.performanceScore = 0;
-        this.finaleScore = 0;
         this.favoritism = 0;
         this.unfavoritism = 0;
         this.ppe = 0;
         this.stars = 0;
         this.episodesOn = 0;
-        this.votes = 0;
         this.rankP = 0;
-        this.retEp = 0;
         this.ogPlace = 0;
-        this.minqdd = 0;
-        this.blocked = false;
-        this.queenDisqOrDept = false;
-        this.customqueen = false;
-        this.immune = false;
-        this.immPotion = false;
-        this.chocolate = false;
-        this.maxiT = false;
+        this.title = "";
         this._name = name;
         this._actingStat = acting;
         this._comedyStat = comedy;
@@ -1332,7 +1314,6 @@ function updateCastScreen() {
     }
     pool.innerHTML = '';
 
-    // Randomize Bracket Button
     let randomBtn = document.getElementById("randomize-brackets-btn");
     if (!randomBtn) {
         randomBtn = document.createElement("button");
@@ -1343,7 +1324,6 @@ function updateCastScreen() {
         bracketsContainer.parentElement.insertBefore(randomBtn, bracketsContainer);
     }
 
-    // Clear brackets & update borders
     document.querySelectorAll(".bracket-queens").forEach(be => {
         be.innerHTML = '';
         const bracket = be.parentElement.dataset.bracket;
@@ -1351,7 +1331,6 @@ function updateCastScreen() {
         be.parentElement.style.border = count < QUEENS_PER_BRACKET ? "2px solid red" : "2px solid transparent";
     });
 
-    // Populate pool and brackets
     currentCast.forEach(q => {
         const div = createCastItem(q);
         if (q.assignedBracket) {
@@ -1400,7 +1379,6 @@ function initDragAndDrop() {
         draggingItem = item;
         item.classList.add("dragging");
 
-        // For touch
         if (e.type.startsWith("touch")) {
             item.style.position = "absolute";
             item.style.zIndex = 1000;
@@ -1437,19 +1415,15 @@ function initDragAndDrop() {
         }
     }
 
-    // Add both mouse and touch events
     document.querySelectorAll("#unassigned-queens .cast-item, .bracket-queens .cast-item").forEach(item => {
         item.setAttribute("draggable", true);
 
-        // Desktop
         item.addEventListener("dragstart", () => { draggingItem = item; item.classList.add("dragging"); });
         item.addEventListener("dragend", () => { draggingItem.classList.remove("dragging"); draggingItem = null; });
 
-        // Mobile
         item.addEventListener("touchstart", e => startDragging(item, e));
     });
 
-    // Desktop drop
     brackets.forEach(bracket => {
         bracket.addEventListener("dragover", e => {
             e.preventDefault();
@@ -1631,8 +1605,8 @@ function announcePassers() {
     const eliminatedSoFar = eliminatedCast.length;
     const eliminatedThisRound = eliminated.length;
 
-    const elimStart = totalContestants - eliminatedSoFar - eliminatedThisRound + 1;  // e.g. 16
-    const elimEnd = totalContestants - eliminatedSoFar;                            // e.g. 18
+    const elimStart = totalContestants - eliminatedSoFar - eliminatedThisRound + 1;
+    const elimEnd = totalContestants - eliminatedSoFar;
 
     eliminated.forEach(q => {
         if (!eliminatedCast.includes(q)) eliminatedCast.push(q);
@@ -1736,9 +1710,9 @@ function addWildcard() {
             const originalMax = parseInt(match[1]);
 
             eliminatedCast.forEach(q => {
-                if (!q.rankP || Mergers.includes(q)) return; // skip merged queens
+                if (!q.rankP || Mergers.includes(q)) return;
 
-                const qMatch = q.rankP.match(/^(\d+)(?:st|nd|rd|th)$/); // single ranks only
+                const qMatch = q.rankP.match(/^(\d+)(?:st|nd|rd|th)$/);
                 if (qMatch) {
                     const qRank = parseInt(qMatch[1]);
                     if (qRank < originalMax) {
@@ -1842,10 +1816,8 @@ function judging() {
     currentCast.sort((a, b) => a.performanceScore - b.performanceScore);
 
     if (phase === "bracket") {
-        // Top 2
         topQueens.push(...currentCast.slice(0, 2));
 
-        // Everyone else is bottom
         const nonTops = currentCast.slice(2);
         bottomQueens.push(...nonTops);
 
@@ -1855,7 +1827,6 @@ function judging() {
             q.ppe += 1;
         });
     } else {
-        // Top 3 / Bottom 3
         topQueens.push(...currentCast.slice(0, 3));
         bottomQueens.push(...currentCast.slice(-3));
     }
@@ -2000,7 +1971,7 @@ function topTwo() {
     let screen = new Scene();
     screen.clean();
     for (let i = 0; i < topQueens.length; i++) {
-        topQueens[i].getASLipsync();
+        topQueens[i].getLipsync();
     }
     screen.createBigText("The time has come...");
     screen.createBold("For you to lip-sync... for your legacy! Good luck, and don't fuck it up.");
@@ -2046,7 +2017,7 @@ function top2Win() {
     screen.createBigText("Ladies, I've made my decision...");
 
     const [queen1, queen2] = topQueens;
-    topQueens.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
+    topQueens.sort((a, b) => a.lipsyncScore - b.lipsyncScore);
 
     const isDoubleWinner =
         queen1.lipsyncScore === queen2.lipsyncScore &&
@@ -2088,11 +2059,9 @@ function winAndBtms() {
     screen.createBigText("Bring back my girls!");
     screen.createBold("Ladies, I've made some decisions...");
 
-    // --- Process top queens ---
     topQueens.forEach(q => q.performanceScore -= q.runwayScore);
     topQueens.sort((a, b) => a.performanceScore - b.performanceScore);
 
-    // WINNER(s)
     if (
         topQueens.length > 1 &&
         topQueens[0].performanceScore === topQueens[1].performanceScore &&
@@ -2131,7 +2100,6 @@ function winAndBtms() {
         screen.createBold(`${winner.getName()}, condragulations, you're the winner of today's challenge!`);
     }
 
-    // HIGHs
     if (topQueens.length > 0) {
         topQueens.forEach(q => {
             screen.createImage(q.image, "lightblue");
@@ -2154,7 +2122,6 @@ function winAndBtms() {
 
     screen.createHorizontalLine();
 
-    // --- Process bottom queens ---
     bottomQueens.forEach(q => q.performanceScore -= q.runwayScore);
     bottomQueens.sort((a, b) => a.performanceScore - b.performanceScore);
 
@@ -2168,7 +2135,6 @@ function winAndBtms() {
         );
     }
 
-    // First safe out of the bottoms
     let safeQueen = bottomQueens.shift();
     safeQueen.unfavoritism += 1;
     safeQueen.ppe += 2;
@@ -2307,7 +2273,7 @@ function resolveSmackdownPrelims() {
     let eliminated = [];
 
     smackdownRounds.forEach((match, i) => {
-        match.forEach(q => q.getASLipsync());
+        match.forEach(q => q.getLipsync());
         match.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
 
         const winner = match[0];
@@ -2358,7 +2324,7 @@ function resolveSmackdownSemis() {
     let eliminated = [];
 
     smackdownRounds.forEach((match, i) => {
-        match.forEach(q => q.getASLipsync());
+        match.forEach(q => q.getLipsync());
         match.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
 
         const winner = match[0];
@@ -2404,7 +2370,7 @@ function resolveSmackdownFinal() {
     screen.clean();
 
     const finalMatch = smackdownRounds[0];
-    finalMatch.forEach(q => q.getASLipsync());
+    finalMatch.forEach(q => q.getLipsync());
     finalMatch.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
 
     const winner = finalMatch[0];
@@ -2424,12 +2390,14 @@ function resolveSmackdownFinal() {
     } else {
         winner.addToTrackRecord("WINNER");
     }
+    winner.title = "Winner";
 
     if (loser.trackRecord.at(-1).toUpperCase() === "RTRN") {
         loser.editTrackRecord("LR3");
     } else {
         loser.addToTrackRecord("LR3");
     }
+    loser.title = "Runner-up";
 
     winner.rankP = toOrdinal(1);
     loser.rankP = toOrdinal(2);
@@ -2448,7 +2416,7 @@ function assignPlacements(cast, eliminated) {
 
     let finalCount = cast.length;
     cast.forEach((queen, i) => {
-        let place = i + 1; // 1st, 2nd, 3rd…
+        let place = i + 1;
         placements[queen.getName()] = ordinalSuffix(place);
     });
 
@@ -2472,9 +2440,8 @@ function contestantProgress() {
     screen.clean();
 
     const main = document.querySelector("div#simulation-block");
-    main.innerHTML = ""; // clear previous content
+    main.innerHTML = "";
 
-    // ===== TAB BUTTONS =====
     const tabs = ["Bracket A", "Bracket B", "Bracket C", "Mergers"];
     const tabContainer = document.createElement("div");
     tabContainer.className = "tab-buttons";
@@ -2580,8 +2547,8 @@ function createTrackRecordTable(groupName) {
         const rankOrder = ["RTRNWINNER", "WINNER", "RTRNWIN", "RTRN WIN", "RTRN WIN ", "WIN", "RTRNLR3", "LR3", "RTRNLR2", "LR2", "RTRNLR1", "LR1", "RTRNHIGH", "HIGH", "RTRNSAFE", "SAFE", "RTRNLOW", "LOW", "RTRNBTM2", "BTM2", "RTRNELIM", "ELIM", ""];
 
         cast.sort((a, b) => {
-            const validA = a.trackRecord.filter(p => p && !["", "CHOC", "RTRN"].includes(p));
-            const validB = b.trackRecord.filter(p => p && !["", "CHOC", "RTRN"].includes(p));
+            const validA = a.trackRecord.filter(p => p && !["", " ", "RTRN"].includes(p));
+            const validB = b.trackRecord.filter(p => p && !["", " ", "RTRN"].includes(p));
 
             const aPerf = validA.at(-1) || "SAFE";
             const bPerf = validB.at(-1) || "SAFE";
@@ -2599,7 +2566,6 @@ function createTrackRecordTable(groupName) {
 
     const epsToShow = episodeChallenges.slice(epStart, epEnd);
 
-    // ===== HEADER ROW =====
     const header = document.createElement("tr");
     [
         { text: "Rank", rowspan: 2 },
@@ -2637,7 +2603,6 @@ function createTrackRecordTable(groupName) {
 
     table.appendChild(header);
 
-    // ===== SUBHEADER ROW =====
     const header1 = document.createElement("tr");
     epsToShow.forEach(challenge => {
         const th = document.createElement("th");
@@ -2648,7 +2613,6 @@ function createTrackRecordTable(groupName) {
     });
     table.appendChild(header1);
 
-    // ===== CONTESTANTS =====
     switch (groupName) {
         case "Bracket A": cast = BracketA; break;
         case "Bracket B": cast = BracketB; break;
@@ -2660,7 +2624,6 @@ function createTrackRecordTable(groupName) {
     cast.forEach(contestantData => {
         const row = document.createElement("tr");
 
-        // Rank
         const rankCell = document.createElement("td");
         rankCell.style.backgroundColor = "#f5ebf5";
         rankCell.style.fontWeight = "bold";
@@ -2670,15 +2633,14 @@ function createTrackRecordTable(groupName) {
             rankCell.innerHTML = "TBA";
         }
         if (contestantData.ogPlace !== 0) rankCell.innerHTML += `<br><small>(Orig. ${contestantData.ogPlace})</small>`;
+        if (contestantData.title !== "") rankCell.innerHTML += `<br><small>(${contestantData.title})</small>`;
         row.appendChild(rankCell);
 
-        // Name
         const nameCell = document.createElement("td");
         nameCell.className = "nameTR";
         nameCell.textContent = contestantData.getName();
         row.appendChild(nameCell);
 
-        // Photo
         const photoCell = document.createElement("td");
         photoCell.className = "placement";
         photoCell.style.background = `url(${contestantData.image}) center/cover no-repeat`;
@@ -2690,7 +2652,6 @@ function createTrackRecordTable(groupName) {
             td.innerHTML = performance;
             td.style.textAlign = "center";
 
-            // --- Coloring logic ---
             switch (performance.toUpperCase()) {
                 case "RTRNWINNER": td.style.backgroundColor = "yellow"; td.style.fontWeight = "bold"; td.innerHTML = 'RTRN<br>+<br>WINNER';break;
                 case "WINNER": td.style.backgroundColor = "yellow"; td.style.color = "black"; td.style.fontWeight = "bold"; break;
@@ -2734,7 +2695,6 @@ function createTrackRecordTable(groupName) {
             }
             row.appendChild(td);
         });
-        // PPE
         const ppeCell = document.createElement("td");
         const ppeCalculated = contestantData.ppe / contestantData.episodesOn;
         const formattedPPE = isNaN(ppeCalculated) ? "TBA" : ppeCalculated.toFixed(2);
