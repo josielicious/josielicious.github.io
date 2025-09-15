@@ -30,13 +30,18 @@
             <h3>Choose your contestants:</h3>
             <input type="text" id="queen-search" placeholder="Type a queen's name...">
             <div id="queen-suggestions" class="suggestions"></div>
-            <button onclick="createCast()">Random Cast</button>
-            <button onclick="addRandomQueen()">Random Contestant</button>
-            <h3>Choose your wildcard format:</h3>
-            <select id="wildcard-format">
-                <option value="merge">Merge Wildcard</option>
-                <option value="finale">Finale Wildcard</option>
-            </select>
+            <div id="options">
+                <button onclick="createCast()">Random Cast</button>
+                <button onclick="addRandomQueen()">Random Contestant</button>
+                <h3>Choose your number of passers:</h3>
+                <span id="passers-value">3 Passers</span>
+                <input type="range" min="1" max="3" value="3" id="passers-slider">
+                <h3>Choose your wildcard format:</h3>
+                <select id="wildcard-format">
+                    <option value="merge">Merge Wildcard</option>
+                    <option value="finale">Finale Wildcard</option>
+                </select>
+            </div>
             <div class="season-container">
                 <div class="season">
                     <img src="images/seasons/allstars10.webp" alt="allstars10">

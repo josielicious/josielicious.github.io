@@ -1018,6 +1018,8 @@ let phase = "bracket"; // bracket, merge, finale
 let currentBracketIndex = 0;
 let episodeCount = 0;
 
+let amountPassers = 3;
+
 let topQueens = [];
 let bottomQueens = [];
 
@@ -1212,6 +1214,13 @@ class DesignChallenge extends Challenge {
 // ==============================
 const searchInput = document.getElementById("queen-search");
 const suggestionBox = document.getElementById("queen-suggestions");
+const passersSlider = document.getElementById("passers-slider");
+const passersValue = document.getElementById("passers-value");
+
+passersSlider.addEventListener("change", function() {
+    passersValue.textContent = `${passersSlider.value} Passers`;
+    amountPassers = passersSlider.value;
+});
 
 searchInput.addEventListener("input", () => {
     const query = normalizeString(searchInput.value);
@@ -1516,46 +1525,44 @@ function episodeProcessing() {
     if (phase === "bracket") {
         if (currentBracketIndex === 0) {
             BracketB.forEach(q => {
-                q.addToTrackRecord("");
+                q.addToTrackRecord(" ");
             })
             BracketC.forEach(q => {
-                q.addToTrackRecord("");
+                q.addToTrackRecord(" ");
             })
         }
         else if (currentBracketIndex === 1) {
             BracketA.forEach(q => {
-                q.addToTrackRecord("");
+                q.addToTrackRecord(" ");
             })
             BracketC.forEach(q => {
-                q.addToTrackRecord("");
+                q.addToTrackRecord(" ");
             })
         }
         else if (currentBracketIndex === 2) {
             BracketA.forEach(q => {
-                q.addToTrackRecord("");
+                q.addToTrackRecord(" ");
             })
             BracketB.forEach(q => {
-                q.addToTrackRecord("");
+                q.addToTrackRecord(" ");
             })
         }
         loadCurrentBracket();
         currentCast.forEach(q => q.episodesOn += 1);
         console.log(`Bracket Phase - Episode ${episodeCount}`);
         newEpisode();
-        return;
     } else if (phase === "merge") {
         console.log(`Merge Phase - Episode ${episodeCount}`);
         eliminatedCast.forEach(q => {
             q.addToTrackRecord("");
         })
-        if (episodeCount === 12) {
+        if ((amountPassers != 1 && episodeCount == 12) || (amountPassers == 1 && episodeCount == 10)) {
             startFinale();
             currentCast.forEach(q => q.episodesOn += 1);
             return;
         }
         newEpisode();
         currentCast.forEach(q => q.episodesOn += 1);
-        return;
     }
 }
 
@@ -1592,13 +1599,13 @@ function announcePassers() {
 
     currentCast.sort((a, b) => b.stars - a.stars);
 
-    const passers = currentCast.slice(0, 3);
-    const eliminated = currentCast.slice(3);
+    const passers = currentCast.slice(0, amountPassers);
+    const eliminated = currentCast.filter(queen => !passers.includes(queen));
 
     passers.forEach(q => {
         if (!Mergers.includes(q)) Mergers.push(q);
         screen.createImage(q.image, "green");
-        screen.createBold(`${q.getName()} passes with ${q.stars} MVQ Points!`);
+        screen.createBold(`${q.getName()} passed with ${q.stars} MVQ Points!`);
     });
 
     const totalContestants = 18;
@@ -1620,16 +1627,18 @@ function announcePassers() {
     if (currentBracketIndex < 2) {
         currentBracketIndex++;
         loadCurrentBracket();
-        screen.createButton("Next Bracket", "contestantProgress()");
+        screen.createButton("Proceed", "contestantProgress()");
         return;
     }
 
-    screen.createButton("Start Merge", "startMergeAndProceed()");
+    screen.createButton("Proceed", "startMergeAndProceed()");
 }
 
 function startMergeAndProceed() {
-    startMerge();
-    episodeProcessing();
+    phase = "merge";
+    currentCast = fullCast.filter(q => !eliminatedCast.includes(q));
+
+    contestantProgress();
 }
 
 function newEpisode() {
@@ -1872,20 +1881,21 @@ function judgingScreen() {
         );
 
         const safeQueens = currentCast.filter(q => !totaljudged.includes(q));
-
-        screen.createHorizontalLine();
-        screen.createParagraph(
-            `${safeQueens.map(q => q.getName()).join(", ")}, you are safe.`,
-        );
-        safeQueens.forEach(q => {
-            const lastIndex = q.trackRecord.length - 1;
-            if (q.trackRecord[lastIndex].toUpperCase() === "RTRN") {
-                q.editTrackRecord("SAFE");
-            } else {
-                q.addToTrackRecord("SAFE");
-            }
-            q.ppe += 3;
-        })
+        if (safeQueens.length > 0) {
+            screen.createHorizontalLine();
+            screen.createParagraph(
+                `${safeQueens.map(q => q.getName()).join(", ")}, you are safe.`,
+            );
+            safeQueens.forEach(q => {
+                const lastIndex = q.trackRecord.length - 1;
+                if (q.trackRecord[lastIndex].toUpperCase() === "RTRN") {
+                    q.editTrackRecord("SAFE");
+                } else {
+                    q.addToTrackRecord("SAFE");
+                }
+                q.ppe += 3;
+            })
+        }
 
         screen.createButton("Proceed", "winAndBtms()");
     }
@@ -1971,7 +1981,7 @@ function topTwo() {
     let screen = new Scene();
     screen.clean();
     for (let i = 0; i < topQueens.length; i++) {
-        topQueens[i].getLipsync();
+        topQueens[i].getASLipsync();
     }
     screen.createBigText("The time has come...");
     screen.createBold("For you to lip-sync... for your legacy! Good luck, and don't fuck it up.");
@@ -1992,11 +2002,11 @@ function generateLipsyncPerformances(lipsyncers) {
     let screen = new Scene();
 
     const performanceGroups = [
-        { id: "slay",   filter: q => q.lipsyncScore >= 12,                        color: "black",  message: "slayed the lip-sync!" },
-        { id: "great",  filter: q => q.lipsyncScore >= 8 && q.lipsyncScore < 12, color: "black", message: "had a great lip-sync!" },
-        { id: "good",   filter: q => q.lipsyncScore >= 4 && q.lipsyncScore < 8,  color: "black",     message: "had a good lip-sync." },
-        { id: "bad",    filter: q => q.lipsyncScore > 2 && q.lipsyncScore < 4,  color: "black",      message: "had a bad lip-sync..." },
-        { id: "flop",   filter: q => q.lipsyncScore <= 2, color: "black",    message: "flopped the lip-sync..." }
+        { id: "slay",   filter: q => q.lipsyncScore > 11,                       color: "black",  message: "slayed the lip-sync!" },
+        { id: "great",  filter: q => q.lipsyncScore >= 8 && q.lipsyncScore < 12, color: "black",  message: "had a great lip-sync!" },
+        { id: "good",   filter: q => q.lipsyncScore >= 4 && q.lipsyncScore < 8,  color: "black",  message: "had a good lip-sync." },
+        { id: "bad",    filter: q => q.lipsyncScore > 2 && q.lipsyncScore < 4,   color: "black",  message: "had a bad lip-sync..." },
+        { id: "flop",   filter: q => q.lipsyncScore <= 2,                        color: "black",  message: "flopped the lip-sync..." }
     ];
 
     performanceGroups.forEach(group => {
@@ -2017,7 +2027,7 @@ function top2Win() {
     screen.createBigText("Ladies, I've made my decision...");
 
     const [queen1, queen2] = topQueens;
-    topQueens.sort((a, b) => a.lipsyncScore - b.lipsyncScore);
+    topQueens.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
 
     const isDoubleWinner =
         queen1.lipsyncScore === queen2.lipsyncScore &&
@@ -2162,7 +2172,6 @@ function lipsyncDesc() {
 
     for (let i = 0; i < bottomQueens.length; i++) {
         bottomQueens[i].getLipsync();
-        bottomQueens[i].lipsyncScore = (bottomQueens[i].lipsyncScore - bottomQueens[i].favoritism) + bottomQueens[i].unfavoritism;
     }
 
     let event = checkForLipsyncEvent(bottomQueens);
@@ -2221,24 +2230,19 @@ function lipSync() {
     screen.createButton("Proceed", "contestantProgress()");
 }
 
-function startMerge() {
-    phase = "merge";
-    currentCast = fullCast.filter(q => !eliminatedCast.includes(q));
-}
-
 function startFinale() {
     phase = "finale";
     episodeChallenges.push("Finale");
     currentCast = fullCast.filter(q => !eliminatedCast.includes(q));
 
-    top8Smackdown();
+    finaleSmackdown();
 }
 
-function top8Smackdown() {
+function finaleSmackdown() {
     const screen = new Scene();
     screen.clean();
 
-    if (wildcardType === "finale" && !wildcardUsed) {
+    if ((wildcardType === "finale" || wildcardType === "merge") && !wildcardUsed) {
         addWildcard();
         wildcardUsed = true;
     }
@@ -2246,54 +2250,74 @@ function top8Smackdown() {
     let lipsyncers = shuffle([...currentCast]);
     smackdownRounds = [];
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < Math.floor(lipsyncers.length / 2); i++) {
         const q1 = lipsyncers[i * 2];
         const q2 = lipsyncers[i * 2 + 1];
-        if (q1 && q2) {
-            smackdownRounds.push([q1, q2]);
-        }
+        if (q1 && q2) smackdownRounds.push([q1, q2]);
     }
 
-    screen.createBold("Our final eight will participate in a lipsync smackdown for the crown!");
+    if (lipsyncers.length % 2 !== 0) {
+        smackdownRounds.push([lipsyncers[lipsyncers.length - 1]]);
+    }
+
+    screen.createBold(`Our final ${currentCast.length} will participate in a lipsync smackdown for the crown!`);
     screen.createHorizontalLine();
     screen.createBigText("The preliminaries are...");
 
     smackdownRounds.forEach((match, i) => {
         match.forEach(q => screen.createImage(q.image, "black"));
-        screen.createParagraph(`Round ${i + 1}: ${match[0].getName()} vs ${match[1].getName()}`);
+        const names = match.map(q => q.getName()).join(" vs ");
+        screen.createParagraph(`Round ${i + 1}: ${names}`);
     });
 
-    screen.createButton("Resolve prelims", "resolveSmackdownPrelims()");
+    screen.createButton("Resolve prelims", "resolveSmackdownRound(1)");
 }
 
-function resolveSmackdownPrelims() {
+function resolveSmackdownRound(roundNumber = 1) {
     const screen = new Scene();
     screen.clean();
-    smackdownWinners = [];
+    let winners = [];
     let eliminated = [];
 
+    let matchRoundLabel = [];
+    if (currentCast.length === 4) {
+        matchRoundLabel = [1, 2];
+    } else if (currentCast.length === 6) {
+        matchRoundLabel = [1, 1, 2];
+    } else {
+        matchRoundLabel = Array(smackdownRounds.length).fill(roundNumber);
+    }
+
     smackdownRounds.forEach((match, i) => {
-        match.forEach(q => q.getLipsync());
+        if (match.length === 1) {
+            winners.push(match[0]);
+            screen.createParagraph(`${match[0].getName()} advances automatically!`);
+            return;
+        }
+
+        match.forEach(q => q.getASLipsync());
         match.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
 
         const winner = match[0];
         const loser = match[1];
-        smackdownWinners.push(winner);
+
+        winners.push(winner);
         eliminated.push(loser);
 
         screen.createHorizontalLine();
         screen.createBigText("The time has come...");
-        screen.createBold("For you to lip-sync... for the crown! Good luck, and don't fuck it up.");
-        const song = lsSong().toString();
-        screen.createParagraph(`${winner.getName()} V.S. ${loser.getName()}`);
+        screen.createBold("For you to lip-sync... for the crown!");
+        screen.createParagraph(`${winner.getName()} vs ${loser.getName()}`);
         screen.createImage(winner.image, "darkblue");
         screen.createImage(loser.image, "lightgrey");
         screen.createBold(`${winner.getName()} wins Round ${i + 1}!`);
 
-        if (loser.trackRecord.at(-1).toUpperCase() === "RTRN") {
-            loser.editTrackRecord("LR1");
+        let lrRound = matchRoundLabel[i] || roundNumber;
+        const lr = `LR${roundNumber}`;
+        if (loser.trackRecord.at(-1)?.toUpperCase() === "RTRN") {
+            loser.editTrackRecord(lr);
         } else {
-            loser.addToTrackRecord("LR1");
+            loser.addToTrackRecord(lr);
         }
     });
 
@@ -2309,100 +2333,38 @@ function resolveSmackdownPrelims() {
         q.rankP = placementRange;
     });
 
-    smackdownRounds = [
-        [smackdownWinners[0], smackdownWinners[1]],
-        [smackdownWinners[2], smackdownWinners[3]]
-    ];
+    if (winners.length > 1) {
+        smackdownRounds = [];
+        for (let i = 0; i < Math.floor(winners.length / 2); i++) {
+            smackdownRounds.push([winners[i * 2], winners[i * 2 + 1]]);
+        }
+        if (winners.length % 2 !== 0) {
+            smackdownRounds.push([winners[winners.length - 1]]);
+        }
+        screen.createButton("Proceed to next round", `resolveSmackdownRound(${roundNumber + 1})`);
+    } else {
+        const champ = winners[0];
+        champ.rankP = toOrdinal(1);
+        champ.title = "Winner";
+        if (champ.trackRecord.at(-1)?.toUpperCase() === "RTRN") {
+            champ.editTrackRecord("WINNER");
+        } else {
+            champ.addToTrackRecord("WINNER");
+        }
 
-    screen.createButton("Proceed", "resolveSmackdownSemis()");
-}
-
-function resolveSmackdownSemis() {
-    const screen = new Scene();
-    screen.clean();
-    let semiWinners = [];
-    let eliminated = [];
-
-    smackdownRounds.forEach((match, i) => {
-        match.forEach(q => q.getLipsync());
-        match.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
-
-        const winner = match[0];
-        const loser = match[1];
-        semiWinners.push(winner);
-        eliminated.push(loser);
+        const runnerUp = eliminatedCast.at(-1);
+        runnerUp.rankP = toOrdinal(2);
+        runnerUp.title = "Runner-up";
+        if (runnerUp.trackRecord.at(-1)?.toUpperCase() === "RTRN") {
+            runnerUp.editTrackRecord("LR3");
+        } else {
+            runnerUp.addToTrackRecord("LR3");
+        }
 
         screen.createHorizontalLine();
-        screen.createBigText("The time has come...");
-        screen.createBold("For you to lip-sync... for the crown! Good luck, and don't fuck it up.");
-        const song = lsSong().toString();
-        screen.createParagraph(`${winner.getName()} V.S. ${loser.getName()}`);
-        screen.createImage(winner.image, "darkblue");
-        screen.createImage(loser.image, "lightgrey");
-        screen.createBold(`${winner.getName()} wins The Semifinal Round ${i + 1}!`);
-
-        if (loser.trackRecord.at(-1).toUpperCase() === "RTRN") {
-            loser.editTrackRecord("LR2");
-        } else {
-            loser.addToTrackRecord("LR2");
-        }
-    });
-
-    const totalContestants = 18;
-    const eliminatedSoFar = eliminatedCast.length;
-    const eliminatedThisRound = eliminated.length;
-    const elimStart = totalContestants - eliminatedSoFar - eliminatedThisRound + 1;
-    const elimEnd = totalContestants - eliminatedSoFar;
-    const placementRange = `${toOrdinal(elimStart)}/${toOrdinal(elimEnd)}`;
-
-    eliminated.forEach(q => {
-        if (!eliminatedCast.includes(q)) eliminatedCast.push(q);
-        q.rankP = placementRange;
-    });
-
-    smackdownRounds = [[semiWinners[0], semiWinners[1]]];
-
-    screen.createButton("Proceed", "resolveSmackdownFinal()");
-}
-
-function resolveSmackdownFinal() {
-    const screen = new Scene();
-    screen.clean();
-
-    const finalMatch = smackdownRounds[0];
-    finalMatch.forEach(q => q.getLipsync());
-    finalMatch.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
-
-    const winner = finalMatch[0];
-    const loser = finalMatch[1];
-
-    screen.createHorizontalLine();
-    screen.createBigText("The time has come...");
-    screen.createBold("For you to lip-sync... for the crown! Good luck, and don't fuck it up.");
-    const song = lsSong().toString();
-    screen.createParagraph(`${winner.getName()} V.S. ${loser.getName()}`);
-    screen.createImage(winner.image, "gold");
-    screen.createImage(loser.image, "silver");
-    screen.createBold(`${winner.getName()}, condragulations! You're a winner baby!`);
-
-    if (winner.trackRecord.at(-1).toUpperCase() === "RTRN") {
-        winner.editTrackRecord("WINNER");
-    } else {
-        winner.addToTrackRecord("WINNER");
+        screen.createBold(`${champ.getName()}, condragulations! You're the winner baby!`);
+        screen.createButton("Proceed", "contestantProgress()");
     }
-    winner.title = "Winner";
-
-    if (loser.trackRecord.at(-1).toUpperCase() === "RTRN") {
-        loser.editTrackRecord("LR3");
-    } else {
-        loser.addToTrackRecord("LR3");
-    }
-    loser.title = "Runner-up";
-
-    winner.rankP = toOrdinal(1);
-    loser.rankP = toOrdinal(2);
-
-    screen.createButton("Proceed", "contestantProgress()");
 }
 
 function ordinalSuffix(n) {
@@ -2449,24 +2411,28 @@ function contestantProgress() {
     const contentContainer = document.createElement("div");
     contentContainer.className = "tab-contents";
 
+    let activeTabId = tabs[currentBracketIndex] || tabs[0];
+
     tabs.forEach((tabName, index) => {
         const btn = document.createElement("button");
         btn.textContent = tabName;
         btn.className = "tab-btn";
-        if (index === 0) btn.classList.add("active");
+        if (tabName === activeTabId) btn.classList.add("active");
 
         btn.onclick = () => {
             document.querySelectorAll(".tab-content").forEach(tc => tc.style.display = "none");
             document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
             document.getElementById(tabName).style.display = "block";
             btn.classList.add("active");
+
+            activeTabId = tabName;
         };
         tabContainer.appendChild(btn);
 
         const tabContent = document.createElement("div");
         tabContent.id = tabName;
         tabContent.className = "tab-content";
-        tabContent.style.display = index === 0 ? "block" : "none";
+        tabContent.style.display = (tabName === activeTabId ? "block" : "none");
 
         const centeringDiv = document.createElement("div");
         centeringDiv.style.display = "flex";
@@ -2520,8 +2486,6 @@ function contestantProgress() {
         });
     };
 
-
-
     main.appendChild(tabContainer);
     main.appendChild(contentContainer);
     main.appendChild(downloadBtn);
@@ -2547,8 +2511,8 @@ function createTrackRecordTable(groupName) {
         const rankOrder = ["RTRNWINNER", "WINNER", "RTRNWIN", "RTRN WIN", "RTRN WIN ", "WIN", "RTRNLR3", "LR3", "RTRNLR2", "LR2", "RTRNLR1", "LR1", "RTRNHIGH", "HIGH", "RTRNSAFE", "SAFE", "RTRNLOW", "LOW", "RTRNBTM2", "BTM2", "RTRNELIM", "ELIM", ""];
 
         cast.sort((a, b) => {
-            const validA = a.trackRecord.filter(p => p && !["", " ", "RTRN"].includes(p));
-            const validB = b.trackRecord.filter(p => p && !["", " ", "RTRN"].includes(p));
+            const validA = a.trackRecord.filter(p => p && !["", "RTRN"].includes(p));
+            const validB = b.trackRecord.filter(p => p && !["", "RTRN"].includes(p));
 
             const aPerf = validA.at(-1) || "SAFE";
             const bPerf = validB.at(-1) || "SAFE";
@@ -2683,6 +2647,8 @@ function createTrackRecordTable(groupName) {
                 case "RTRNLOW": td.style.backgroundColor = "lightpink"; td.innerHTML = '<b>RTRN</b><br>+<br>LOW'; break;
                 case "RTRNBTM2": td.style.backgroundColor = "tomato"; td.innerHTML = '<b>RTRN</b><br>+<br>BTM2'; break;
                 case "RTRNELIM": td.style.backgroundColor = "red"; td.innerHTML = 'RTRN<br>+<br>ELIM';  td.style.fontWeight = "bold"; break;
+                case "":
+                case " ": td.style.backgroundColor = "#a2a9b1"; break;
                 default: td.style.backgroundColor = "gray"; break;
             }
 
