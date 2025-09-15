@@ -1578,11 +1578,11 @@ function pointCeremony() {
     screen.createBigText("The point ceremony")
     screen.createHorizontalLine();
     bottomQueens.forEach(q => {
-        let eligible = bottomQueens.filter(c => c !== q);
+        let eligible = currentCast.filter(c => c !== q);
         let chosenQueen = eligible[randomNumber(0, eligible.length - 1)];
         screen.createImage(q.image);
         screen.createImage(chosenQueen.image);
-        screen.createBold(`${q.getName()} has give her point to ${chosenQueen.getName()}`);
+        screen.createBold(`${q.getName()} has given her point to ${chosenQueen.getName()}`);
         chosenQueen.stars += 1;
     });
     screen.createHorizontalLine();
