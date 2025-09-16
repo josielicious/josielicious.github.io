@@ -22,7 +22,7 @@ class Queen {
         this._runwayStat = runway;
         this._lipsyncStat = lipsync;
         if (image === "noimage") {
-            this.image = "images/queens/noimage.jpg";
+            this.image = "images/queens/noimage.png";
         } else if (custom === true) {
             this.image = image;
         } else {
@@ -94,6 +94,152 @@ class Queen {
     editTrackRecord(added) {
         this.trackRecord[this.trackRecord.length - 1] += added;
     }
+}
+
+// CUSTOM QUEENS
+let customQueens = [];
+
+if (localStorage.getItem("customs") != null) {
+    let stored = JSON.parse(localStorage.getItem("customs") || "[]");
+
+    customQueens = stored.map(q => {
+        let template = new Queen('', 0, 0, 0, 0, 0, 0, 0, '');
+        Object.assign(template, q);
+        template.custom = true;
+        return template;
+    });
+}
+
+let allCustomQueens = [...customQueens];
+if (document.location.href.includes("custom")) {
+    const previewImg = document.querySelector("#queen-preview img");
+    const previewName = document.querySelector("#queen-preview p");
+
+    function saveCustoms() {
+        localStorage.setItem("customs", JSON.stringify(customQueens));
+        refreshCustomSelect();
+    }
+
+    function refreshCustomSelect() {
+        const select = document.getElementById("custom-remove");
+        select.innerHTML = "";
+        customQueens.forEach((q, i) => {
+            let opt = document.createElement("option");
+            opt.value = i;
+            opt.textContent = q._name;
+            select.appendChild(opt);
+        });
+    }
+
+    function updatePreview() {
+        const name = document.getElementById("name").value || "Unnamed Queen";
+        const pic = document.getElementById("pic").value || "images/queens/noimage.png";
+
+        previewName.textContent = name;
+        previewImg.src = pic;
+    }
+
+    function createCustom() {
+        const name = document.getElementById("name").value.trim();
+        let pic = document.getElementById("pic").value.trim();
+        if (pic === "") {
+            pic = "noimage";
+        }
+
+        if (!name) {
+            alert("Theres no name...");
+            return;
+        }
+
+        let queen = new Queen(
+            name,
+            parseInt(document.getElementById("acting").value),
+            parseInt(document.getElementById("comedy").value),
+            parseInt(document.getElementById("dance").value),
+            parseInt(document.getElementById("design").value),
+            parseInt(document.getElementById("improv").value),
+            parseInt(document.getElementById("runway").value),
+            parseInt(document.getElementById("lipsync").value),
+            pic,
+            true
+        );
+
+        customQueens.push(queen);
+        saveCustoms();
+        updatePreview();
+    }
+
+    function editCustomQueen() {
+        const select = document.getElementById("custom-remove");
+        const index = parseInt(select.value);
+
+        if (isNaN(index)) {
+            alert("Pick a queen to edit....");
+            return;
+        }
+
+        let q = customQueens[index];
+
+        document.getElementById("name").value = q._name;
+        document.getElementById("pic").value = q.image;
+        document.getElementById("acting").value = q._actingStat;
+        document.getElementById("comedy").value = q._comedyStat;
+        document.getElementById("dance").value = q._danceStat;
+        document.getElementById("design").value = q._designStat;
+        document.getElementById("improv").value = q._improvStat;
+        document.getElementById("runway").value = q._runwayStat;
+        document.getElementById("lipsync").value = q._lipsyncStat;
+
+        updateStatLabels();
+        updatePreview();
+
+        customQueens.splice(index, 1);
+        saveCustoms();
+    }
+
+    function removeCustomQueen() {
+        const select = document.getElementById("custom-remove");
+        const index = parseInt(select.value);
+
+        if (isNaN(index)) {
+            alert("Pick a queen to remove...");
+            return;
+        }
+
+        if (confirm(`Remove ${customQueens[index]._name}?`)) {
+            customQueens.splice(index, 1);
+            saveCustoms();
+            updatePreview();
+        }
+    }
+
+    function randomizeStats() {
+        ["acting", "comedy", "dance", "design", "improv", "runway", "lipsync"].forEach(stat => {
+            document.getElementById(stat).value = randomNumber(1, 15);
+        });
+        updateStatLabels();
+    }
+
+    function updateStatLabels() {
+        document.getElementById("acting-text").textContent = `Acting Skill: ${document.getElementById("acting").value}`;
+        document.getElementById("comedy-text").textContent = `Comedy Skill: ${document.getElementById("comedy").value}`;
+        document.getElementById("dance-text").textContent = `Dance Skill: ${document.getElementById("dance").value}`;
+        document.getElementById("design-text").textContent = `Design Skill: ${document.getElementById("design").value}`;
+        document.getElementById("improv-text").textContent = `Improv Skill: ${document.getElementById("improv").value}`;
+        document.getElementById("runway-text").textContent = `Runway Skill: ${document.getElementById("runway").value}`;
+        document.getElementById("lipsync-text").textContent = `Lipsync Skill: ${document.getElementById("lipsync").value}`;
+    }
+
+    document.querySelectorAll("input[type=range]").forEach(input => {
+        input.addEventListener("input", updateStatLabels);
+    });
+
+    document.getElementById("name").addEventListener("input", updatePreview);
+    document.getElementById("pic").addEventListener("input", updatePreview);
+
+    updateStatLabels();
+    updatePreview();
+    refreshCustomSelect();
 }
 
 //QUEENS:
@@ -994,7 +1140,7 @@ let allQueens = [
     adora, bhelchi, chanelbr, desiree, melina, mellody, mercedez, paola, poseidon, rubyNox,
     barbie, kellyH, lele, loreley, metamorkid, nikita, pandoraNox, tessa, naomy, victoriaShakespears, yvonne,
     pangina, BonesUK7, BonnieAnnClydeUK7, CatrinFeelingsUK7, ChaiTGrandeUK7, ElleVosqueUK7, NyongbellaUK7, PaigeThreeUK7, PastyUK7, SallyTMUK7, SilllexaDictionUK7, TayrisMongardiUK7, ViolaUK7
-]
+].concat(customQueens).sort((a,b) => a.getName().toLowerCase().localeCompare(b.getName().toLowerCase()));
 
 // ==============================
 // GLOBAL VARIABLES
@@ -1993,37 +2139,8 @@ function topTwo() {
             return q.getName() === event.queen.getName()
         });
         eventQueen.lipsyncScore += event.points;
+        screen.createHorizontalLine();
     }
-    generateLipsyncPerformances(topQueens);
-    screen.createButton("Show result", "top2Win()");
-}
-
-function generateLipsyncPerformances(lipsyncers) {
-    let screen = new Scene();
-
-    const performanceGroups = [
-        { id: "slay",   filter: q => q.lipsyncScore > 11,                       color: "black",  message: "slayed the lip-sync!" },
-        { id: "great",  filter: q => q.lipsyncScore >= 8 && q.lipsyncScore < 12, color: "black",  message: "had a great lip-sync!" },
-        { id: "good",   filter: q => q.lipsyncScore >= 4 && q.lipsyncScore < 8,  color: "black",  message: "had a good lip-sync." },
-        { id: "bad",    filter: q => q.lipsyncScore > 2 && q.lipsyncScore < 4,   color: "black",  message: "had a bad lip-sync..." },
-        { id: "flop",   filter: q => q.lipsyncScore <= 2,                        color: "black",  message: "flopped the lip-sync..." }
-    ];
-
-    performanceGroups.forEach(group => {
-        let queens = lipsyncers.filter(group.filter);
-
-        if (queens.length > 0) {
-            shuffle(queens);
-
-            queens.forEach(q => screen.createImage(q.image, group.color));
-            screen.createBold(`${queens.map(q => q.getName()).join(", ")} ${group.message}`);
-        }
-    });
-}
-
-function top2Win() {
-    let screen = new Scene();
-    screen.clean();
     screen.createBigText("Ladies, I've made my decision...");
 
     const [queen1, queen2] = topQueens;
@@ -2060,6 +2177,29 @@ function top2Win() {
     }
 
     screen.createButton("Proceed", "pointCeremony()");
+}
+
+function generateLipsyncPerformances(lipsyncers) {
+    let screen = new Scene();
+
+    const performanceGroups = [
+        { id: "slay",   filter: q => q.lipsyncScore > 11,                       color: "black",  message: "slayed the lip-sync!" },
+        { id: "great",  filter: q => q.lipsyncScore >= 8 && q.lipsyncScore < 12, color: "black",  message: "had a great lip-sync!" },
+        { id: "good",   filter: q => q.lipsyncScore >= 4 && q.lipsyncScore < 8,  color: "black",  message: "had a good lip-sync." },
+        { id: "bad",    filter: q => q.lipsyncScore > 2 && q.lipsyncScore < 4,   color: "black",  message: "had a bad lip-sync..." },
+        { id: "flop",   filter: q => q.lipsyncScore <= 2,                        color: "black",  message: "flopped the lip-sync..." }
+    ];
+
+    performanceGroups.forEach(group => {
+        let queens = lipsyncers.filter(group.filter);
+
+        if (queens.length > 0) {
+            shuffle(queens);
+
+            queens.forEach(q => screen.createImage(q.image, group.color));
+            screen.createBold(`${queens.map(q => q.getName()).join(", ")} ${group.message}`);
+        }
+    });
 }
 
 function winAndBtms() {
