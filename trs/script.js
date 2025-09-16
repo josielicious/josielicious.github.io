@@ -1164,7 +1164,11 @@ let phase = "bracket"; // bracket, merge, finale
 let currentBracketIndex = 0;
 let episodeCount = 0;
 
+let mergeFormat = "normal";
+let judgingType = "canon";
+
 let amountPassers = 3;
+let seasonOver = false;
 
 let topQueens = [];
 let bottomQueens = [];
@@ -1636,22 +1640,39 @@ function startSimulation() {
     BracketA = fullCast.filter(q => q.assignedBracket === "A");
     BracketB = fullCast.filter(q => q.assignedBracket === "B");
     BracketC = fullCast.filter(q => q.assignedBracket === "C");
+
     Mergers = [];
+    currentCast = [];
     eliminatedCast = [];
 
-    currentCast = [];
+    seasonOver = false;
     phase = "bracket";
     currentBracketIndex = 0;
     episodeCount = 0;
 
     const main = document.querySelector("div#main-block");
-    main.id = "simulation-block";
+    if (main) {
+        main.id = "simulation-block";
+    }
 
     let wildcard = document.getElementById("wildcard-format");
-    if (wildcard.options[wildcard.selectedIndex].value == "merge") {
-        wildcardType = "merge";
-    } else {
-        wildcardType = "finale";
+    if (wildcard) {
+        if (wildcard.options[wildcard.selectedIndex].value == "merge") {
+            wildcardType = "merge";
+        } else {
+            wildcardType = "finale";
+        }
+    }
+
+    let judging = document.getElementById("judging-type");
+    if (judging) {
+        if (judging.options[judging.selectedIndex].value == "canon") {
+            judgingType = "canon";
+        } else if (judging.options[judging.selectedIndex].value == "wiki") {
+            judgingType = "wiki";
+        } else {
+            judgingType = "mixed";
+        }
     }
 
     episodeProcessing();
@@ -1704,7 +1725,6 @@ function episodeProcessing() {
         })
         if ((amountPassers != 1 && episodeCount == 12) || (amountPassers == 1 && episodeCount == 10)) {
             startFinale();
-            currentCast.forEach(q => q.episodesOn += 1);
             return;
         }
         newEpisode();
@@ -1723,7 +1743,12 @@ function pointCeremony() {
     screen.clean();
     screen.createBigText("The point ceremony")
     screen.createHorizontalLine();
-    bottomQueens.forEach(q => {
+    let queensToDonate = currentCast.filter(q => {
+        let lastPlacement = q.trackRecord[q.trackRecord.length - 1].trim();
+        return lastPlacement !== "WIN";
+    });
+
+    queensToDonate.forEach(q => {
         let eligible = currentCast.filter(c => c !== q);
         let chosenQueen = eligible[randomNumber(0, eligible.length - 1)];
         screen.createImage(q.image);
@@ -1971,15 +1996,30 @@ function judging() {
     currentCast.sort((a, b) => a.performanceScore - b.performanceScore);
 
     if (phase === "bracket") {
-        topQueens.push(...currentCast.slice(0, 2));
+        let nonTops;
+        if (judgingType == "canon") {
+            nonTops = currentCast.slice(2)
+            topQueens.push(...currentCast.slice(0, 2));
+        } else {
+            nonTops = currentCast.slice(3)
+            topQueens.push(...currentCast.slice(0, 3));
+        }
 
-        const nonTops = currentCast.slice(2);
         bottomQueens.push(...nonTops);
-
         nonTops.forEach(q => {
-            if (nonTops.length === 4) q.addToTrackRecord("BTM4");
-            else if (nonTops.length === 3) q.addToTrackRecord("BTM3");
-            q.ppe += 1;
+            if (nonTops.length === 4) {
+                q.addToTrackRecord("BTM4");
+                q.ppe += 1;
+            }
+            else if (nonTops.length === 3) {
+                if (judgingType == "mixed") {
+                    q.addToTrackRecord("BTM3");
+                    q.ppe += 1;
+                } else {
+                    q.addToTrackRecord("SAFE");
+                    q.ppe += 3;
+                }
+            }
         });
     } else {
         if (currentCast.length >= 6) {
@@ -2010,24 +2050,51 @@ function judgingScreen() {
     screen.createBold("Based on tonight's performances...");
 
     if (phase === "bracket") {
-        const totaljudged = shuffle([...topQueens]);
+        let totaljudged;
+        let highQueen;
+        if (judgingType == "canon") {
+            totaljudged = shuffle([...topQueens]).slice(0, 2);
+        } else {
+            totaljudged = [topQueens[0], topQueens[1]];
+            highQueen = topQueens[2] || null;
+            topQueens.splice(2, 1);
+        }
 
         totaljudged.forEach(q => {
             screen.createImage(q.image, "cyan")
             q.stars += 2;
+            q.ppe += 5;
         });
         screen.createBold(
             `${totaljudged.map(q => q.getName()).join(", ")}, you represent the top two All Stars of the week.`,
             "judged"
         );
 
+        if (highQueen) {
+            screen.createImage(highQueen.image, "lightblue");
+            screen.createBold(
+                `${highQueen.getName()}, you are safe, great job!`,
+                "high-queen"
+            );
+            highQueen.ppe += 4;
+            highQueen.addToTrackRecord("HIGH");
+        }
+
         screen.createHorizontalLine();
 
-        bottomQueens.forEach(q => screen.createImage(q.image, "red"));
-        screen.createBold(
-            `${bottomQueens.map(q => q.getName()).join(", ")}, since you are not in the top, you're in the bottom.`,
-            "bottoms"
-        );
+        if (judgingType == "canon" || judgingType == "mixed") {
+            bottomQueens.forEach(q => screen.createImage(q.image, "red"));
+            screen.createBold(
+                `${bottomQueens.map(q => q.getName()).join(", ")}, since you are not in the top, you're in the bottom.`,
+                "bottoms"
+            );
+        } else {
+            bottomQueens.forEach(q => screen.createImage(q.image, "black"));
+            screen.createBold(
+                `${bottomQueens.map(q => q.getName()).join(", ")}, you are all safe.`,
+                "safes"
+            );
+        }
 
         screen.createButton("Proceed", "topTwo()");
 
@@ -2170,21 +2237,18 @@ function topTwo() {
         [queen1, queen2].forEach(q => {
             screen.createImage(q.image, "darkblue");
             q.favoritism += 5;
-            q.ppe += 5;
             q.stars += 1;
             q.addToTrackRecord(" WIN ");
         });
         screen.createBold("Condragulations, you're both winners, baby!");
     } else {
         queen1.favoritism += 5;
-        queen1.ppe += 5;
         queen1.stars += 1;
         queen1.addToTrackRecord("WIN");
         screen.createImage(queen1.image, "royalblue");
         screen.createBold(`${queen1.getName()}, you're a winner, baby!`);
 
-        queen2.favoritism += 4;
-        queen2.ppe += 5;
+        queen2.favoritism += 5;
         queen2.addToTrackRecord(" WIN");
         screen.createImage(queen2.image, "cyan");
         screen.createParagraph(`${queen2.getName()}, you are safe.`);
@@ -2525,6 +2589,8 @@ function resolveSmackdownRound(roundNumber = 1) {
 
         screen.createHorizontalLine();
         screen.createBold(`${champ.getName()}, condragulations! You're the winner baby!`);
+
+        seasonOver = true;
         screen.createButton("Proceed", "contestantProgress()");
     }
 }
@@ -2651,7 +2717,11 @@ function contestantProgress() {
     main.appendChild(tabContainer);
     main.appendChild(contentContainer);
     main.appendChild(downloadBtn);
-    screen.createButton("Proceed", "episodeProcessing()");
+    if (!seasonOver) {
+        screen.createButton("Proceed", "episodeProcessing()");
+    } else {
+        screen.createButton("Resimulate", "startSimulation()");
+    }
 }
 
 function createTrackRecordTable(groupName) {
@@ -2792,13 +2862,15 @@ function createTrackRecordTable(groupName) {
                 case " WIN ": td.style.backgroundColor = "darkblue"; td.style.color = "white"; td.style.fontWeight = "bold"; break;
                 case "HIGH": td.style.backgroundColor = "lightblue"; break;
                 case "LOW": td.style.backgroundColor = "pink"; break;
-                case "BTM":
                 case "BTM2":
                 case "BTM3":
                 case "BTM4": td.style.backgroundColor = "tomato"; break;
                 case "SAFE": td.style.backgroundColor = "white"; break;
                 case "BTM4ELIM":
+                case "BTM3ELIM":
+                case "SAFEELIM":
                 case "ELIM": td.style.backgroundColor = "red"; td.innerHTML = 'ELIM'; td.style.fontWeight = "bold"; break;
+                case "HIGHELIM": td.style.backgroundColor = "red"; td.innerHTML = 'HIGH<br>+<br>ELIM'; td.style.fontWeight = "bold"; break;
                 case "WINELIM":
                 case " WINELIM":
                 case " WIN ELIM": td.style.backgroundColor = "red";  td.style.color = "black";  td.innerHTML = 'WIN<br>+<br>ELIM'; td.style.fontWeight = "bold"; break;
