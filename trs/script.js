@@ -1982,8 +1982,22 @@ function judging() {
             q.ppe += 1;
         });
     } else {
-        topQueens.push(...currentCast.slice(0, 3));
-        bottomQueens.push(...currentCast.slice(-3));
+        if (currentCast.length >= 6) {
+            topQueens.push(...currentCast.slice(0, 3));
+            bottomQueens.push(...currentCast.slice(-3));
+        } else {
+            const randomNumber = Math.floor(Math.random() * 100);
+            if (randomNumber < 40) {
+                topQueens.push(...currentCast.slice(0, 2));
+                bottomQueens.push(...currentCast.slice(-3));
+            } else if (randomNumber < 70) {
+                topQueens.push(...currentCast.slice(0, 3));
+                bottomQueens.push(...currentCast.slice(-2));
+            } else {
+                topQueens.push(...currentCast.slice(0, 2));
+                bottomQueens.push(...currentCast.slice(-2));
+            }
+        }
     }
 
     judgingScreen();
@@ -2466,7 +2480,15 @@ function resolveSmackdownRound(roundNumber = 1) {
     const eliminatedThisRound = eliminated.length;
     const elimStart = totalContestants - eliminatedSoFar - eliminatedThisRound + 1;
     const elimEnd = totalContestants - eliminatedSoFar;
-    const placementRange = `${toOrdinal(elimStart)}–${toOrdinal(elimEnd)}`;
+
+    let placementRange;
+    if (eliminatedThisRound === 1) {
+        placementRange = toOrdinal(elimEnd);
+    } else if (eliminatedThisRound === 2) {
+        placementRange = `${toOrdinal(elimStart)}/${toOrdinal(elimEnd)}`;
+    } else {
+        placementRange = `${toOrdinal(elimStart)}–${toOrdinal(elimEnd)}`;
+    }
 
     eliminated.forEach(q => {
         if (!eliminatedCast.includes(q)) eliminatedCast.push(q);
