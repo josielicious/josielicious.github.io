@@ -1734,7 +1734,7 @@ function episodeProcessing() {
         eliminatedCast.forEach(q => {
             q.addToTrackRecord("");
         })
-        if ((mergeFormat == "regular" && (amountPassers != 1 && episodeCount == 12) || (amountPassers == 1 && episodeCount == 10) ) || (mergeFormat == "longer" && currentCast.length == 4)) {
+        if ((mergeFormat == "regular" && (amountPassers != 1 && episodeCount == 12) || (amountPassers == 1 && episodeCount == 10) ) || (mergeFormat == "longer" && currentCast.length == 4) || mergeFormat == "none") {
             startFinale();
             return;
         }
