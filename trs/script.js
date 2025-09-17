@@ -1657,23 +1657,34 @@ function startSimulation() {
 
     let wildcard = document.getElementById("wildcard-format");
     if (wildcard) {
-        if (wildcard.options[wildcard.selectedIndex].value == "merge") {
-            wildcardType = "merge";
-        } else {
-            wildcardType = "finale";
-        }
+        wildcardType = wildcard.options[wildcard.selectedIndex].value;
     }
 
     let judging = document.getElementById("judging-type");
     if (judging) {
-        if (judging.options[judging.selectedIndex].value == "canon") {
-            judgingType = "canon";
-        } else if (judging.options[judging.selectedIndex].value == "wiki") {
-            judgingType = "wiki";
-        } else {
-            judgingType = "mixed";
-        }
+        judgingType = judging.options[judging.selectedIndex].value;
     }
+
+    let merge = document.getElementById("merge-format");
+    if (merge) {
+        mergeFormat = merge.options[merge.selectedIndex].value;
+    }
+
+    episodeProcessing();
+}
+
+function restartSimulation() {
+    BracketA = fullCast.filter(q => q.assignedBracket === "A");
+    BracketB = fullCast.filter(q => q.assignedBracket === "B");
+    BracketC = fullCast.filter(q => q.assignedBracket === "C");
+
+    Mergers = [];;
+    eliminatedCast = [];
+
+    seasonOver = false;
+    phase = "bracket";
+    currentBracketIndex = 0;
+    episodeCount = 0;
 
     episodeProcessing();
 }
@@ -1723,7 +1734,7 @@ function episodeProcessing() {
         eliminatedCast.forEach(q => {
             q.addToTrackRecord("");
         })
-        if ((amountPassers != 1 && episodeCount == 12) || (amountPassers == 1 && episodeCount == 10)) {
+        if ((mergeFormat == "regular" && (amountPassers != 1 && episodeCount == 12) || (amountPassers == 1 && episodeCount == 10) ) || (mergeFormat == "longer" && currentCast.length == 4)) {
             startFinale();
             return;
         }
@@ -1828,10 +1839,11 @@ function miniChallenge() {
 
     const screen = new Scene();
     screen.clean();
+    screen.createBigText("Mini challenge!");
     screen.createBold("", "description");
     swapBackground("Werkroom");
     const miniChance = 50;
-    if (episodeCount === 10 && wildcardType === "merge" && !wildcardUsed) {
+    if (wildcardType === "merge" && !wildcardUsed && phase === "merge") {
         addWildcard();
         wildcardUsed = true;
     }
@@ -1842,7 +1854,6 @@ function miniChallenge() {
     } else {
         screen.createBold("Today, there's no mini challenge, let's go to the maxi challenge.");
     }
-    screen.createHorizontalLine();
     generateChallenge()
 }
 
@@ -1939,6 +1950,7 @@ function generateChallenge() {
 function designChallenge() {
     const screen = new Scene();
     screen.clean();
+    screen.createBigText("Maxi challenge!");
     screen.createBold("", "description");
     swapBackground("Werkroom");
 
@@ -1953,7 +1965,6 @@ function designChallenge() {
 
 function generateMaxiPerformances() {
     let screen = new Scene();
-    screen.createHorizontalLine();
     screen.createBigText("Queens' performances...");
 
     const performanceGroups = [
@@ -2047,7 +2058,7 @@ function judgingScreen() {
     let screen = new Scene();
     screen.clean();
     swapBackground("Stage");
-    screen.createBold("Based on tonight's performances...");
+    screen.createBigText("Based on tonight's performances...");
 
     if (phase === "bracket") {
         let totaljudged;
@@ -2361,21 +2372,21 @@ function winAndBtms() {
             ", you're the bottoms of the week...",
             "bottom3"
         );
+
+        let safeQueen = bottomQueens.shift();
+        safeQueen.unfavoritism += 1;
+        safeQueen.ppe += 2;
+
+        const lastIndex = safeQueen.trackRecord.length - 1;
+        if (safeQueen.trackRecord[lastIndex].toUpperCase() === "RTRN") {
+            safeQueen.editTrackRecord("LOW");
+        } else {
+            safeQueen.addToTrackRecord("LOW");
+        }
+
+        screen.createImage(safeQueen.image, "pink");
+        screen.createBold(`${safeQueen.getName()}... you are safe.`);
     }
-
-    let safeQueen = bottomQueens.shift();
-    safeQueen.unfavoritism += 1;
-    safeQueen.ppe += 2;
-
-    const lastIndex = safeQueen.trackRecord.length - 1;
-    if (safeQueen.trackRecord[lastIndex].toUpperCase() === "RTRN") {
-        safeQueen.editTrackRecord("LOW");
-    } else {
-        safeQueen.addToTrackRecord("LOW");
-    }
-
-    screen.createImage(safeQueen.image, "pink");
-    screen.createBold(`${safeQueen.getName()}... you are safe.`);
 
     bottomQueens.forEach(q => screen.createImage(q.image, "tomato"));
     screen.createBold("", "btm2");
@@ -2720,7 +2731,7 @@ function contestantProgress() {
     if (!seasonOver) {
         screen.createButton("Proceed", "episodeProcessing()");
     } else {
-        screen.createButton("Resimulate", "startSimulation()");
+        screen.createButton("Resimulate", "restartSimulation()");
     }
 }
 
