@@ -83,7 +83,7 @@ class Queen {
         this.runwayScore = this._calculateScores(12, 35, this._runwayStat);
     }
     getLipsync() {
-        this.lipsyncScore = this._calculateScores(0, this._lipsyncStat, this.unfavoritism) + this.favoritism;
+        this.lipsyncScore = this._calculateScores(0, this._lipsyncStat) + this.unfavoritism - this.favoritism;
     }
     getASLipsync() {
         this.lipsyncScore = this._calculateScores(0, this._lipsyncStat);
@@ -1171,13 +1171,12 @@ let eliminatedCast = [];
 
 let wildcardType = "merge";
 let wildcardUsed = false;
-
 let BracketA = [];
 let BracketB = [];
 let BracketC = [];
 let Mergers = [];
 
-let isDesignChallenge = false;
+let runwayBasedChallenge = false;
 let episodeChallenges = [];
 
 let phase = "bracket"; // bracket, merge, finale
@@ -1374,6 +1373,64 @@ class DesignChallenge extends Challenge {
     rankPerformances() {
         for (let i = 0; i < currentCast.length; i++) {
             currentCast[i].getDesign();
+        }
+        sortPerformances(currentCast);
+    }
+}
+
+class RumixChallenge extends Challenge {
+    generateDescription() {
+        const description = document.getElementById("description");
+        const a = [
+            "Read you Wrote you",
+            "Category Is",
+            "Kitty Girl",
+            "American",
+            "Super Queen",
+            "Queens Everywhere",
+            "Rock It",
+            "Clap Back",
+            "You Wear It Well",
+            "Lucky",
+            "Queen of the North"
+        ];
+        description.innerHTML = `The queens will write a verse and do choreography for the hit single... "${a[randomNumber(0, a.length - 1)]}"!`;
+    }
+
+    rankPerformances() {
+        for (let i = 0; i < currentCast.length; i++) {
+            currentCast[i].getRumix();
+        }
+        sortPerformances(currentCast);
+    }
+}
+
+class RoastChallenge extends Challenge {
+    generateDescription() {
+        const description = document.getElementById("description");
+        const roastTopics = [
+            "Josie",
+            "Juvie",
+            "Millie",
+            "Stormi",
+            "Beatngu",
+            "Pip",
+            "VZ",
+            "Naori",
+            "Francis",
+            "Ke'Juan",
+            "Marley",
+            "MP",
+            "Noir",
+            "Roo",
+            "Yitzu"
+        ];
+        description.innerHTML = `The queens will prepare a set for the... "Roast of ${roastTopics[randomNumber(0, roastTopics.length - 1)]}"!`;
+    }
+
+    rankPerformances() {
+        for (let i = 0; i < currentCast.length; i++) {
+            currentCast[i].getImprov();
         }
         sortPerformances(currentCast);
     }
@@ -1675,20 +1732,17 @@ function startSimulation() {
         main.id = "simulation-block";
     }
 
+    let riggory = document.getElementById("riggory");
+    lipsyncRiggory = riggory.checked;
+
     let wildcard = document.getElementById("wildcard-format");
-    if (wildcard) {
-        wildcardType = wildcard.options[wildcard.selectedIndex].value;
-    }
+    wildcardType = wildcard.options[wildcard.selectedIndex].value;
 
     let judging = document.getElementById("judging-type");
-    if (judging) {
-        judgingType = judging.options[judging.selectedIndex].value;
-    }
+    judgingType = judging.options[judging.selectedIndex].value;
 
     let merge = document.getElementById("merge-format");
-    if (merge) {
-        mergeFormat = merge.options[merge.selectedIndex].value;
-    }
+    mergeFormat = merge.options[merge.selectedIndex].value;
 
     episodeProcessing();
 }
@@ -1855,7 +1909,7 @@ function swapBackground(image) {
 }
 
 function miniChallenge() {
-    isDesignChallenge = false;
+    runwayBasedChallenge = false;
 
     const screen = new Scene();
     screen.clean();
@@ -1964,7 +2018,17 @@ function addWildcard() {
 
 function generateChallenge() {
     const screen = new Scene();
-    screen.createButton("Proceed", "designChallenge()");
+
+    const listChallenges = ["designChallenge", "rumixChallenge", "roastChallenge"];
+    let randomChallenge = listChallenges[Math.floor(Math.random() * listChallenges.length)];
+
+    if (randomChallenge === "designChallenge") {
+        screen.createButton("Proceed", "designChallenge()");
+    } else if (randomChallenge === "rumixChallenge") {
+        screen.createButton("Proceed", "rumixChallenge()");
+    } else if (randomChallenge === "roastChallenge") {
+        screen.createButton("Proceed", "roastChallenge()");
+    }
 }
 
 function designChallenge() {
@@ -1974,7 +2038,7 @@ function designChallenge() {
     screen.createBold("", "description");
     swapBackground("Werkroom");
 
-    isDesignChallenge = true;
+    runwayBasedChallenge = true;
     episodeChallenges.push("Design");
 
     const maxi = new DesignChallenge();
@@ -1983,8 +2047,38 @@ function designChallenge() {
     generateMaxiPerformances();
 }
 
+function rumixChallenge() {
+    const screen = new Scene();
+    screen.clean();
+    screen.createBigText("Maxi challenge!");
+    screen.createBold("", "description");
+    swapBackground("Werkroom");
+
+    episodeChallenges.push("Rumix");
+
+    const maxi = new RumixChallenge();
+    maxi.generateDescription();
+    maxi.rankPerformances();
+    generateMaxiPerformances();
+}
+
+function roastChallenge() {
+    const screen = new Scene();
+    screen.clean();
+    screen.createBigText("Maxi challenge!");
+    screen.createBold("", "description");
+    swapBackground("Werkroom");
+
+    episodeChallenges.push("Roast");
+
+    const maxi = new RoastChallenge();
+    maxi.generateDescription();
+    maxi.rankPerformances();
+    generateMaxiPerformances();
+}
+
 function generateMaxiPerformances() {
-    let screen = new Scene();
+    const screen = new Scene();
     screen.createBigText("Queens' performances...");
 
     const performanceGroups = [
@@ -2010,20 +2104,74 @@ function generateMaxiPerformances() {
         }
     });
 
-    if (isDesignChallenge || episodeChallenges[episodeChallenges.length - 1] === "Design") {
+    if (runwayBasedChallenge || episodeChallenges[episodeChallenges.length - 1] === "Design" || episodeChallenges[episodeChallenges.length - 1] === "Runway" || episodeChallenges[episodeChallenges.length - 1] === "Ball") {
         for (let i = 0; i < currentCast.length - 1; i++) {
             currentCast[i].runwayScore = 0;
         }
         screen.createButton("Proceed", "judging()");
     } else {
-        screen.createButton("Proceed", "runway()");
+        screen.createButton("Proceed", "runway()", "runwayButton");
     }
+}
+
+function runway() {
+    const screen = new Scene();
+    const button = document.getElementById("runwayButton");
+    button.classList.add("hidden");
+
+    screen.createHorizontalLine();
+    screen.createBigText("The runway");
+    screen.createBold("The queens will bring it to the runway!");
+
+    currentCast.forEach(q => {
+        q.getRunway();
+    })
+
+    generateRunwayPerformances();
+}
+
+function generateRunwayPerformances() {
+    const screen = new Scene();
+
+    const performanceGroups = [
+        { name: "slayR",   filter: q => q.runwayScore < 6,                         color: "darkblue",  message: "slayed the runway!", penalty: 7 },
+        { name: "greatR",  filter: q => q.runwayScore >= 6 && q.runwayScore < 16,  color: "royalblue", message: "had a great runway!", penalty: 3 },
+        { name: "goodR",   filter: q => q.runwayScore >= 16 && q.runwayScore < 26, color: "black",     message: "had a good runway.", penalty: 0 },
+        { name: "badR",    filter: q => q.runwayScore >= 26 ,                     color: "pink",      message: "had a bad runway...", penalty: -3 }
+    ];
+
+    let assignedQueens = new Set();
+
+    performanceGroups.forEach(group => {
+        let queens = currentCast.filter(q => group.filter(q) && !assignedQueens.has(q));
+
+        if (queens.length > 0) {
+            shuffle(queens);
+
+            queens.forEach(q => {
+                q.runwayScore = group.penalty;
+                screen.createImage(q.image, group.color);
+
+                assignedQueens.add(q);
+            });
+
+            screen.createBold("", group.name);
+
+            let textElement = document.getElementById(group.name);
+            textElement.innerHTML = queens.map(q => q.getName()).join(", ") + " " + group.message;
+        }
+    });
+
+    screen.createButton("Proceed", "judging()");
 }
 
 function judging() {
     topQueens = [];
     bottomQueens = [];
 
+    currentCast.forEach(q => {
+        q.performanceScore -= q.runwayScore;
+    })
     currentCast.sort((a, b) => a.performanceScore - b.performanceScore);
 
     if (phase === "bracket") {
@@ -2105,17 +2253,10 @@ function judgingScreen() {
             q.stars += 2;
             q.ppe += 5;
         });
-        if (totaljudged.length === 3) {
-            screen.createBold(
-                `${totaljudged.map(q => q.getName()).join(", ")}, you represent the Top 3 All Stars of the week.`,
-                "judged"
-            );
-        } else {
-            screen.createBold(
-                `${totaljudged.map(q => q.getName()).join(", ")}, you represent the Top 2 All Stars of the week.`,
-                "judged"
-            );
-        }
+        screen.createBold(
+            `${totaljudged.map(q => q.getName()).join(", ")}, you represent the Top ${totaljudged.length} All Stars of the week.`,
+            "judged"
+        );
 
         if (highQueen) {
             screen.createImage(highQueen.image, "lightblue");
@@ -2453,7 +2594,11 @@ function lipsyncDesc() {
     screen.clean();
 
     for (let i = 0; i < bottomQueens.length; i++) {
-        bottomQueens[i].getLipsync();
+        if (lipsyncRiggory) {
+            bottomQueens[i].getLipsync();
+        } else {
+            bottomQueens[i].getASLipsync();
+        }
     }
 
     let event = checkForLipsyncEvent(bottomQueens);
@@ -2464,9 +2609,6 @@ function lipsyncDesc() {
         eventQueen.lipsyncScore += event.points;
     }
     generateLipsyncPerformances(bottomQueens);
-    for (let i = 0; i < bottomQueens.length; i++) {
-        bottomQueens[i].lipsyncScore = (bottomQueens[i].lipsyncScore - bottomQueens[i].favoritism) + bottomQueens[i].unfavoritism;
-    }
     screen.createButton("Show result", "lipSync()");
 }
 
@@ -2577,7 +2719,13 @@ function resolveSmackdownRound(roundNumber = 1) {
             return;
         }
 
-        match.forEach(q => q.getASLipsync());
+        match.forEach(q => {
+            if (lipsyncRiggory) {
+                q.getLipsync();
+            } else {
+                q.getASLipsync();
+            }
+        });
         match.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
 
         const winner = match[0];
@@ -2804,7 +2952,7 @@ function createTrackRecordTable(groupName) {
     }
 
     if (groupName === "Mergers") {
-        const rankOrder = ["RTRNWINNER", "WINNER", "RTRNWIN", "RTRN WIN", "RTRN WIN ", "WIN", "RTRNLR3", "LR3", "RTRNLR2", "LR2", "RTRNLR1", "LR1", "RTRNHIGH", "HIGH", "RTRNSAFE", "SAFE", "RTRNLOW", "LOW", "RTRNBTM2", "BTM2", "RTRNELIM", "ELIM", ""];
+        const rankOrder = ["RTRNWINNER", "WINNER", "RTRNWIN", "RTRN WIN", "RTRN WIN ", "WIN", "RTRNLR4", "LR4", "RTRNLR3", "LR3", "RTRNLR2", "LR2", "RTRNLR1", "LR1", "RTRNHIGH", "HIGH", "RTRNSAFE", "SAFE", "RTRNLOW", "LOW", "RTRNBTM2", "BTM2", "RTRNELIM", "ELIM", ""];
 
         cast.sort((a, b) => {
             const validA = a.trackRecord.filter(p => p && !["", "RTRN"].includes(p));
@@ -2915,6 +3063,10 @@ function createTrackRecordTable(groupName) {
             switch (performance.toUpperCase()) {
                 case "RTRNWINNER": td.style.backgroundColor = "yellow"; td.style.fontWeight = "bold"; td.innerHTML = 'RTRN<br>+<br>WINNER';break;
                 case "WINNER": td.style.backgroundColor = "yellow"; td.style.color = "black"; td.style.fontWeight = "bold"; break;
+                case "RTRNLR5": td.style.backgroundColor = "#ffd911"; td.style.fontWeight = "bold"; td.innerHTML = 'RTRN<br>+<br>LOST<br>5TH<br>ROUND';break;
+                case "LR5": td.style.backgroundColor = "#ffd911"; td.style.fontWeight = "bold"; td.innerHTML = 'LOST<br>5TH<br>ROUND';break;
+                case "RTRNLR4": td.style.backgroundColor = "#ffdb24"; td.style.fontWeight = "bold"; td.innerHTML = 'RTRN<br>+<br>LOST<br>4TH<br>ROUND';break;
+                case "LR4": td.style.backgroundColor = "#ffdb24"; td.style.fontWeight = "bold"; td.innerHTML = 'LOST<br>4TH<br>ROUND';break;
                 case "RTRNLR3": td.style.backgroundColor = "#ffd100"; td.style.fontWeight = "bold"; td.innerHTML = 'RTRN<br>+<br>LOST<br>3RD<br>ROUND';break;
                 case "LR3": td.style.backgroundColor = "#ffd100"; td.style.fontWeight = "bold"; td.innerHTML = 'LOST<br>3RD<br>ROUND';break;
                 case "RTRNLR2": td.style.backgroundColor = "#ffae00"; td.style.fontWeight = "bold"; td.innerHTML = 'RTRN<br>+<br>LOST<br>2ND<br>ROUND';break;

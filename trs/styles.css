@@ -173,6 +173,28 @@ select {
     transition: all 0.3s ease;
 }
 
+input[type="checkbox"] {
+    display: none;
+}
+
+input[type="checkbox"] + label {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+    margin: 0.5rem 0 1rem 0;
+}
+
+input[type="checkbox"]:checked + label {
+    background: rgba(255, 255, 255, 0.35);
+    color: #fff;
+}
+
+
 select:hover, select:focus {
     background: rgba(255, 255, 255, 0.25);
 }
