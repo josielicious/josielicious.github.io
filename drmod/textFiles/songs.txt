@@ -395,7 +395,7 @@
 "Numb by Linkin Park",
 "Gimme Gimme Gimme! by ABBA",
 "Dancing Queen by ABBA",
-"This Is How To Be A Heartbreaker by MARINA",
+"How To Be A Heartbreaker by MARINA",
 "You Won't Forget Me by La Bouche",
 "Doo Woop by Lauryn Hill",
 "Number One by Pabllo Vittar",
@@ -618,4 +618,5 @@
 "I Am What I Am by Gloria Gaynor",
 "He Said She Said by Ashley Tisdale",
 "I’m So Hot by Chrissy Chlapecka",
-"Saturday Night by Natalia Kills"
+"Saturday Night by Natalia Kills",
+"Actor by Conan Gray"
