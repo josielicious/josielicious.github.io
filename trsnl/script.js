@@ -1753,8 +1753,12 @@ function restartSimulation() {
     BracketC = fullCast.filter(q => q.assignedBracket === "C");
 
     fullCast.forEach(q => {
-        q.trackrecord = [];
+        q.trackRecord = [];
         q.stars = 0;
+        q.rankP = "";
+        q.title = "";
+        q.miniEpisode = [];
+        q.ogPlace = 0;
     })
 
     episodeChallenges = [];
