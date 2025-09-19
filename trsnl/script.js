@@ -1185,6 +1185,9 @@ let phase = "bracket"; // bracket, merge, finale
 let currentBracketIndex = 0;
 let episodeCount = 0;
 
+let lipsyncTiebreak = false;
+let lipsyncRiggory = false;
+
 let mergeFormat = "normal";
 let judgingType = "canon";
 
@@ -1786,6 +1789,9 @@ function startSimulation() {
     let riggory = document.getElementById("riggory");
     lipsyncRiggory = riggory.checked;
 
+    let lsTiebreak = document.getElementById("lstb");
+    lipsyncTiebreak = lsTiebreak.checked;
+
     let wildcard = document.getElementById("wildcard-format");
     wildcardType = wildcard.options[wildcard.selectedIndex].value;
 
@@ -1806,6 +1812,8 @@ function restartSimulation() {
     fullCast.forEach(q => {
         q.trackRecord = [];
         q.stars = 0;
+        q.ppe = 0;
+        q.episodesOn = 0;
         q.rankP = "";
         q.title = "";
         q.miniEpisode = [];
@@ -1916,8 +1924,33 @@ function announcePassers() {
 
     currentCast.sort((a, b) => b.stars - a.stars);
 
-    const passers = currentCast.slice(0, amountPassers);
-    const eliminated = currentCast.filter(queen => !passers.includes(queen));
+    const cutoffScore = currentCast[amountPassers - 1].stars;
+    const tiedAtCutoff = currentCast.filter(q => q.stars === cutoffScore);
+
+    let passers = [];
+    let eliminated = [];
+
+    screen.createBigText("The final decision...");
+    screen.createBold("The queens will be notified if they passed or not...");
+    if (tiedAtCutoff.length > 1) {
+        screen.createHorizontalLine();
+        screen.createBigText("The tie breaker...");
+        passers = currentCast.filter(q => q.stars > cutoffScore);
+
+        const remainingSlots = amountPassers - passers.length;
+
+        passers = passers.concat(tiedAtCutoff.slice(0, remainingSlots));
+
+        eliminated = currentCast.filter(q => !passers.includes(q));
+        tiedAtCutoff.slice(0, remainingSlots).forEach(q => {
+            screen.createImage(q.image, "gold");
+            screen.createBold(`${q.getName()} was selected to make merge.`);
+        });
+        screen.createHorizontalLine();
+    } else {
+        passers = currentCast.slice(0, amountPassers);
+        eliminated = currentCast.slice(amountPassers);
+    }
 
     passers.forEach(q => {
         if (!Mergers.includes(q)) Mergers.push(q);
