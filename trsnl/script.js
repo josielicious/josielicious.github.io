@@ -1752,7 +1752,14 @@ function restartSimulation() {
     BracketB = fullCast.filter(q => q.assignedBracket === "B");
     BracketC = fullCast.filter(q => q.assignedBracket === "C");
 
-    Mergers = [];;
+    fullCast.forEach(q => {
+        q.trackrecord = [];
+        q.stars = 0;
+    })
+
+    episodeChallenges = [];
+
+    Mergers = [];
     eliminatedCast = [];
 
     seasonOver = false;
