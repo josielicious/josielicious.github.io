@@ -97,7 +97,7 @@ hr {
     margin: 1em 0;
 }
 
-#simulation-block img, #queen-preview img {
+#simulation-block img:not(.arrow), #queen-preview img {
     border-radius: 100%;
     border-style: solid;
     border-width: 3px;

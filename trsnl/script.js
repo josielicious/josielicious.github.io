@@ -13,86 +13,88 @@ class Queen {
         this.rankP = 0;
         this.ogPlace = 0;
         this.title = "";
+
         this._name = name;
-        this._actingStat = acting;
-        this._comedyStat = comedy;
-        this._danceStat = dance;
-        this._designStat = design;
-        this._improvStat = improv;
-        this._runwayStat = runway;
-        this._lipsyncStat = lipsync;
+        this.stats = {
+            acting,
+            comedy,
+            dance,
+            design,
+            improv,
+            runway,
+            lipsync
+        };
+
         if (image === "noimage") {
             this.image = "images/queens/noimage.png";
-        } else if (custom === true) {
+        } else if (custom) {
             this.image = image;
         } else {
-            this.image = "images/queens/" + image + ".webp";
+            this.image = `images/queens/${image}.webp`;
         }
     }
+
     _calculateScores(min, max, stat = 0) {
         let score = randomNumber(min, max);
         return score - stat;
     }
+
     getName() {
         return this._name;
     }
-    getLipSyncStat() {
-        return this._lipsyncStat;
+
+    getStat(statName) {
+        return this.stats[statName] || 0;
     }
-    getActing() {
-        this.performanceScore = this._calculateScores(15, 35, this._actingStat);
+
+    getPerformance(type) {
+        const ranges = {
+            acting:    [15, 35, this.getStat("acting")],
+            comedy:    [15, 35, this.getStat("comedy")],
+            marketing: [25, 45, this.getStat("comedy") + this.getStat("acting")],
+            dance:     [15, 35, this.getStat("dance")],
+            design:    [15, 35, this.getStat("design")],
+            runwayCh:  [15, 35, this.getStat("runway")],
+            improv:    [15, 35, this.getStat("improv")],
+            snatch:    [25, 45, this.getStat("improv") + this.getStat("comedy")],
+            rusical:   [25, 45, this.getStat("dance") + this.getStat("lipsync")],
+            ball:      [25, 45, this.getStat("design") + this.getStat("runway")],
+            rumix:     [25, 45, this.getStat("dance") + this.getStat("improv")],
+            talent:    [15, 35, randomNumber(1, 35)]
+        };
+
+        if (!ranges[type]) return;
+        let [min, max, stat] = ranges[type];
+        this.performanceScore = this._calculateScores(min, max, stat);
     }
-    getComedy() {
-        this.performanceScore = this._calculateScores(15, 35, this._comedyStat);
-    }
-    getMarketing() {
-        this.performanceScore = this._calculateScores(25, 45, this._comedyStat + this._actingStat);
-    }
-    getDance() {
-        this.performanceScore = this._calculateScores(15, 35, this._danceStat);
-    }
-    getDesign() {
-        this.performanceScore = this._calculateScores(15, 35, this._designStat);
-    }
-    getRunwayChallenge() {
-        this.performanceScore = this._calculateScores(15, 35, this._runwayStat);
-    }
-    getImprov() {
-        this.performanceScore = this._calculateScores(15, 35, this._improvStat);
-    }
-    //special 'gets':
-    getSnatch() {
-        this.performanceScore = this._calculateScores(25, 45, this._improvStat + this._comedyStat);
-    }
-    getRusical() {
-        this.performanceScore = this._calculateScores(25, 45, this._danceStat + this._lipsyncStat);
-    }
-    getBall() {
-        this.performanceScore = this._calculateScores(25, 45, this._designStat + this._runwayStat);
-    }
-    getRumix() {
-        this.performanceScore = this._calculateScores(25, 45, this._danceStat + this._improvStat);
-    }
-    getTalentShow() {
-        this.performanceScore = this._calculateScores(15, 35, randomNumber(1, 35));
-    }
+
     getFinale() {
         this.finaleScore = this.favoritism - this.unfavoritism;
     }
+
     getRunway() {
-        this.runwayScore = this._calculateScores(12, 35, this._runwayStat);
+        this.runwayScore = this._calculateScores(12, 35, this.getStat("runway"));
     }
+
     getLipsync() {
-        this.lipsyncScore = this._calculateScores(0, this._lipsyncStat) + this.unfavoritism - this.favoritism;
+        this.lipsyncScore =
+            this._calculateScores(0, this.getStat("lipsync")) +
+            this.unfavoritism -
+            this.favoritism;
     }
+
     getASLipsync() {
-        this.lipsyncScore = this._calculateScores(0, this._lipsyncStat);
+        this.lipsyncScore = this._calculateScores(0, this.getStat("lipsync"));
     }
+
     addToTrackRecord(placement) {
         this.trackRecord.push(placement);
     }
+
     editTrackRecord(added) {
-        this.trackRecord[this.trackRecord.length - 1] += added;
+        if (this.trackRecord.length > 0) {
+            this.trackRecord[this.trackRecord.length - 1] += added;
+        }
     }
 }
 
@@ -1223,82 +1225,93 @@ function shuffle(array) {
 // SCREEN CLASS
 // ==============================
 class Scene {
-    constructor(div = undefined) {
-        this._MainBlock = div || document.querySelector("div#simulation-block");
-        if (div) document.querySelector("div#simulation-block").appendChild(this._MainBlock);
+    constructor(div = null) {
+        this._MainBlock = div || document.querySelector("#simulation-block");
+        if (div && !this._MainBlock.isConnected) {
+            document.querySelector("#simulation-block").appendChild(this._MainBlock);
+        }
+        this._scrollHandler = null;
     }
 
     clean() {
-        this._MainBlock.innerHTML = '';
-        this.createRightClick();
-        let scrollup = document.querySelector(".toTop");
-        window.addEventListener("scroll", () => {
-            scrollup.classList.toggle("active", window.scrollY > 100);
-        });
+        this._MainBlock.innerHTML = "";
+        this._setupRightClickField();
+        this._setupScrollToTop();
     }
 
-    createRightClick() {
+    _setupRightClickField() {
         if (!document.getElementById("inputRightKey")) {
             let text = document.createElement("input");
-            text.className = "textRightClick";
             text.id = "inputRightKey";
+            text.className = "textRightClick";
             text.type = "text";
             text.readOnly = true;
             this._MainBlock.parentElement.appendChild(text);
         }
     }
 
+    _setupScrollToTop() {
+        let scrollBtn = document.querySelector(".toTop");
+        if (!scrollBtn) return;
+
+        if (this._scrollHandler) {
+            window.removeEventListener("scroll", this._scrollHandler);
+        }
+
+        this._scrollHandler = () => {
+            scrollBtn.classList.toggle("active", window.scrollY > 100);
+        };
+
+        window.addEventListener("scroll", this._scrollHandler);
+    }
+
     createHeader(text) {
-        document.getElementById("MainTitle").innerHTML = text;
+        let header = document.getElementById("MainTitle");
+        if (header) header.innerHTML = text;
     }
 
     createBigText(text) {
-        let big = document.createElement("big");
         let p = document.createElement("p");
+        let big = document.createElement("big");
         big.innerHTML = text;
         p.appendChild(big);
         this._MainBlock.appendChild(p);
     }
 
-    createParagraph(text, id = '') {
+    createParagraph(text, id = "") {
         let p = document.createElement("p");
-        p.innerHTML = text;
         if (id) p.id = id;
+        p.innerHTML = text;
         this._MainBlock.appendChild(p);
     }
 
-    createBold(text, id = '', id1 = '') {
+    createBold(text, id = "", parentId = "") {
         let p = document.createElement("p");
-        if (id1) p.id = id1;
+        if (parentId) p.id = parentId;
+
         let bold = document.createElement("b");
         if (id) bold.id = id;
         bold.innerHTML = text;
+
         p.appendChild(bold);
         this._MainBlock.appendChild(p);
     }
 
-    createButton(text, method, id = '') {
+    createButton(text, method, id = "") {
         let button = document.createElement("button");
         button.innerHTML = text;
         if (id) button.id = id;
-        button.setAttribute("onclick", method);
+
+        if (typeof method === "function") {
+            button.addEventListener("click", method);
+        } else if (typeof method === "string") {
+            button.setAttribute("onclick", method);
+        }
+
         this._MainBlock.appendChild(button);
+
         if (text === "Proceed" || text === "Show result") {
-            let textField = document.getElementById("inputRightKey");
-            textField.focus();
-            textField.addEventListener("keydown", (e) => {
-                let key = e.key;
-                if (key === "ArrowRight" && document.querySelector("button[onclick='`${method}`']") == button) {
-                    e.target.remove();
-                    button.click();
-                    this.goToTop();
-                }
-            }, {once: true});
-            document.addEventListener("click", e => {
-                if (e.target.matches('div#simulation-block') === false && e.target.matches('select') === false) {
-                    textField.focus();
-                }
-            });
+            this._bindRightArrowShortcut(button);
         }
     }
 
@@ -1309,12 +1322,50 @@ class Scene {
     createImage(source, color = "black") {
         let image = document.createElement("img");
         image.src = source;
-        image.style.cssText = `border-color: ${color}; width: 105px; height: 105px;`;
+        image.style.cssText = `
+            border: 3px solid ${color};
+            width: 105px;
+            height: 105px;
+            border-radius: 100%;
+            object-fit: cover;
+        `;
         this._MainBlock.appendChild(image);
     }
 
+    createArrow() {
+        let image = document.createElement("img");
+        image.src = "images/arrowGive.png";
+        image.class = "arrow";
+        image.style.cssText = `
+            border: 0px solid black};
+            width: 55px;
+            height: 55px;
+            object-fit: cover;
+        `;
+        this._MainBlock.appendChild(image);
+    }
+
+    _bindRightArrowShortcut(button) {
+        let textField = document.getElementById("inputRightKey");
+        if (!textField) return;
+
+        textField.focus();
+        textField.onkeydown = (e) => {
+            if (e.key === "ArrowRight") {
+                button.click();
+                this.goToTop();
+            }
+        };
+
+        document.addEventListener("click", (e) => {
+            if (!e.target.closest("#simulation-block") && e.target.tagName !== "SELECT") {
+                textField.focus();
+            }
+        }, { once: true });
+    }
+
     goToTop() {
-        this._MainBlock.scrollIntoView({ behavior: 'smooth' });
+        this._MainBlock.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 }
 
@@ -1372,7 +1423,7 @@ class DesignChallenge extends Challenge {
 
     rankPerformances() {
         for (let i = 0; i < currentCast.length; i++) {
-            currentCast[i].getDesign();
+            currentCast[i].getPerformance("design");
         }
         sortPerformances(currentCast);
     }
@@ -1399,7 +1450,7 @@ class RumixChallenge extends Challenge {
 
     rankPerformances() {
         for (let i = 0; i < currentCast.length; i++) {
-            currentCast[i].getRumix();
+            currentCast[i].getPerformance("rumix");
         }
         sortPerformances(currentCast);
     }
@@ -1430,7 +1481,7 @@ class RoastChallenge extends Challenge {
 
     rankPerformances() {
         for (let i = 0; i < currentCast.length; i++) {
-            currentCast[i].getImprov();
+            currentCast[i].getPerformance("improv");
         }
         sortPerformances(currentCast);
     }
@@ -1838,7 +1889,7 @@ function pointCeremony() {
     let screen = new Scene();
     screen.clean();
     screen.createBigText("The point ceremony")
-    screen.createHorizontalLine();
+    screen.createBold("The queens will exchange points between themselves.");
     let queensToDonate = currentCast.filter(q => {
         let lastPlacement = q.trackRecord[q.trackRecord.length - 1].trim();
         return lastPlacement !== "WIN";
@@ -1852,7 +1903,6 @@ function pointCeremony() {
         screen.createBold(`${q.getName()} has given her point to ${chosenQueen.getName()}`);
         chosenQueen.stars += 1;
     });
-    screen.createHorizontalLine();
     if (phase === "bracket" && (episodeCount % 3 === 0)) {
         screen.createButton("Announce Passers", "announcePassers()");
     } else {
