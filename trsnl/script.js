@@ -1571,7 +1571,54 @@ function createCastItem(q) {
         updateCastScreen();
     });
 
-    div.append(img, name, button);
+    const assignBtn = document.createElement("i");
+    assignBtn.className = "fa-solid fa-list";
+    assignBtn.style.cssText = "position:absolute;top:5px;left:5px;cursor:pointer;z-index:1001;";
+    assignBtn.title = "Assign to Bracket";
+
+    assignBtn.addEventListener("click", () => {
+        document.querySelectorAll(".bracket-menu").forEach(m => m.remove());
+
+        const menu = document.createElement("div");
+        menu.className = "bracket-menu";
+
+        BRACKETS.forEach(b => {
+            const count = currentCast.filter(q => q.assignedBracket === b).length;
+            if (count < QUEENS_PER_BRACKET) {
+                const option = document.createElement("div");
+                option.innerText = `Bracket ${b}`;
+                option.addEventListener("click", () => {
+                    q.assignedBracket = b;
+                    updateCastScreen();
+                    menu.remove();
+                });
+                menu.appendChild(option);
+            }
+        });
+
+        const cancel = document.createElement("div");
+        cancel.innerText = "Unassign";
+        cancel.style.color = "red";
+        cancel.addEventListener("click", () => {
+            delete q.assignedBracket;
+            updateCastScreen();
+            menu.remove();
+        });
+        menu.appendChild(cancel);
+
+        document.body.appendChild(menu);
+
+        setTimeout(() => {
+            document.addEventListener("click", function handler(e) {
+                if (!menu.contains(e.target) && e.target !== assignBtn) {
+                    menu.remove();
+                    document.removeEventListener("click", handler);
+                }
+            });
+        }, 50);
+    });
+
+    div.append(img, name, button, assignBtn);
     return div;
 }
 
