@@ -1576,6 +1576,9 @@ function createCastItem(q) {
     assignBtn.style.cssText = "position:absolute;top:5px;left:5px;cursor:pointer;z-index:1001;";
     assignBtn.title = "Assign to Bracket";
 
+    assignBtn.addEventListener("mousedown", e => e.stopPropagation());
+    assignBtn.addEventListener("touchstart", e => e.stopPropagation());
+
     assignBtn.addEventListener("click", () => {
         document.querySelectorAll(".bracket-menu").forEach(m => m.remove());
 
