@@ -1100,6 +1100,154 @@ let SatinGrecoES5 = new Queen("Satin Greco", 7, 7, 7, 7, 7, 7, 7, "https://stati
 
 let ES5_Cast = [AlexandraDelRavalES5, DafneMuglerES5, DenebolaMurnauES5, EvaHarringtonES5, FerrxnES5, KrystalForeverES5, LaEscandaloES5, LacaUdilaES5, MargaritaKalifataES5, NixES5, NoriES5, SatinGrecoES5];
 
+// CUSTOM LMD QUEENS
+let konnykortez = new Queen("Konny Kortez", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/Wvh1B0yH/IMG-3947.jpg");
+let patypiñata = new Queen("Paty Piñata", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/qMrvsv4N/IMG-3948.jpg");
+let brightystun = new Queen("Brighty Stun", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/nWcjw6M/IMG-3949.jpg");
+let ricurasantana = new Queen("Ricura Santana", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/S4kLc5DF/IMG-3946.jpg");
+let mоonLMD = new Queen("Mоon", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/8L2WnjTW/IMG-3950.jpg");
+let deetoxalanis = new Queen("Deetox Alanis", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/VsygcZL/IMG-3951.jpg");
+let tulsawalpurgis = new Queen("Tulsa Walpurgis", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/fVc8y9RW/IMG-3945.jpg");
+let gretagrimm = new Queen("Greta Grimm", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/NddFZnb6/IMG-3952.jpg");
+let nayladowns = new Queen("Nayla Downs", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/WNdGyWTM/IMG-3959.jpg");
+let oslo = new Queen("Oslo", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/zWGmhzC6/IMG-3955.jpg");
+let calypso = new Queen("Calypso", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/ZpVdqcpL/IMG-3957.jpg");
+let caoslascivia = new Queen("Caos Lascivia", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/PvzL9f7h/IMG-3956.jpg");
+let candelayeye = new Queen("Candela Yeye", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/PJpbzxX/IMG-3954.jpg");
+let axelledevil = new Queen("Axelle De Vil", 7, 7, 7, 7, 7, 7, 7, "https://i.ibb.co/PsBZRBKH/IMG-3953.jpg");
+let cattriona = new Queen("Cattriona", 8, 7, 15, 10, 7, 10, 15, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/2/2f/CattrionaLMD6CastMug.jpg");
+let juanaguadalupe = new Queen("Juana Guadalupe", 9, 10, 8, 8, 9, 13, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/19/JuanaGuadalupeLMD6CastMug.jpg");
+let aries = new Queen("Aries", 10, 9, 8, 13, 8, 15, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/3/39/AriesLMD6CastMug.jpg");
+let electrawalpurgis = new Queen("Electra Walpurgis", 8, 7, 8, 9, 7, 11, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/e/e0/ElectraWalpurgisLMD6CastMug.jpg");
+let lakyliezz = new Queen("La Kyliezz", 9, 8, 9, 5, 7, 9, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/fd/LaKyliezzLMD6CastMug.jpg");
+let kellycaracas = new Queen("Kelly Caracas", 6, 6, 10, 9, 6, 10, 11, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/9/96/KellyLMD6CastMug.jpg");
+let shantelle = new Queen("Shantelle", 7, 8, 10, 6, 8, 9, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/64/ShantelleLMD6CastMug.jpg");
+let arielLMD = new Queen("Ariel", 6, 6, 9, 10, 6, 11, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/e/e7/ArielLMD6CastMug.jpg");
+let alexismvgler = new Queen("Alexis Mvgler", 6, 5, 5, 6, 5, 6, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/19/AlexisMvglerLMD6CastMug.jpg");
+let purga = new Queen("Purga", 8, 8, 6, 5, 6, 8, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/f3/PurgaLMD6CastMug.jpg");
+let braulio8000 = new Queen("Braulio 8000", 6, 6, 5, 8, 6, 10, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/5/5f/Braulio8000LMD6CastMug.jpg");
+let ankcosart = new Queen("Ank Cosart", 4, 4, 4, 9, 4, 9, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/d/de/AnkCosartLMD6CastMug.jpg");
+let mizzpeaches = new Queen("Mizz Peaches", 4, 4, 4, 4, 4, 2, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/4/4a/MizzPeachesLMD6CastMug.jpg");
+let dimittra = new Queen("Dimittra", 6, 7, 9, 9, 8, 11, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/8/84/DimittraLMD6CastMug.jpg");
+let deseosfab = new Queen("Deseos Fab", 6, 9, 4, 10, 8, 10, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/0b/DeseosFabLMD5CastMug.jpg");
+let isabellaycatalina = new Queen("Isabella y Catalina", 5, 5, 10, 5, 4, 8, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/13/IsabellayCatalinaLMD5CastMug.jpg");
+let humakyle = new Queen("Huma Kyle", 8, 7, 5, 4, 4, 7, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/6e/HumaKyleLMD5CastMug.jpg");
+let lightking = new Queen("Light King", 4, 6, 4, 10, 8, 10, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cd/LightKingLMD5CastMug.jpg");
+let aishadollkills = new Queen("Aisha Dollkills", 4, 4, 8, 5, 4, 7, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/b/bc/AishaDollkillsLMD5CastMug.jpg");
+let pekebalderas = new Queen("Peke Balderas", 10, 9, 9, 8, 11, 10, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/9/98/PekeBalderasLMD5CastMug.jpg");
+let grethawhite = new Queen("Gretha White", 9, 8, 9, 11, 8, 11, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cf/GrethaWhiteLMD5CastMug.jpg");
+let santalucía = new Queen("Santa Lucía", 4, 4, 8, 10, 6, 8, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/ff/SantaLucíaLMD5CastMug.jpg");
+let hiddenmistake = new Queen("Hidden Mistake", 5, 4, 11, 11, 4, 12, 11, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/a4/HiddenMistakeLMD5CastMug.jpg");
+let lizazanzuzzi = new Queen("Liza Zan Zuzzi", 11, 10, 8, 2, 11, 8, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cc/LizaZanZuzziLMD5CastMug.jpg");
+let papercut = new Queen("Paper Cut", 7, 8, 8, 13, 10, 13, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/2/23/PaperCutLMD5CastMug.jpg");
+let fifíestah = new Queen("Fifí Estah", 8, 8, 14, 5, 9, 11, 14, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/a1/FifiEstahLMD5CastMug.jpg");
+let rebelmörk = new Queen("Rebel Mörk", 9, 8, 9, 9, 6, 13, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cc/RebelMörkLMD4CastMug.jpg");
+let cpher = new Queen("C-Pher", 8, 7, 11, 15, 7, 15, 9, "https://i.postimg.cc/vmyX6cMn/IMG-6370.jpg");
+let irisxc = new Queen("Iris XC", 9, 9, 8, 9, 9, 9, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/c3/IrisXCLMD4CastMug.jpg");
+let lamorralisa = new Queen("La Morra Lisa", 8, 7, 6, 7, 7, 10, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/ae/LaMorraLisaLMD4CastMug.jpg");
+let lupitakush = new Queen("Lupita Kush", 5, 6, 7, 6, 8, 7, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/e/e1/LupitaKushLMD4CastMug.jpg");
+let georgiana = new Queen("Georgiana", 7, 10, 8, 7, 10, 12, 7, "https://i.postimg.cc/ncQ1Rvh7/IMG-6374.jpg");
+let veracruz = new Queen("Vera Cruz", 10, 12, 6, 6, 12, 9, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/9/9d/VeraCruzLMD4CastMug.jpg");
+let tiresias = new Queen("Tiresias", 4, 4, 8, 4, 4, 7, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/6b/TiresiasLMD4CastMug.jpg");
+let sirena = new Queen("Sirena", 9, 7, 11, 8, 9, 13, 11, "https://i.postimg.cc/BbRBZvMX/IMG-6373.jpg");
+let lacarrera = new Queen("La Carrera", 5, 5, 4, 5, 4, 5, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/10/LaCarreraLMD4CastMug.jpg");
+let aurorawonders = new Queen("Aurora Wonders", 4, 4, 4, 4, 4, 2, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/12/AuroraWondersLMD4CastMug.jpg");
+let madisonbasrey = new Queen("Madison Basrey", 11, 10, 9, 7, 10, 11, 10, "https://i.postimg.cc/vTT0HkyS/IMG-6372.jpg");
+let rudyreyes = new Queen("Rudy Reyes", 8, 7, 11, 6, 7, 8, 12, "https://i.postimg.cc/fbMjRpjj/IMG-6375.jpg");
+let aviescwho = new Queen("Aviesc Who?", 7, 5, 5, 15, 5, 15, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cf/AviescWhoLMD3CastMug.jpg");
+let ragadiamante = new Queen("Raga Diamante", 10, 10, 8, 7, 10, 10, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/5/5d/RagaDiamanteLMD3CastMug.jpg");
+let mistaboo = new Queen("Mista Boo", 9, 8, 6, 7, 8, 8, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/2/24/MistaBooLMD3CastMug.jpg");
+let memoreyri = new Queen("Memo Reyri", 6, 9, 6, 7, 10, 8, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/7/79/MemoReyriLMD3CastMug.jpg");
+let reginabronx = new Queen("Regina Bronx", 8, 9, 8, 7, 10, 8, 11, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/4/44/ReginaBronxLMD3CastMug.jpg");
+let ivizalioza = new Queen("Iviza Lioza", 5, 6, 5, 5, 6, 6, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/0e/IvizaLiozaLMD3CastMug.jpg");
+let wynter = new Queen("Wynter", 6, 6, 5, 5, 5, 6, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/18/WynterLMD3CastMug.jpg");
+let huntyyb = new Queen("Huntyy B", 6, 6, 7, 8, 6, 10, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/d/db/HuntyyBLMD3CastMug.jpg");
+let stupidrag = new Queen("Stupidrag", 4, 4, 6, 4, 4, 6, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/f9/StupiDragLMD3CastMug.jpg");
+let yayoibowery = new Queen("Yayoi Bowery", 4, 4, 4, 4, 4, 7, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/a4/YayoiBoweryLMD3CastMug.jpg");
+let soronasty = new Queen("Soro Nasty", 8, 8, 9, 10, 8, 12, 10, "https://i.postimg.cc/RFMP2qDm/IMG-6371.jpg");
+let gvajardo = new Queen("Gvajardo", 8, 7, 7, 6, 8, 10, 9, "https://i.postimg.cc/J4J2DwJ9/IMG-6380.jpg");
+let alexis3xl = new Queen("Alexis 3XL", 7, 9, 6, 13, 9, 14, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/7/75/Alexis3XLCastMug.jpg");
+let leandrarose = new Queen("Leandra Rose", 4, 4, 5, 4, 4, 6, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/8/8b/LeandraRoseLMD2CastMug.jpg");
+let redrabbitduo = new Queen("Red Rabbit Duo", 6, 5, 9, 6, 6, 10, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/5/56/RedRabbitDuoLMD2CastMug.jpg");
+let ameliawaldorf = new Queen("Amelia Waldorf", 6, 6, 7, 10, 6, 10, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/6e/AmeliaWaldorfLMD2CastMug.png");
+let jobstar = new Queen("Job Star", 6, 6, 7, 5, 6, 7, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/8/81/JobStarLMD2CastMug.jpg");
+let deborahlagrande = new Queen("Deborah La Grande", 8, 9, 7, 6, 8, 7, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/05/DeborahLaGrandeLMD1CastMug.png");
+let bárbaradurango = new Queen("Bárbara Durango", 10, 8, 8, 8, 9, 9, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/0a/BárbaraDurangoLMD1CastMug.png");
+let lanaboswell = new Queen("Lana Boswell", 5, 5, 5, 8, 5, 10, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/d/d1/LanaLMD1CastMug.png");
+let cordeliadurango = new Queen("Cordelia Durango", 4, 4, 4, 4, 4, 8, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/b/b4/CordeliaDurangoLMD1CastMug.png");
+let debramen = new Queen("Debra Men", 6, 7, 7, 5, 5, 6, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/18/DebraMenLMD1CastMug.png");
+let velvetine = new Queen("Velvetine", 9, 9, 10, 7, 8, 9, 8, "https://i.postimg.cc/y6D5K3N6/IMG-6379.jpg");
+let sophiajimenez = new Queen("Sophia Jiménez", 7, 7, 7, 7, 7, 7, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/d/d0/SophiaJim%C3%A9nezLMD2CastMug.jpg");
+
+let LMD1_Cast = [deborahlagrande, margaret, evaB, bárbaradurango, lanaboswell, debramen, cordeliadurango];
+let LMD2_Cast = [alexis3xl, sophiajimenez, gvajardo, jobstar, soronasty, ameliawaldorf, redrabbitduo, leandrarose, ninaD];
+let LMD3_Cast = [aviescwho, huntyyb, ivizalioza, lunaL, madisonbasrey, memoreyri, mistaboo, ragadiamante, reginabronx, rudyreyes, stupidrag, wynter, yayoibowery]
+let LMD4_Cast = [aurorawonders, cpher, elektraV, georgiana, irisxc, lacarrera, lamorralisa, leexa, lupitakush, papercut, rebelmörk, sirena, tiresias,  veracruz];
+let LMD5_Cast = [aishadollkills, deseosfab, fifíestah, grethawhite, hiddenmistake, humakyle, isabellaycatalina, lightking, lizazanzuzzi, papercut, pekebalderas, santalucía];
+let LMD6_Cast = [cattriona, juanaguadalupe, electrawalpurgis, aries, kellycaracas, lakyliezz, dimittra, shantelle, arielLMD, alexismvgler, purga, braulio8000, ankcosart, mizzpeaches];
+let LMD7_Cast = [konnykortez, patypiñata, brightystun, ricurasantana, mоonLMD, deetoxalanis, tulsawalpurgis, gretagrimm, nayladowns, oslo, calypso, caoslascivia, candelayeye, axelledevil];
+let SLM1_Cast = [cpher, georgiana, gvajardo, madisonbasrey, rudyreyes, sirena, soronasty, velvetine];
+
+let loris = new Queen("Loris", 5, 5, 9, 9, 5, 8, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/63/LorisTitans2CastMug.jpg");
+let frankieDoom = new Queen("Frankie Doom", 8, 6, 6, 7, 6, 8, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/9/94/FrankieDoomTitans2CastMug.jpg");
+let meatball = new Queen("Meatball", 10, 9, 5, 5, 8, 6, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/9/95/MeatballBBD1CastMug.png");
+let xochiMochi = new Queen("Xochi Mochi", 8, 6, 6, 8, 6, 8, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/9/9b/XochiMochiBBD1CastMug.png");
+let foxieAdjuia = new Queen("Foxie Adjuia", 6, 5, 7, 7, 4, 5, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/5/57/FoxieAdjuiaBBD1CastMug.png");
+let ursulaMajor = new Queen("Ursula Major", 4, 4, 3, 4, 4, 4, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/c7/UrsulaMajorBBD1CastMug.png");
+let pincheQueen = new Queen("Pinche Queen", 4, 4, 4, 3, 4, 4, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/3/3a/PincheQueenBBD1CastMug.png");
+let vanderVonOdd = new Queen("Vander Von Odd", 12, 8, 9, 12, 8, 13, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/0b/Vandervonodd_mug-dragula_s1.png");
+let melissaBefierce = new Queen("Melissa Befierce", 8, 6, 10, 7, 6, 9, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/3/3c/MelissaBefierceBBDT1CastMug.jpg");
+let abhora = new Queen("Abhora", 8, 8, 6, 9, 8, 10, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/14/AbhoraTitans2CastMug.jpg");
+let disasterina = new Queen("Disasterina", 9, 9, 6, 7, 8, 8, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/c4/DisasterinaTitans2CastMug.jpg");
+let biqtchPuddin = new Queen("Biqtch Puddin", 12, 10, 9, 7, 10, 9, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/8/8e/BiqtchPuddinBBD2CastMug.png");
+let majesty = new Queen("Majesty", 11, 6, 8, 11, 6, 12, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/b/b7/MajestyTBBDS6CastMug.jpg");
+let erikaKlash = new Queen("Erika Klash", 6, 5, 6, 6, 5, 7, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/1b/ErikaKlashBBDT1CastMug.jpg");
+let kendraOnixxx = new Queen("Kendra Onixxx", 4, 4, 5, 4, 5, 4, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/2/27/KendraOnixxxBBDT1CastMug.jpg");
+let victoriaElizabethBlack = new Queen("Victoria Elizabeth Black", 7, 6, 8, 15, 8, 15, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/f6/VictoriaElizabethBlackBBDT1CastMug.jpg");
+let dahli = new Queen("Dahli", 6, 7, 11, 10, 8, 12, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/b/b8/DahliBBD4CastMug.jpg");
+let felonyDodger = new Queen("Felony Dodger", 4, 4, 4, 4, 4, 4, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/4/40/FelonyDodgerBBD2CastMug.png");
+let monikkieShame = new Queen("Monikkie Shame", 3, 3, 3, 4, 3, 4, 3, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/14/MonikkieShameBBD2CastMug.png");
+let dollyaBlack = new Queen("Dollya Black", 7, 7, 10, 13, 7, 12, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/d/d4/DollyaBlackTitans2CastMug.jpg");
+let evahDestruction = new Queen("Evah Destruction", 10, 6, 12, 8, 8, 10, 12, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/00/EvahDestructionTitans2CastMug.jpg");
+let priscillaChambers = new Queen("Priscilla Chambers", 9, 9, 8, 8, 9, 9, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/e/ec/PriscillaChambersTitans2CastMug.jpg");
+let yovska = new Queen("Yovska", 8, 9, 4, 10, 8, 10, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cc/YovskaBBDT1CastMug.jpg");
+let landonCider = new Queen("Landon Cider", 9, 8, 9, 10, 7, 13, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/fb/LandonCiderBBD3CastMug.png");
+let louisiannaPurchase = new Queen("Louisianna Purchase", 10, 7, 10, 8, 8, 11, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/01/LouisiannaPurchaseBBD3CastMug.png");
+let maddelynnHatter = new Queen("Maddelynn Hatter", 5, 6, 5, 6, 5, 6, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/4/40/MaddelynnHatterBBD3CastMug.png");
+let hollowEve = new Queen("Hollow Eve", 10, 4, 6, 7, 6, 10, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/10/HollowEveBBD3CastMug.jpg");
+let maxiGlamour = new Queen("Maxi Glamour", 5, 4, 7, 5, 4, 5, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/9/9a/MaxiGlamourBBD3CastMug.jpg");
+let violenciaExclamationPoint = new Queen("Violencia Exclamation Point", 4, 4, 4, 3, 4, 3, 3, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/fd/ViolenciaBBD3CastMug.png");
+let saint = new Queen("Saint", 9, 6, 10, 9, 6, 12, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/b/b9/SaintBBD4CastMug.jpg");
+let laZavaleta = new Queen("La Zavaleta", 7, 6, 10, 7, 6, 8, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/f5/LaZavaletaTitans2CastMug.jpg");
+let sigourneyBeaver = new Queen("Sigourney Beaver", 10, 9, 11, 8, 8, 11, 11, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/66/SigourneyBeaverTitans2CastMug.jpg");
+let astrudAurelia = new Queen("Astrud Aurelia", 6, 6, 8, 10, 6, 11, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/8/84/AstrudAureliaBBDT1CastMug.jpg");
+let kocoCaine = new Queen("Koco Caine", 10, 8, 9, 6, 8, 9, 11, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/a9/KocoCaineBBDT1CastMug.jpg");
+let hoSoTerraToma = new Queen("HoSo Terra Toma", 13, 6, 8, 12, 7, 14, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/c/cc/HoSoTerraTomaBBDT1CastMug.jpg");
+let bitterBetty = new Queen("Bitter Betty", 6, 5, 6, 5, 6, 7, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/8/86/BitterBettyBBD4CastMug.jpg");
+let merrieCherry = new Queen("Merrie Cherry", 2, 2, 2, 2, 2, 2, 2, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/0d/MerrieCherryBBD4CastMug.jpg");
+let formeldaHyde = new Queen("Formelda Hyde", 4, 4, 4, 4, 4, 6, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/7/7e/FormeldaHydeBBD4CastMug.jpg");
+let jayKay = new Queen("Jay Kay", 8, 6, 9, 6, 6, 7, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/ad/JayKayTitans2CastMug.jpg");
+let cynthiaDoll = new Queen("Cynthia Doll", 9, 8, 8, 6, 8, 9, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/0/09/CynthiaDollTitans2CastMug.jpg");
+let blackberri = new Queen("Blackberri", 10, 6, 7, 8, 9, 10, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/d/d0/BlackberriTitans2CastMug.jpg");
+let satanna = new Queen("Satanna", 5, 5, 5, 5, 5, 8, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/f7/SatannaBBD5CastMug.jpg");
+let jarvisHammer = new Queen("Jarvis Hammer", 9, 8, 6, 6, 8, 9, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/2/2e/JarvisHammerBBD5CastMug.jpg");
+let throbZombie = new Queen("Throb Zombie", 10, 8, 9, 9, 8, 11, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/8/8e/ThrobZombieBBD5CastMug.jpg");
+let niohuruX = new Queen("Niohuru X", 10, 9, 7, 15, 9, 15, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/af/NiohuruXBBD5CastMug.jpg");
+let orkgotik = new Queen("Orkgotik", 8, 7, 10, 13, 8, 13, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/64/OrkgotikBBD5CastMug.jpg");
+let onyxOndyx = new Queen("Onyx Ondyx", 6, 6, 5, 6, 6, 8, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/7/76/OnyxOndyxBBD5CastMug.jpg");
+let annaPhylactic = new Queen("Anna Phylactic", 7, 7, 6, 6, 6, 8, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/f/f1/AnnaPhylacticBBD5CastMug.jpg");
+let fantasiaRoyaleGaga = new Queen("Fantasia Royale Gaga", 7, 7, 9, 6, 6, 8, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/1/1a/FantasiaRoyaleGagaBBD5CastMug.jpg");
+let jaharia = new Queen("Jaharia", 8, 7, 11, 5, 6, 7, 12, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/5/56/JahariaTitans2CastMug.jpg");
+let severityStone = new Queen("Severity Stone", 4, 4, 4, 4, 4, 4, 4, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/d/db/SeverityStoneTBBD6CastMug.jpg");
+let scylla = new Queen("Scylla", 6, 5, 6, 6, 5, 7, 6, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/6b/ScyllaTBBD6CastMug.jpg");
+let desireeDik = new Queen("Desiree Dik", 3, 3, 5, 5, 3, 5, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/ab/DesireeDikTBBD6CastMug.jpg");
+let auroraGozmic = new Queen("Aurora Gozmic", 9, 8, 9, 7, 6, 10, 10, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/6e/AuroraGozmicTBBD6CastMug.jpg");
+let vivviTheForce = new Queen("Vivvi The Force", 5, 5, 4, 7, 5, 8, 5, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/a/a6/VivviTheForceTBBDS6CastMug.jpg");
+let pi = new Queen("Pi", 8, 9, 10, 12, 8, 12, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/2/20/PiTBBD6CastMug.jpg");
+let auntieHeroine = new Queen("Auntie Heroine", 10, 7, 9, 10, 6, 11, 7, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/68/AuntieHeroineTBBD6CastMug.jpg");
+let greyMatter = new Queen("Grey Matter", 12, 9, 10, 15, 8, 15, 9, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/7/7c/GreyMatterTBBDS6CastMug.jpg");
+let asiaConsent = new Queen("Asia Consent", 10, 8, 8, 10, 8, 13, 8, "https://static.wikia.nocookie.net/logosrupaulsdragrace/images/6/66/AsiaConsentTBBDS6CastMug.jpg");
+
 let allQueens = [
     akashia, bebe, jade, ninaf, ongina, rebecca, shannel, tammie, victoria,
     jessica, jujubee, morgan, mystique, nicole, pandora, raven, sahara, shangela, sonique, tatianna, tyra,
@@ -1160,7 +1308,17 @@ let allQueens = [
     adora, bhelchi, chanelbr, desiree, melina, mellody, mercedez, paola, poseidon, rubyNox,
     barbie, kellyH, lele, loreley, metamorkid, nikita, pandoraNox, tessa, naomy, victoriaShakespears, yvonne,
     pangina, BonesUK7, BonnieAnnClydeUK7, CatrinFeelingsUK7, ChaiTGrandeUK7, ElleVosqueUK7, NyongbellaUK7, PaigeThreeUK7, PastyUK7, SallyTMUK7, SilllexaDictionUK7, TayrisMongardiUK7, ViolaUK7,
-    AlexandraDelRavalES5, DafneMuglerES5, DenebolaMurnauES5, EvaHarringtonES5, FerrxnES5, KrystalForeverES5, LaEscandaloES5, LacaUdilaES5, MargaritaKalifataES5, NixES5, NoriES5, SatinGrecoES5
+    AlexandraDelRavalES5, DafneMuglerES5, DenebolaMurnauES5, EvaHarringtonES5, FerrxnES5, KrystalForeverES5, LaEscandaloES5, LacaUdilaES5, MargaritaKalifataES5, NixES5, NoriES5, SatinGrecoES5,
+    deborahlagrande, margaret, bárbaradurango, lanaboswell, debramen, cordeliadurango,
+    alexis3xl, sophiajimenez, gvajardo, jobstar, soronasty, ameliawaldorf, redrabbitduo, leandrarose,
+    aviescwho, huntyyb, ivizalioza, lunaL, madisonbasrey, memoreyri, mistaboo, ragadiamante, reginabronx, rudyreyes, stupidrag, wynter, yayoibowery,
+    aurorawonders, cpher, elektraV, georgiana, irisxc, lacarrera, lamorralisa, lupitakush, papercut, rebelmörk, sirena, tiresias,  veracruz,
+    aishadollkills, deseosfab, fifíestah, grethawhite, hiddenmistake, humakyle, isabellaycatalina, lightking, lizazanzuzzi, papercut, pekebalderas, santalucía,
+    cattriona, juanaguadalupe, electrawalpurgis, aries, kellycaracas, lakyliezz, dimittra, shantelle, arielLMD, alexismvgler, purga, braulio8000, ankcosart, mizzpeaches,
+    konnykortez, patypiñata, brightystun, ricurasantana, mоonLMD, deetoxalanis, tulsawalpurgis, gretagrimm, nayladowns, oslo, calypso, caoslascivia, candelayeye, axelledevil,
+    velvetine,
+    loris, frankieDoom, meatball, xochiMochi, foxieAdjuia, ursulaMajor, pincheQueen, vanderVonOdd, melissaBefierce, abhora, disasterina, biqtchPuddin, majesty, erikaKlash, kendraOnixxx, victoriaElizabethBlack, dahli, felonyDodger, monikkieShame, dollyaBlack, evahDestruction, priscillaChambers, yovska, landonCider, louisiannaPurchase, maddelynnHatter, hollowEve, maxiGlamour,
+    violenciaExclamationPoint, saint, laZavaleta, sigourneyBeaver, astrudAurelia, kocoCaine, hoSoTerraToma, bitterBetty, merrieCherry, formeldaHyde, jayKay, cynthiaDoll, blackberri, satanna, jarvisHammer, throbZombie, niohuruX, orkgotik, onyxOndyx, annaPhylactic, fantasiaRoyaleGaga, jaharia, severityStone, scylla, desireeDik, auroraGozmic, vivviTheForce, pi, auntieHeroine, greyMatter, asiaConsent
 ].concat(allCustomQueens).sort((a, b) => a.getName().toLowerCase().localeCompare(b.getName().toLowerCase()));
 
 // ==============================
