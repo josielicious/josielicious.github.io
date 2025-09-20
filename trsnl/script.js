@@ -1965,6 +1965,8 @@ function restartSimulation() {
     Mergers = [];
     eliminatedCast = [];
 
+    wildcardUsed = false;
+
     seasonOver = false;
     phase = "bracket";
     currentBracketIndex = 0;
@@ -2173,7 +2175,6 @@ function addWildcard() {
 
     eliminatedCast = eliminatedCast.filter(q => q !== wildcard);
 
-    // Handle tied ranges for others in the same rank
     if (originalRank && originalRank.includes("–")) {
         const sharedElims = eliminatedCast.filter(q =>
             q.rankP === originalRank &&
@@ -2204,7 +2205,6 @@ function addWildcard() {
         }
     }
 
-    // **This part now updates all remaining eliminated queens properly**
     if (originalRank) {
         const match = originalRank.match(/\d+/g);
         if (match && match.length === 2) {
@@ -2232,7 +2232,6 @@ function addWildcard() {
         }
     }
 
-    // Add wildcard back
     if (!Mergers.includes(wildcard)) Mergers.push(wildcard);
     if (!currentCast.includes(wildcard)) currentCast.push(wildcard);
 
