@@ -1551,10 +1551,15 @@ function addRandomQueen() {
 // ==============================
 // CREATE CAST ITEM
 // ==============================
+
+function isMobile() {
+    return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
 function createCastItem(q) {
     const div = document.createElement("div");
     div.className = "cast-item";
-    div.setAttribute("draggable", true);
+    if (!isMobile()) div.setAttribute("draggable", true);
 
     const img = document.createElement("img");
     img.src = q.image;
@@ -1689,6 +1694,8 @@ function updateCastScreen() {
 // DRAG AND DROP
 // ==============================
 function initDragAndDrop() {
+    if (isMobile()) return;
+
     const pool = document.getElementById("unassigned-queens");
     const brackets = document.querySelectorAll(".bracket-queens");
 
