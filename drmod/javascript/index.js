@@ -13174,13 +13174,13 @@ let allQueens = [
     deborahlagrande, margaret, bárbaradurango, lanaboswell, debramen, cordeliadurango,
     alexis3xl, sophiajimenez, gvajardo, jobstar, soronasty, ameliawaldorf, redrabbitduo, leandrarose,
     aviescwho, huntyyb, ivizalioza, lunaL, madisonbasrey, memoreyri, mistaboo, ragadiamante, reginabronx, rudyreyes, stupidrag, wynter, yayoibowery,
-    aurorawonders, cpher, elektraV, georgiana, irisxc, lacarrera, lamorralisa, leexa, lupitakush, papercut, rebelmörk, sirena, tiresias,  veracruz,
+    aurorawonders, cpher, elektraV, georgiana, irisxc, lacarrera, lamorralisa, lupitakush, papercut, rebelmörk, sirena, tiresias,  veracruz,
     aishadollkills, deseosfab, fifíestah, grethawhite, hiddenmistake, humakyle, isabellaycatalina, lightking, lizazanzuzzi, papercut, pekebalderas, santalucía,
     cattriona, juanaguadalupe, electrawalpurgis, aries, kellycaracas, lakyliezz, dimittra, shantelle, arielLMD, alexismvgler, purga, braulio8000, ankcosart, mizzpeaches,
     konnykortez, patypiñata, brightystun, ricurasantana, mоonLMD, deetoxalanis, tulsawalpurgis, gretagrimm, nayladowns, oslo, calypso, caoslascivia, candelayeye, axelledevil,
     velvetine,
     loris, frankieDoom, meatball, xochiMochi, foxieAdjuia, ursulaMajor, pincheQueen, vanderVonOdd, melissaBefierce, abhora, disasterina, biqtchPuddin, majesty, erikaKlash, kendraOnixxx, victoriaElizabethBlack, dahli, felonyDodger, monikkieShame, dollyaBlack, evahDestruction, priscillaChambers, yovska, landonCider, louisiannaPurchase, maddelynnHatter, hollowEve, maxiGlamour,
-    violenciaExclamationPoint, saint, laZavaleta, sigourneyBeaver, astrudAurelia, kocoCaine, hoSoTerraToma, bitterBetty, merrieCherry, formeldaHyde, jayKay, cynthiaDoll, blackberri, santana, jarvisHammer, throbZombie, niohuruX, orkgotik, onyxOndyx, annaPhylactic, fantasiaRoyaleGaga, jaharia, severityStone, scylla, desireeDik, auroraGozmic, vivviTheForce, pi, auntieHeroine, greyMatter, asiaConsent
+    violenciaExclamationPoint, saint, laZavaleta, sigourneyBeaver, astrudAurelia, kocoCaine, hoSoTerraToma, bitterBetty, merrieCherry, formeldaHyde, jayKay, cynthiaDoll, blackberri, satanna, jarvisHammer, throbZombie, niohuruX, orkgotik, onyxOndyx, annaPhylactic, fantasiaRoyaleGaga, jaharia, severityStone, scylla, desireeDik, auroraGozmic, vivviTheForce, pi, auntieHeroine, greyMatter, asiaConsent
 ].concat(allCustomQueens).sort((a, b) => a.getName().toLowerCase().localeCompare(b.getName().toLowerCase()));
 /*/Drag-Race-Simulator*/
 if (document.location.pathname.includes("custom.html")) {
