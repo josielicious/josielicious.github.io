@@ -1232,44 +1232,12 @@ class Scene {
         if (div && !this._MainBlock.isConnected) {
             document.querySelector("#simulation-block").appendChild(this._MainBlock);
         }
-        this._scrollHandler = null;
     }
 
     clean() {
         this._MainBlock.innerHTML = "";
         this._setupRightClickField();
         this._setupScrollToTop();
-    }
-
-    _setupRightClickField() {
-        if (!document.getElementById("inputRightKey")) {
-            let text = document.createElement("input");
-            text.id = "inputRightKey";
-            text.className = "textRightClick";
-            text.type = "text";
-            text.readOnly = true;
-            this._MainBlock.parentElement.appendChild(text);
-        }
-    }
-
-    _setupScrollToTop() {
-        let scrollBtn = document.querySelector(".toTop");
-        if (!scrollBtn) return;
-
-        if (this._scrollHandler) {
-            window.removeEventListener("scroll", this._scrollHandler);
-        }
-
-        this._scrollHandler = () => {
-            scrollBtn.classList.toggle("active", window.scrollY > 100);
-        };
-
-        window.addEventListener("scroll", this._scrollHandler);
-    }
-
-    createHeader(text) {
-        let header = document.getElementById("MainTitle");
-        if (header) header.innerHTML = text;
     }
 
     createBigText(text) {
@@ -1311,10 +1279,6 @@ class Scene {
         }
 
         this._MainBlock.appendChild(button);
-
-        if (text === "Proceed" || text === "Show result") {
-            this._bindRightArrowShortcut(button);
-        }
     }
 
     createHorizontalLine() {
@@ -1332,42 +1296,6 @@ class Scene {
             object-fit: cover;
         `;
         this._MainBlock.appendChild(image);
-    }
-
-    createArrow() {
-        let image = document.createElement("img");
-        image.src = "images/arrowGive.png";
-        image.class = "arrow";
-        image.style.cssText = `
-            border: 0px solid black};
-            width: 55px;
-            height: 55px;
-            object-fit: cover;
-        `;
-        this._MainBlock.appendChild(image);
-    }
-
-    _bindRightArrowShortcut(button) {
-        let textField = document.getElementById("inputRightKey");
-        if (!textField) return;
-
-        textField.focus();
-        textField.onkeydown = (e) => {
-            if (e.key === "ArrowRight") {
-                button.click();
-                this.goToTop();
-            }
-        };
-
-        document.addEventListener("click", (e) => {
-            if (!e.target.closest("#simulation-block") && e.target.tagName !== "SELECT") {
-                textField.focus();
-            }
-        }, { once: true });
-    }
-
-    goToTop() {
-        this._MainBlock.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 }
 
@@ -2089,6 +2017,7 @@ function addWildcard() {
 
     eliminatedCast = eliminatedCast.filter(q => q !== wildcard);
 
+    // Handle tied ranges for others in the same rank
     if (originalRank && originalRank.includes("–")) {
         const sharedElims = eliminatedCast.filter(q =>
             q.rankP === originalRank &&
@@ -2119,6 +2048,7 @@ function addWildcard() {
         }
     }
 
+    // **This part now updates all remaining eliminated queens properly**
     if (originalRank) {
         const match = originalRank.match(/\d+/g);
         if (match && match.length === 2) {
@@ -2127,28 +2057,26 @@ function addWildcard() {
             eliminatedCast.forEach(q => {
                 if (!q.rankP || Mergers.includes(q)) return;
 
-                const qMatch = q.rankP.match(/^(\d+)(?:st|nd|rd|th)$/);
-                if (qMatch) {
-                    const qRank = parseInt(qMatch[1]);
-                    if (qRank < originalMax) {
-                        q.rankP = toOrdinal(qRank + 1);
-                    }
-                } else {
-                    const rangeMatch = q.rankP.match(/^(\d+)[–-](\d+)$/);
-                    if (rangeMatch) {
-                        let start = parseInt(rangeMatch[1]);
-                        let end = parseInt(rangeMatch[2]);
-                        if (end < originalMax) {
-                            start += 1;
-                            end += 1;
-                            q.rankP = `${toOrdinal(start)}–${toOrdinal(end)}`;
-                        }
+                const singleMatch = q.rankP.match(/^(\d+)(?:st|nd|rd|th)$/);
+                const rangeMatch = q.rankP.match(/^(\d+)[–-](\d+)$/);
+
+                if (singleMatch) {
+                    let qRank = parseInt(singleMatch[1]);
+                    if (qRank < originalMax) q.rankP = toOrdinal(qRank + 1);
+                } else if (rangeMatch) {
+                    let start = parseInt(rangeMatch[1]);
+                    let end = parseInt(rangeMatch[2]);
+                    if (end < originalMax) {
+                        start += 1;
+                        end += 1;
+                        q.rankP = `${toOrdinal(start)}–${toOrdinal(end)}`;
                     }
                 }
             });
         }
     }
 
+    // Add wildcard back
     if (!Mergers.includes(wildcard)) Mergers.push(wildcard);
     if (!currentCast.includes(wildcard)) currentCast.push(wildcard);
 
@@ -2156,10 +2084,7 @@ function addWildcard() {
     wildcard.rankP = null;
     wildcard.rankRange = null;
 
-    if (wildcard.trackRecord.length > 0) {
-        wildcard.trackRecord.pop();
-    }
-
+    if (wildcard.trackRecord.length > 0) wildcard.trackRecord.pop();
     wildcard.addToTrackRecord("RTRN");
 
     screen.createImage(wildcard.image, "orange");
