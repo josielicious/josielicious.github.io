@@ -1236,8 +1236,6 @@ class Scene {
 
     clean() {
         this._MainBlock.innerHTML = "";
-        this._setupRightClickField();
-        this._setupScrollToTop();
     }
 
     createBigText(text) {
