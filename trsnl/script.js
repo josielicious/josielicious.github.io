@@ -78,8 +78,7 @@ class Queen {
 
     getLipsync() {
         this.lipsyncScore =
-            this._calculateScores(0, this.getStat("lipsync")) +
-            this.unfavoritism -
+            this._calculateScores(0, this.getStat("lipsync"), this.unfavoritism) +
             this.favoritism;
     }
 
@@ -2766,6 +2765,8 @@ function lipsyncDesc() {
 function lipSync() {
     let screen = new Scene();
     screen.clean();
+
+    bottomQueens.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
 
     if (bottomQueens[0].lipsyncScore < 2 && randomNumber(0, 10) >= 6) {
         screen.createBold("Meh...");
