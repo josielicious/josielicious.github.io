@@ -546,12 +546,42 @@ td {
 }
 
 .tab-btn:hover {
-    background-color: #ccc;
+    scale: 1.05;
 }
 
 .tab-btn.active {
-    background-color: #fff;
+    background-color: #d81b60;
+    color:white;
     border-bottom: 2px solid white;
+}
+
+/* ===== Sub-tab buttons ===== */
+.sub-tab-buttons {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+    gap: 6px;
+}
+
+.sub-tab-btn {
+    background-color: #eee;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sub-tab-btn:hover {
+    scale: 1.05;
+}
+
+.sub-tab-btn.active {
+    background-color: #d81b60;
+    color: #fff;
+    border-color: #d81b60;
+    font-weight: bold;
 }
 
 .tab-content {

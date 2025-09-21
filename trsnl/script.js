@@ -8,7 +8,10 @@ class Queen {
         this.favoritism = 0;
         this.unfavoritism = 0;
         this.ppe = 0;
-        this.stars = 0;
+        this.mvq = 0;
+        this.earnedMvq = [];
+        this.giftedMvq = [];
+        this.donatedMvq = [];
         this.episodesOn = 0;
         this.rankP = 0;
         this.ogPlace = 0;
@@ -27,7 +30,7 @@ class Queen {
 
         if (image === "noimage") {
             this.image = "images/queens/noimage.png";
-        } else if (custom) {
+        } else if (custom || image.includes("https")) {
             this.image = image;
         } else {
             this.image = `images/queens/${image}.webp`;
@@ -1951,7 +1954,10 @@ function restartSimulation() {
 
     fullCast.forEach(q => {
         q.trackRecord = [];
-        q.stars = 0;
+        q.mvq = 0;
+        q.earnedMvq = [];
+        q.giftedMvq = [];
+        q.donatedMvq = [];
         q.ppe = 0;
         q.episodesOn = 0;
         q.rankP = "";
@@ -2045,13 +2051,22 @@ function pointCeremony() {
         return lastPlacement !== "WIN";
     });
 
-    queensToDonate.forEach(q => {
-        let eligible = currentCast.filter(c => c !== q);
-        let chosenQueen = eligible[randomNumber(0, eligible.length - 1)];
-        screen.createImage(q.image);
-        screen.createImage(chosenQueen.image);
-        screen.createBold(`${q.getName()} has given her point to ${chosenQueen.getName()}`);
-        chosenQueen.stars += 1;
+    queensToDonate.forEach(donor => {
+        let eligible = currentCast.filter(c => c !== donor);
+        let receiver = eligible[randomNumber(0, eligible.length - 1)];
+
+        screen.createImage(donor.image);
+        screen.createImage(receiver.image);
+        screen.createBold(`${donor.getName()} has given her point to ${receiver.getName()}`);
+
+        addGiftedMvqPoints(receiver, episodeCount, 1);
+
+        const existingDonation = donor.donatedMvq.find(e => e.ep === episodeCount && e.to === receiver.getName());
+        if (existingDonation) {
+            existingDonation.points += 1;
+        } else {
+            donor.donatedMvq.push({ ep: episodeCount, points: 1, to: receiver.getName() });
+        }
     });
     if (phase === "bracket" && (episodeCount % 3 === 0)) {
         screen.createButton("Announce Passers", "announcePassers()");
@@ -2060,14 +2075,25 @@ function pointCeremony() {
     }
 }
 
+function addGiftedMvqPoints(queen, ep, pts) {
+    const existing = queen.giftedMvq.find(e => e.ep === ep);
+
+    queen.mvq++;
+    if (existing) {
+        existing.points += pts;
+    } else {
+        queen.giftedMvq.push({ ep: ep, points: pts });
+    }
+}
+
 function announcePassers() {
     let screen = new Scene();
     screen.clean();
 
-    currentCast.sort((a, b) => b.stars - a.stars);
+    currentCast.sort((a, b) => b.mvq - a.mvq);
 
-    const cutoffScore = currentCast[amountPassers - 1].stars;
-    const tiedAtCutoff = currentCast.filter(q => q.stars === cutoffScore);
+    const cutoffScore = currentCast[amountPassers - 1].mvq;
+    const tiedAtCutoff = currentCast.filter(q => q.mvq === cutoffScore);
 
     let passers = [];
     let eliminated = [];
@@ -2077,7 +2103,7 @@ function announcePassers() {
     if (tiedAtCutoff.length > 1) {
         screen.createHorizontalLine();
         screen.createBigText("The tie breaker...");
-        passers = currentCast.filter(q => q.stars > cutoffScore);
+        passers = currentCast.filter(q => q.mvq > cutoffScore);
 
         const remainingSlots = amountPassers - passers.length;
 
@@ -2096,8 +2122,9 @@ function announcePassers() {
 
     passers.forEach(q => {
         if (!Mergers.includes(q)) Mergers.push(q);
+        q.editTrackRecord("ADV");
         screen.createImage(q.image, "green");
-        screen.createBold(`${q.getName()} passed with ${q.stars} MVQ Points!`);
+        screen.createBold(`${q.getName()} passed with ${q.mvq} MVQ Points!`);
     });
 
     const totalContestants = 18;
@@ -2480,7 +2507,7 @@ function judgingScreen() {
 
         totaljudged.forEach(q => {
             screen.createImage(q.image, "cyan")
-            q.stars += 2;
+            addEarnedMvqPoints(q, episodeCount, 2);
             q.ppe += 5;
         });
         screen.createBold(
@@ -2663,7 +2690,7 @@ function topTwo() {
         [winner, second].forEach(q => {
             screen.createImage(q.image, "darkblue");
             q.favoritism += 5;
-            q.stars += 1;
+            addEarnedMvqPoints(q, episodeCount, 1);
             q.addToTrackRecord(" WIN ");
         });
         screen.createBold("Condragulations, you're both winners, baby!");
@@ -2676,8 +2703,8 @@ function topTwo() {
     }
     else {
         winner.favoritism += 5;
-        winner.stars += 1;
         winner.addToTrackRecord("WIN");
+        addEarnedMvqPoints(winner, episodeCount, 1);
         screen.createImage(winner.image, "royalblue");
         screen.createBold(`${winner.getName()}, you're a winner, baby!`);
 
@@ -2690,6 +2717,17 @@ function topTwo() {
     }
 
     screen.createButton("Proceed", "pointCeremony()");
+}
+
+function addEarnedMvqPoints(queen, ep, pts) {
+    const existing = queen.earnedMvq.find(e => e.ep === ep);
+
+    queen.mvq += pts;
+    if (existing) {
+        existing.points += pts;
+    } else {
+        queen.earnedMvq.push({ ep: ep, points: pts });
+    }
 }
 
 function generateLipsyncPerformances(lipsyncers) {
@@ -3084,6 +3122,9 @@ function contestantProgress() {
     contentContainer.className = "tab-contents";
 
     let activeTabId = tabs[currentBracketIndex] || tabs[0];
+    if (phase === "mergers") {
+        activeTabId = "Mergers";
+    }
 
     tabs.forEach((tabName, index) => {
         const btn = document.createElement("button");
@@ -3096,7 +3137,6 @@ function contestantProgress() {
             document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
             document.getElementById(tabName).style.display = "block";
             btn.classList.add("active");
-
             activeTabId = tabName;
         };
         tabContainer.appendChild(btn);
@@ -3106,33 +3146,74 @@ function contestantProgress() {
         tabContent.className = "tab-content";
         tabContent.style.display = (tabName === activeTabId ? "block" : "none");
 
-        const centeringDiv = document.createElement("div");
-        centeringDiv.style.display = "flex";
-        centeringDiv.style.justifyContent = "center";
+        if (tabName !== "Mergers") {
+            const subTabs = ["Track Record", "Point History", "Donation History"];
+            const subTabContainer = document.createElement("div");
+            subTabContainer.className = "sub-tab-buttons";
 
-        const table = createTrackRecordTable(tabName);
-        centeringDiv.appendChild(table);
+            const subContentContainer = document.createElement("div");
+            subContentContainer.className = "sub-tab-contents";
 
-        tabContent.appendChild(centeringDiv);
+            let activeSubTab = "Track Record";
+
+            subTabs.forEach(subName => {
+                const subBtn = document.createElement("button");
+                subBtn.textContent = subName;
+                subBtn.className = "sub-tab-btn";
+                if (subName === activeSubTab) subBtn.classList.add("active");
+
+                subBtn.onclick = () => {
+                    subContentContainer.querySelectorAll(".sub-tab-content").forEach(sc => sc.style.display = "none");
+                    subTabContainer.querySelectorAll(".sub-tab-btn").forEach(b => b.classList.remove("active"));
+                    document.getElementById(`${tabName}-${subName}`).style.display = "block";
+                    subBtn.classList.add("active");
+                    activeSubTab = subName;
+                };
+                subTabContainer.appendChild(subBtn);
+
+                const subContent = document.createElement("div");
+                subContent.id = `${tabName}-${subName}`;
+                subContent.className = "sub-tab-content";
+                subContent.style.display = (subName === activeSubTab ? "block" : "none");
+
+                const centeringDiv = document.createElement("div");
+                centeringDiv.style.display = "flex";
+                centeringDiv.style.justifyContent = "center";
+
+                if (subName === "Track Record") {
+                    centeringDiv.appendChild(createTrackRecordTable(tabName));
+                } else if (subName === "Point History") {
+                    centeringDiv.appendChild(createPointHistoryTable(tabName));
+                } else if (subName === "Donation History") {
+                    centeringDiv.appendChild(createDonationHistoryTable(tabName));
+                }
+
+                subContent.appendChild(centeringDiv);
+                subContentContainer.appendChild(subContent);
+            });
+
+            tabContent.appendChild(subTabContainer);
+            tabContent.appendChild(subContentContainer);
+        } else {
+            const centeringDiv = document.createElement("div");
+            centeringDiv.style.display = "flex";
+            centeringDiv.style.justifyContent = "center";
+            centeringDiv.appendChild(createTrackRecordTable(tabName));
+            tabContent.appendChild(centeringDiv);
+        }
+
         contentContainer.appendChild(tabContent);
     });
 
     const downloadBtn = document.createElement("button");
-    downloadBtn.textContent = "Download Progress";
+    downloadBtn.textContent = "Download";
     downloadBtn.style.marginTop = "10px";
 
     downloadBtn.onclick = () => {
         const activeTab = document.querySelector(".tab-content[style*='block']");
-        if (!activeTab) {
-            alert("No active tab found!");
-            return;
-        }
-
+        if (!activeTab) { alert("No active tab found!"); return; }
         const table = activeTab.querySelector("table.trtable");
-        if (!table) {
-            alert("No table found in the active tab!");
-            return;
-        }
+        if (!table) { alert("No table found in the active tab!"); return; }
 
         const originalOverflow = activeTab.style.overflow;
         activeTab.style.overflow = "visible";
@@ -3149,7 +3230,6 @@ function contestantProgress() {
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-
                 activeTab.style.overflow = originalOverflow;
             });
         }).catch(err => {
@@ -3166,6 +3246,184 @@ function contestantProgress() {
     } else {
         screen.createButton("Resimulate", "restartSimulation()");
     }
+}
+
+function createDonationHistoryTable(groupName) {
+    const table = document.createElement("table");
+    table.className = "trtable";
+    table.border = "2";
+
+    let epStart = 0, epEnd = episodeChallenges.length;
+    let cast;
+    switch (groupName) {
+        case "Bracket A": epStart = 0; epEnd = 3; cast = BracketA; break;
+        case "Bracket B": epStart = 3; epEnd = 6; cast = BracketB; break;
+        case "Bracket C": epStart = 6; epEnd = 9; cast = BracketC; break;
+        default: cast = [];
+    }
+
+    const epsToShow = episodeChallenges.slice(epStart, epEnd);
+
+    // ----- Header -----
+    const header = document.createElement("tr");
+    const thName = document.createElement("th");
+    thName.innerHTML = "Contestant";
+    thName.style.fontWeight = "bold";
+    header.appendChild(thName);
+
+    epsToShow.forEach((_, i) => {
+        const thEp = document.createElement("th");
+        thEp.innerHTML = "Ep. " + (epStart + i + 1);
+        thEp.style.fontWeight = "bold";
+        thEp.style.textAlign = "center";
+        header.appendChild(thEp);
+    });
+
+    table.appendChild(header);
+
+    // ----- Body -----
+    cast.forEach(contestant => {
+        const row = document.createElement("tr");
+
+        const nameCell = document.createElement("td");
+        nameCell.textContent = contestant.getName();
+        nameCell.className = "nameTR";
+        row.appendChild(nameCell);
+
+        epsToShow.forEach((_, i) => {
+            const epNum = epStart + i + 1;
+            const donation = contestant.donatedMvq.find(d => d.ep === epNum);
+
+            const td = document.createElement("td");
+            if (donation) {
+                td.textContent = donation.to;
+                td.style.textAlign = "center";
+            } else {
+                td.style.backgroundColor = "#a1a8b0"
+            }
+            row.appendChild(td);
+        });
+
+        table.appendChild(row);
+    });
+
+    return table;
+}
+
+function createPointHistoryTable(groupName) {
+    const table = document.createElement("table");
+    table.className = "trtable";
+    table.border = "2";
+
+    let epStart = 0, epEnd = episodeChallenges.length;
+    let cast;
+    switch (groupName) {
+        case "Bracket A": epStart = 0; epEnd = 3; cast = BracketA; break;
+        case "Bracket B": epStart = 3; epEnd = 6; cast = BracketB; break;
+        case "Bracket C": epStart = 6; epEnd = 9; cast = BracketC; break;
+        default: cast = [];
+    }
+
+    const epsToShow = episodeChallenges.slice(epStart, epEnd);
+
+    const header1 = document.createElement("tr");
+
+    let th = document.createElement("th");
+    th.innerHTML = "Contestant";
+    th.rowSpan = 2;
+    th.style.fontWeight = "bold";
+    header1.appendChild(th);
+
+    epsToShow.forEach((_, i) => {
+        const epTh = document.createElement("th");
+        epTh.colSpan = 2;
+        epTh.innerHTML = "Ep. " + (epStart + i + 1);
+        epTh.style.fontWeight = "bold";
+        epTh.style.textAlign = "center";
+        header1.appendChild(epTh);
+    });
+
+    // Total column
+    const totalTh = document.createElement("th");
+    totalTh.rowSpan = 2;
+    totalTh.innerHTML = "Total MVQ";
+    totalTh.style.fontWeight = "bold";
+    header1.appendChild(totalTh);
+
+    table.appendChild(header1);
+
+    // ----- Header Row 2 -----
+    const header2 = document.createElement("tr");
+    epsToShow.forEach(() => {
+        const earnTh = document.createElement("th");
+        earnTh.innerHTML = "Earn";
+        earnTh.style.textAlign = "center";
+        header2.appendChild(earnTh);
+
+        const giftTh = document.createElement("th");
+        giftTh.innerHTML = "Gift";
+        giftTh.style.textAlign = "center";
+        header2.appendChild(giftTh);
+    });
+    table.appendChild(header2);
+
+    // ----- Body -----
+    cast.forEach(contestant => {
+        const row = document.createElement("tr");
+
+        const nameCell = document.createElement("td");
+        nameCell.textContent = contestant.getName();
+        nameCell.className = "nameTR";
+        row.appendChild(nameCell);
+
+        let totalEarn = 0, totalGift = 0;
+
+        epsToShow.forEach((_, i) => {
+            const epNum = epStart + i + 1;
+
+            const earned = contestant.earnedMvq.find(e => e.ep === epNum)?.points || 0;
+            const gifted = contestant.giftedMvq.find(g => g.ep === epNum)?.points || 0;
+
+            totalEarn += earned;
+            totalGift += gifted;
+
+            const tdEarn = document.createElement("td");
+            tdEarn.innerHTML = `+${earned}`;
+            tdEarn.style.textAlign = "center";
+            if (earned === 3) {
+                tdEarn.style.backgroundColor = "royalblue";
+                tdEarn.style.fontWeight = "bold";
+                tdEarn.style.color = "white";
+            } else if (earned === 2) {
+                tdEarn.style.backgroundColor = "deepskyblue";
+                tdEarn.style.fontWeight = "bold";
+            } else {
+                tdEarn.innerHTML = "-"
+            }
+            row.appendChild(tdEarn);
+
+            const tdGift = document.createElement("td");
+            tdGift.innerHTML = `+${gifted}`;
+            tdGift.style.textAlign = "center";
+            if (gifted !== 0) {
+                tdGift.style.backgroundColor = "lightblue";
+            } else {
+                tdGift.innerHTML = "-"
+            }
+            row.appendChild(tdGift);
+        });
+
+        // Total MVQ
+        const totalCell = document.createElement("td");
+        totalCell.textContent = contestant.mvq;
+        totalCell.style.textAlign = "center";
+        totalCell.style.fontWeight = "bold";
+        row.appendChild(totalCell);
+
+        table.appendChild(row);
+    });
+
+    return table;
 }
 
 function createTrackRecordTable(groupName) {
@@ -3187,8 +3445,8 @@ function createTrackRecordTable(groupName) {
         const rankOrder = ["RTRNWINNER", "WINNER", "RTRNWIN", "RTRN WIN", "RTRN WIN ", "WIN", "RTRNLR4", "LR4", "RTRNLR3", "LR3", "RTRNLR2", "LR2", "RTRNLR1", "LR1", "RTRNHIGH", "HIGH", "RTRNSAFE", "SAFE", "RTRNLOW", "LOW", "RTRNBTM2", "BTM2", "RTRNELIM", "ELIM", ""];
 
         cast.sort((a, b) => {
-            const validA = a.trackRecord.filter(p => p && !["", "RTRN"].includes(p));
-            const validB = b.trackRecord.filter(p => p && !["", "RTRN"].includes(p));
+            const validA = a.trackRecord.filter(p => p && ![""].includes(p));
+            const validB = b.trackRecord.filter(p => p && ![""].includes(p));
 
             const aPerf = validA.at(-1) || "SAFE";
             const bPerf = validB.at(-1) || "SAFE";
@@ -3308,12 +3566,19 @@ function createTrackRecordTable(groupName) {
                 case "WIN": td.style.backgroundColor = "royalblue"; td.style.color = "white"; td.style.fontWeight = "bold"; break;
                 case " WIN": td.style.backgroundColor = "deepskyblue"; td.style.fontWeight = "bold"; break;
                 case " WIN ": td.style.backgroundColor = "darkblue"; td.style.color = "white"; td.style.fontWeight = "bold"; break;
+                case "WINADV": td.style.backgroundColor = "royalblue"; td.style.color = "white"; td.style.fontWeight = "bold"; td.innerHTML = 'WIN<br>+<br>ADV'; break;
+                case " WINADV": td.style.backgroundColor = "deepskyblue"; td.style.color = "black"; td.style.fontWeight = "bold"; td.innerHTML = 'WIN<br>+<br>ADV'; break;
+                case " WIN ADV": td.style.backgroundColor = "darkblue"; td.style.color = "white"; td.style.fontWeight = "bold"; td.innerHTML = 'WIN<br>+<br>ADV'; break;
                 case "HIGH": td.style.backgroundColor = "lightblue"; break;
+                case "HIGHADV": td.style.backgroundColor = "lightblue"; td.innerHTML = 'HIGH<br>+<br>><b>ADV</b>';break;
                 case "LOW": td.style.backgroundColor = "pink"; break;
                 case "BTM2":
                 case "BTM3":
                 case "BTM4": td.style.backgroundColor = "tomato"; break;
                 case "SAFE": td.style.backgroundColor = "white"; break;
+                case "SAFEADV": td.style.backgroundColor = "white"; td.innerHTML = 'SAFE<br>+<br><b>ADV</b>'; break;
+                case "BTM4ADV": td.style.backgroundColor = "tomato"; td.innerHTML = 'BTM4<br>+<br><b>ADV</b>'; break;
+                case "BTM3ADV": td.style.backgroundColor = "tomato"; td.innerHTML = 'BTM3<br>+<br><b>ADV</b>'; break;
                 case "BTM4ELIM":
                 case "BTM3ELIM":
                 case "SAFEELIM":
@@ -3350,7 +3615,7 @@ function createTrackRecordTable(groupName) {
             case "Bracket A":
             case "Bracket B":
             case "Bracket C":
-                ppeCell.innerHTML = `${formattedPPE} - ${contestantData.stars}`;
+                ppeCell.innerHTML = `${formattedPPE} - ${contestantData.mvq}`;
                 break;
             case "Mergers":
                 ppeCell.innerHTML = `${formattedPPE}`;
