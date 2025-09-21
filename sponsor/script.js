@@ -3214,6 +3214,18 @@ function lipsyncDesc() {
                 generateLipsyncPerformances(bottomQueens);
 
                 screen.createButton("Show result", "lipSync()");
+            } else if (seconds <= 0) {
+                clearInterval(interval);
+                countdownText.remove();
+
+                const event = checkForLipsyncEvent(bottomQueens);
+                if (event !== false) {
+                    const eventQueen = bottomQueens.find(q => q.getName() === event.queen.getName());
+                    eventQueen.lipsyncScore += event.points;
+                }
+
+                generateLipsyncPerformances(bottomQueens);
+                screen.createButton("Show result", "lipSync()");
             }
         }, 1000);
 
@@ -3353,7 +3365,7 @@ function resolveLever(choice, queen, correctLever, screen) {
             queen.addToTrackRecord("BTM2");
         }
 
-        queen.dunkSurivalEpisode.push(episodeCount);
+        queen.dunkSurivalEpisode.push(episodeCount - 1);
     } else {
         screen.createHorizontalLine();
         screen.createImage(queen.image, "red");
