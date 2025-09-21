@@ -10,7 +10,6 @@ class Queen {
         this.ppe = 0;
         this.mvq = 0;
         this.dollHolder = false;
-        this.dollEpisode = -1;
         this.earnedMvq = [];
         this.giftedMvq = [];
         this.donatedMvq = [];
@@ -2011,7 +2010,7 @@ function restartSimulation() {
         q.episodesOn = 0;
         q.rankP = "";
         q.dollHolder = false;
-        q.dollEpisode = -1
+        q.dollEpisode = undefined;
         q.dunkSurivalEpisode = [];
         q.title = "";
         q.miniEpisode = [];
