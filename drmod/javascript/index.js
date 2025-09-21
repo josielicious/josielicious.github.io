@@ -426,7 +426,11 @@ class MarketingChallenge {
             desc2[desc2["luxuries of a queer Heaven."] = 30] = "luxuries of a queer Heaven.";
         })(desc2 || (desc2 = {}));
         description.innerHTML = "The queens will participate in " + desc1[whatChallengeIs] + desc2[randomNumber(0, 30)];
-        episodeChallenges.push("Advert");
+        if (lmdDoubleElimTime()) {
+            episodeChallenges.push("Brand");
+        } else {
+            episodeChallenges.push("Advert");
+        }
     }
     rankPerformances() {
         for (let i = 0; i < currentCast.length; i++) {
@@ -442,7 +446,7 @@ function marketingChallenge() {
     challengeScreen.createBold("", "Description");
     let challenge = new MarketingChallenge();
     challenge.generateDescription();
-    if (randomNumber(0, 100) >= 60 && currentCast.length >= 6 && currentCast.length <= 15 && !isTeamChallenge && regularFormat){
+    if ((!lmdDoubleElimTime()) || (randomNumber(0, 100) >= 60 && currentCast.length >= 6 && currentCast.length <= 15 && !isTeamChallenge && regularFormat)){
         isTeamChallenge = true;
         teamMaking();
         challenge.rankPerformances();
@@ -1898,8 +1902,11 @@ function createChallenge(challenges, miniChallengeScreen) {
         miniChallengeScreen.createButton("Proceed", "talentshow()");
     }
     //rumix
-    else if (all_winners && episodeCount == 1 || currentCast.length == 5 && !rumixCounter && lftc) {
+    else if ((lmdDoubleElimTime() && totalCastSize >= 14) || (all_winners && episodeCount == 1 || currentCast.length == 5 && !rumixCounter && lftc)) {
         miniChallengeScreen.createButton("Proceed", "rumix()");
+    }
+    else if ((lmdDoubleElimTime() && totalCastSize == 13)) {
+        miniChallengeScreen.createButton("Proceed", "marketingChallenge()");
     }
     //lipsync challenge
     else if ((top4 || lftc || canFinale || teamsF || allstars3Finale) && eliminatedCast.length == Math.floor((totalCastSize - 4) / 2) && !team && !lipsyncChallengeCounter && lip15sync || top5 && eliminatedCast.length == Math.floor((totalCastSize - 5) / 2) && !lipsyncChallengeCounter && lip15sync || (top3 || top2F) && eliminatedCast.length == Math.floor((totalCastSize - 3) / 2) && !lipsyncChallengeCounter && lip15sync) {
@@ -8060,6 +8067,26 @@ function judging() {
     if (fameGames && !fgCheck && fgFlag && currentCast.length == totalCastSize && !disqOrDept || fameGames && !fgCheck && fgFlag && totalCastSize - currentCast.length == 1 && disqOrDept) {
         fmGmsJudg();
     }
+    else if (lmdDoubleElimTime()) {
+        currentCast.sort((a, b) => a.performanceScore - b.performanceScore);
+
+        if (totalCastSize >= 14) {
+            bottomQueens.push(currentCast[currentCast.length - 1]);
+            bottomQueens.push(currentCast[currentCast.length - 2]);
+
+            for (let i = 0; i < currentCast.length - 2; i++) {
+                topQueens.push(currentCast[i]);
+            }
+        }
+        else {
+            for (let i = 0; i < 3; i++) {
+                topQueens.push(currentCast[i]);
+                bottomQueens.push(currentCast[currentCast.length - (i + 1)]);
+            }
+        }
+
+        winAndBtm2();
+    }
     else if ((s12Premiere || porkchopPremiere) && premiereCounter <= 2) {
         //add 2 queens to the top and the rest is safe
         currentCast.sort((a, b) => (a.performanceScore - b.performanceScore));
@@ -9328,7 +9355,7 @@ function bottom6Judging() {
         bottomQueens[i].unfavoritism += 3;
         bottomQueens[i].ppe += 1;
     }
-    if (score1 < 2 && score2 < 2 && randomNumber(0, 100) <= 8 && !doubleSashay && currentCast.length > 6 && noDouble == false) {
+    if ((totalCastSize >= 14 && lmdfinale && currentCast.length == 10) || (score1 < 2 && score2 < 2 && randomNumber(0, 100) <= 8 && !doubleSashay && currentCast.length > 6 && noDouble == false)) {
         screen.createImage(bottomQueens[bottomQueens.length - 2].image, "darkred");
         screen.createImage(bottomQueens[bottomQueens.length - 1].image, "darkred");
         toAlots(imnothere, [bottomQueens[bottomQueens.length - 2], bottomQueens[bottomQueens.length - 1]], alotsSong);
@@ -9995,10 +10022,16 @@ function winAndBtm2() {
             }
         }else{
             for (let i = 0; i < topQueens.length; i++) {
-                screen.createImage(topQueens[i].image, "lightblue");
-                topQueens[i].addToTrackRecord("HIGH");
-                topQueens[i].favoritism += 1;
-                topQueens[i].ppe += 4;
+                if (lmdDoubleElimTime() && totalCastSize >= 14) {
+                    screen.createImage(topQueens[i].image, "black");
+                    topQueens[i].addToTrackRecord("SAFE");
+                    topQueens[i].ppe += 3;
+                } else {
+                    screen.createImage(topQueens[i].image, "lightblue");
+                    topQueens[i].addToTrackRecord("HIGH");
+                    topQueens[i].favoritism += 1;
+                    topQueens[i].ppe += 4;
+                }
             }
         }
         screen.createParagraph("", "highs");
@@ -10082,7 +10115,7 @@ function winAndBtm2() {
         bottomQueens[1].unfavoritism += 1;
         bottomQueens[1].ppe += 2;
         bottomQueens.splice(0, 2);
-    } else if (bottomQueens.length == 3 && bottomQueens[0].performanceScore >= 30 && currentCast.length > 5) {
+    } else if ((lmdDoubleElimTime() && totalCastSize == 13) || (bottomQueens.length == 3 && bottomQueens[0].performanceScore >= 30 && currentCast.length > 5)) {
         thirdqueen = true;
         screen.createBold("... no one is safe.");
     }
@@ -10730,6 +10763,23 @@ function top2AndBlocked() {
 let oneless = false;
 let disqOrDept = false;
 let disqOrDeptFlag = false;
+
+function lmdDoubleElimTime() {
+    if (totalCastSize === 13 && lmdfinale && episodeCount == 9) {
+        return true;
+    }
+    
+    if (totalCastSize >= 14 && lmdfinale && episodeCount == 10) {
+        return true;
+    } 
+}
+
+function lmd3Ensurance() {
+    if (totalCastSize === 13 && lmdfinale && episodeCount == 5) {
+        return true;
+    }
+}
+
 function lipSync() {
     let screen = new Scene();
     screen.clean();
@@ -10896,9 +10946,14 @@ function lipSync() {
             if (currentCast.length == 5 && lftc && randomNumber(0, 10) >= 6) {lftc = false; top5 = true; oneless = true;}
             toAlots(bottomQueens, [], alotsSong);
         }
-        else if (score1 < 2 && score2 < 2 && randomNumber(0, 100) <= 8 && !doubleSashay && currentCast.length > 6 && !noDouble) {
-            screen.createImage(bottomQueens[0].image, "darkred");
-            screen.createImage(bottomQueens[1].image, "darkred");
+        else if ((lmdDoubleElimTime() || lmd3Ensurance()) || (score1 < 2 && score2 < 2 && randomNumber(0, 100) <= 8 && !doubleSashay && currentCast.length > 6 && !noDouble)) {
+            if (lmdDoubleElimTime()  && totalCastSize >= 14) {
+                screen.createImage(bottomQueens[0].image, "sienna");
+                screen.createImage(bottomQueens[1].image, "sienna");
+            } else {
+                screen.createImage(bottomQueens[0].image, "darkred");
+                screen.createImage(bottomQueens[1].image, "darkred");
+            }
             toAlots([], bottomQueens, alotsSong);
             if (chocolateBarTwist  && !chocolateBarTwistCheck) {
                 screen.createBold("Neither one of you survived that lipsync..." + bottomQueens[0].getName() + ", " + bottomQueens[1].getName() + ", now your fates rests in the hands of the drag gods.");
@@ -10955,18 +11010,48 @@ function lipSync() {
                     doubleSashay = true;
                 }
             } else {
-                screen.createBold("I'm sorry but none of you showed the fire it takes to stay. You must both... sashay away.");
-                doubleSashay = true;
-                bottomQueens[0].addToTrackRecord(" ELIM ");
-                bottomQueens[0].unfavoritism += 5;
-                bottomQueens[0].rankP = "tie1";
-                eliminatedCast.unshift(bottomQueens[0]);
-                currentCast.splice(currentCast.indexOf(bottomQueens[0]), 1);
-                bottomQueens[1].addToTrackRecord(" ELIM ");
-                bottomQueens[1].unfavoritism += 5;
-                bottomQueens[1].rankP = "tie2";
-                eliminatedCast.unshift(bottomQueens[1]);
-                currentCast.splice(currentCast.indexOf(bottomQueens[1]), 1);
+                if (!lmdDoubleElimTime()) {
+                    screen.createBold("I'm sorry but none of you showed the fire it takes to stay. You must both... sashay away.");
+                    doubleSashay = true;
+                    bottomQueens[0].addToTrackRecord(" ELIM ");
+                    bottomQueens[0].unfavoritism += 5;
+                    bottomQueens[0].rankP = "tie1";
+                    eliminatedCast.unshift(bottomQueens[0]);
+                    currentCast.splice(currentCast.indexOf(bottomQueens[0]), 1);
+                    bottomQueens[1].addToTrackRecord(" ELIM ");
+                    bottomQueens[1].unfavoritism += 5;
+                    bottomQueens[1].rankP = "tie2";
+                    eliminatedCast.unshift(bottomQueens[1]);
+                    currentCast.splice(currentCast.indexOf(bottomQueens[1]), 1);
+                }
+                else {
+                    if (totalCastSize >= 14) {
+                        screen.createBold("I'm sorry but now it is not your time... Sashay away...");
+                        bottomQueens[0].addToTrackRecord("ELIMINATED");
+                        bottomQueens[0].unfavoritism += 5;
+                        bottomQueens[0].rankP = "tie1";
+                        eliminatedCast.unshift(bottomQueens[0]);
+                        currentCast.splice(currentCast.indexOf(bottomQueens[0]), 1);
+                        bottomQueens[1].addToTrackRecord("ELIMINATED");
+                        bottomQueens[1].unfavoritism += 5;
+                        bottomQueens[1].rankP = "tie2";
+                        eliminatedCast.unshift(bottomQueens[1]);
+                        currentCast.splice(currentCast.indexOf(bottomQueens[1]), 1);
+                    } else {
+                        screen.createBold("I'm sorry but none of you showed the fire it takes to stay. You must both... sashay away.");
+                        doubleSashay = true;
+                        bottomQueens[0].addToTrackRecord(" ELIM ");
+                        bottomQueens[0].unfavoritism += 5;
+                        bottomQueens[0].rankP = "tie1";
+                        eliminatedCast.unshift(bottomQueens[0]);
+                        currentCast.splice(currentCast.indexOf(bottomQueens[0]), 1);
+                        bottomQueens[1].addToTrackRecord(" ELIM ");
+                        bottomQueens[1].unfavoritism += 5;
+                        bottomQueens[1].rankP = "tie2";
+                        eliminatedCast.unshift(bottomQueens[1]);
+                        currentCast.splice(currentCast.indexOf(bottomQueens[1]), 1);
+                    }
+                }
             }
         }
         else if (randomNumber(0, 1000) >= 999 && disqOrDept == false) {
@@ -13232,6 +13317,10 @@ let attentionGGroup = false;
 let lalaparuza = false;
 let smackdown = false;
 function CheckForReturning() {
+    if (totalCastSize === 13 && lmdfinale && episodeCount == 8) {
+        returningQueen = true;
+        return true;
+    }
     if ((randomReturn || chooseReturn || voteReturn) && currentCast.length < totalCastSize - 3 && returningQueen == false && eliminatedCast.length > 0) {
         if (randomNumber(0, 100) < 5 * episodeCount || currentCast.length == 5) {
             returningQueen = true;
@@ -13350,7 +13439,7 @@ function queenReturns(pass = "") {
             queen.retEp = episodeCount+1;
         }
         quitarDoubleElim(queen);
-        if (randomNumber(0, 1000) >= 950) {
+        if (randomNumber(0, 1000) >= 950 && !lmdfinale && totalCastSize == 13) {
             screen.createBold("I'm not over, please welcome back..!");
             let queen1 = eliminatedCast[(randomNumber(0, eliminatedCast.length - 1))];
             while (queen1.queenDisqOrDept != false) {
