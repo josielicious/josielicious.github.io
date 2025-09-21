@@ -3150,7 +3150,7 @@ function winAndBtms() {
     bottomQueens.forEach(q => screen.createImage(q.image, "tomato"));
     screen.createBold("", "btm2");
     let btm2 = document.getElementById("btm2");
-    btm2.innerHTML += `${bottomQueens[0]}, ${bottomQueens[1]}, I'm sorry my dears but you are up for elimination.`;
+    btm2.innerHTML += `${bottomQueens[0].getName()}, ${bottomQueens[1].getName()}, I'm sorry my dears but you are up for elimination.`;
     screen.createButton("Proceed", "lipsyncDesc()");
 }
 
