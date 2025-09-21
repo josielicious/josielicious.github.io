@@ -1978,6 +1978,9 @@ function startSimulation() {
     let rpMode = document.getElementById("rupaul");
     rupaulMode = rpMode.checked;
 
+    let dunkTank = document.getElementById("tank");
+    badunkaDunk = dunkTank.checked;
+
     let esDoll = document.getElementById("doll");
     spainDoll = esDoll.checked;
 
@@ -2009,6 +2012,7 @@ function restartSimulation() {
         q.rankP = "";
         q.dollHolder = false;
         q.dollEpisode = -1
+        q.dunkSurivalEpisode = [];
         q.title = "";
         q.miniEpisode = [];
         q.ogPlace = 0;
@@ -2430,8 +2434,6 @@ function addWildcard() {
                 screen.createImage(wildcard.image, "orange");
                 screen.createBold(`${wildcard.getName()}, has been chosen to return as a wildcard!`);
             });
-
-            screen.createButton("Proceed", "contestantProgress()");
         });
 
         screen._MainBlock.appendChild(confirmBtn);
@@ -2509,7 +2511,6 @@ function addWildcard() {
 
         screen.createImage(wildcard.image, "orange");
         screen.createBold(`${wildcard.getName()}, has been chosen by the wheel to be a wildcard!`);
-        screen.createButton("Proceed", "contestantProgress()");
     }
 }
 
@@ -3150,6 +3151,7 @@ function winAndBtms() {
 
 function lipsyncDesc() {
     const screen = new Scene();
+    screen.clean();
 
     screen.createBigText("The time has come...");
     screen.createBold("For you to lip-sync... for your life! Good luck, and don't fuck it up.");
@@ -3226,47 +3228,154 @@ function lipsyncDesc() {
     }
 }
 
+let badunkaDunkLevers = Array.from({ length: 10 }, (_, i) => i + 1);
+let badunkaDunkLeversUsed = [];
+let badunkaDunkMaxCorrect = 2;
+let badunkaDunkCorrectCount = 0;
 
 function lipSync() {
-    let screen = new Scene();
+    const screen = new Scene();
     screen.clean();
 
     bottomQueens.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
 
-    if (bottomQueens[0].lipsyncScore < 2 && randomNumber(0, 10) >= 6) {
-        screen.createBold("Meh...");
+    // Winner stays
+    const safeQueen = bottomQueens[0];
+    screen.createImage(safeQueen.image, "tomato");
+    screen.createBold(`${safeQueen.getName()}, shantay you stay.`);
+    safeQueen.unfavoritism += 3;
+    safeQueen.ppe += 1;
+
+    const lastIndex1 = safeQueen.trackRecord.length - 1;
+    if (safeQueen.trackRecord[lastIndex1].toUpperCase() === "RTRN") {
+        safeQueen.editTrackRecord("BTM2");
+    } else {
+        safeQueen.addToTrackRecord("BTM2");
+    }
+
+    const queen = bottomQueens[1];
+
+    if (badunkaDunk && !badunkaDunkOver) {
+        screen.createImage(queen.image, "tomato");
+        screen.createBold(`${queen.getName()}, my queen! Are you feeling lucky?`);
+
+        let correctLever = null;
+        if (badunkaDunkCorrectCount < badunkaDunkMaxCorrect) {
+            const remainingLevers = badunkaDunkLevers.filter(l => !badunkaDunkLeversUsed.includes(l));
+            if (remainingLevers.length > 0) {
+                correctLever = remainingLevers[randomNumber(0, remainingLevers.length - 1)];
+            }
+        }
+
+        if (rupaulMode) {
+            const leverContainer = document.createElement("div");
+            leverContainer.style.display = "flex";
+            leverContainer.style.flexWrap = "wrap";
+            leverContainer.style.gap = "20px";
+            leverContainer.style.marginTop = "1rem";
+
+            badunkaDunkLevers.forEach(i => {
+                if (badunkaDunkLeversUsed.includes(i)) return;
+
+                const sliderWrapper = document.createElement("div");
+                sliderWrapper.style.textAlign = "center";
+
+                const sliderLabel = document.createElement("p");
+                sliderLabel.innerText = `Lever ${i}`;
+
+                const slider = document.createElement("input");
+                slider.type = "range";
+                slider.min = "0";
+                slider.max = "1";
+                slider.step = "1";
+                slider.value = "0";
+                slider.style.width = "80px";
+
+                slider.addEventListener("input", () => {
+                    if (slider.value === "1") {
+                        leverContainer.remove();
+                        resolveLever(i, queen, correctLever, screen);
+                    }
+                });
+
+                sliderWrapper.appendChild(sliderLabel);
+                sliderWrapper.appendChild(slider);
+                leverContainer.appendChild(sliderWrapper);
+            });
+
+            screen._MainBlock.appendChild(leverContainer);
+
+        } else {
+            const remainingLevers = badunkaDunkLevers.filter(l => !badunkaDunkLeversUsed.includes(l));
+            const choice = remainingLevers[randomNumber(0, remainingLevers.length - 1)];
+            resolveLever(choice, queen, correctLever, screen);
+        }
+
+    } else {
+        screen.createImage(queen.image, "red");
+        screen.createBold(`${queen.getName()}, sashay away...`);
+
+        const totalContestants = fullCast.length;
+        const eliminatedSoFar = eliminatedCast.length;
+        const rankNum = totalContestants - eliminatedSoFar;
+        const lastIndex2 = queen.trackRecord.length - 1;
+        if (queen.trackRecord[lastIndex2].toUpperCase() === "RTRN") {
+            queen.editTrackRecord("ELIM");
+        } else {
+            queen.addToTrackRecord("ELIM");
+        }
+        queen.rankP = toOrdinal(rankNum);
+
+        eliminatedCast.unshift(queen);
+        currentCast.splice(currentCast.indexOf(queen), 1);
+
+        screen.createButton("Proceed", "contestantProgress()");
+    }
+}
+
+function resolveLever(choice, queen, correctLever, screen) {
+    badunkaDunkLeversUsed.push(choice);
+
+    if (choice === correctLever) {
+        badunkaDunkCorrectCount++;
         screen.createHorizontalLine();
-    }
+        screen.createImage(queen.image, "hotpink");
+        screen.createBold(`${queen.getName()} CONDRAGULATIONS! You have lived to slay another day!`);
 
-    screen.createImage(bottomQueens[0].image, "tomato");
-    screen.createBold(bottomQueens[0].getName() + ", shantay you stay.");
-    bottomQueens[0].unfavoritism += 3;
-    bottomQueens[0].ppe += 1;
-    const lastIndex1 = bottomQueens[0].trackRecord.length - 1;
-    if (bottomQueens[0].trackRecord[lastIndex1].toUpperCase() === "RTRN") {
-        bottomQueens[0].editTrackRecord("BTM2");
+        queen.unfavoritism += 3;
+        queen.ppe += 1;
+
+        const lastIndex = queen.trackRecord.length - 1;
+        if (queen.trackRecord[lastIndex].toUpperCase() === "RTRN") {
+            queen.editTrackRecord("BTM2");
+        } else {
+            queen.addToTrackRecord("BTM2");
+        }
+
+        queen.dunkSurivalEpisode.push(episodeCount);
     } else {
-        bottomQueens[0].addToTrackRecord("BTM2");
+        screen.createHorizontalLine();
+        screen.createImage(queen.image, "red");
+        screen.createBold(`${queen.getName()}... sashay away...`);
+
+        const totalContestants = fullCast.length;
+        const eliminatedSoFar = eliminatedCast.length;
+        const rankNum = totalContestants - eliminatedSoFar;
+        const lastIndex2 = queen.trackRecord.length - 1;
+        if (queen.trackRecord[lastIndex2].toUpperCase() === "RTRN") {
+            queen.editTrackRecord("ELIM");
+        } else {
+            queen.addToTrackRecord("ELIM");
+        }
+        queen.rankP = toOrdinal(rankNum);
+
+        eliminatedCast.unshift(queen);
+        currentCast.splice(currentCast.indexOf(queen), 1);
     }
 
-    screen.createImage(bottomQueens[1].image, "red");
-    screen.createBold(bottomQueens[1].getName() + ", sashay away...");
-
-    const totalContestants = fullCast.length;
-    const eliminatedSoFar = eliminatedCast.length;
-
-    const rankNum = totalContestants - eliminatedSoFar;
-
-    const lastIndex2 = bottomQueens[1].trackRecord.length - 1;
-    if (bottomQueens[1].trackRecord[lastIndex2].toUpperCase() === "RTRN") {
-        bottomQueens[1].editTrackRecord("ELIM");
-    } else {
-        bottomQueens[1].addToTrackRecord("ELIM");
+    if (badunkaDunkLeversUsed.length >= badunkaDunkLevers.length) {
+        badunkaDunkOver = true;
     }
-    bottomQueens[1].rankP = toOrdinal(rankNum);
-
-    eliminatedCast.unshift(bottomQueens[1]);
-    currentCast.splice(currentCast.indexOf(bottomQueens[1]), 1);
 
     screen.createButton("Proceed", "contestantProgress()");
 }
@@ -3956,6 +4065,10 @@ function createTrackRecordTable(groupName) {
 
             if (contestantData.dollEpisode === actualEp) {
                 td.style.border = "3px gold solid";
+            }
+
+            if (contestantData.dollEpisode.includes(actualEp)) {
+                td.style.border = "3px #2a6bcc solid";
             }
 
             row.appendChild(td);
