@@ -3162,7 +3162,7 @@ function lipsyncDesc() {
         else q.getASLipsync();
     });
 
-    if (spainDoll) {
+    if (spainDoll && !spainDollOver) {
         const btnContainer = document.createElement("div");
         screen._MainBlock.appendChild(btnContainer);
 
