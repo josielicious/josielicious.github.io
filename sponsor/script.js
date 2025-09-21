@@ -10,6 +10,8 @@ class Queen {
         this.ppe = 0;
         this.mvq = 0;
         this.dollHolder = false;
+        this.dollEpisode = -1;
+        this.dunkSurivalEpisode = []
         this.earnedMvq = [];
         this.giftedMvq = [];
         this.donatedMvq = [];
@@ -2010,7 +2012,7 @@ function restartSimulation() {
         q.episodesOn = 0;
         q.rankP = "";
         q.dollHolder = false;
-        q.dollEpisode = undefined;
+        q.dollEpisode = -1;
         q.dunkSurivalEpisode = [];
         q.title = "";
         q.miniEpisode = [];
@@ -4066,7 +4068,7 @@ function createTrackRecordTable(groupName) {
                 td.style.border = "3px gold solid";
             }
 
-            if (contestantData.dollEpisode.includes(actualEp)) {
+            if (contestantData.dunkSurivalEpisode.includes(actualEp)) {
                 td.style.border = "3px #2a6bcc solid";
             }
 
