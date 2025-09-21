@@ -3188,7 +3188,9 @@ function lipsyncDesc() {
                 screen.createBold(`${dollQueen.getName()} HOLDS THE LUCKY DOLL! You are now safe to slay another day...`);
 
                 dollQueen.addToTrackRecord("LOW");
-                dollQueen.dollEpisode = episodeCount;
+                dollQueen.dollEpisode = episodeCount - 1;
+
+                spainDollOver = true;
                 
                 let lowQueen = currentCast.find(q => {
                     const lastIndex = q.trackRecord.length - 1;
@@ -4039,7 +4041,7 @@ function createTrackRecordTable(groupName) {
                 case " WINADV": td.style.backgroundColor = "deepskyblue"; td.style.color = "black"; td.style.fontWeight = "bold"; td.innerHTML = 'WIN<br>+<br>ADV'; break;
                 case " WIN ADV": td.style.backgroundColor = "darkblue"; td.style.color = "white"; td.style.fontWeight = "bold"; td.innerHTML = 'WIN<br>+<br>ADV'; break;
                 case "HIGH": td.style.backgroundColor = "lightblue"; break;
-                case "HIGHADV": td.style.backgroundColor = "lightblue"; td.innerHTML = 'HIGH<br>+<br>><b>ADV</b>';break;
+                case "HIGHADV": td.style.backgroundColor = "lightblue"; td.innerHTML = 'HIGH<br>+<br><b>ADV</b>';break;
                 case "LOW": td.style.backgroundColor = "pink"; break;
                 case "BTM2":
                 case "BTM3":
