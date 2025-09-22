@@ -763,6 +763,27 @@ input[type="range"]::-moz-range-thumb {
     transition: transform 0.2s ease, background 0.2s ease;
 }
 
+.lever-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.lever-wrapper p {
+    font-weight: bold;
+    font-size: 14px;
+    color: #d81b60;
+    margin: 0;
+}
+
+.lever-wrapper input[type="range"] {
+    transform: rotate(-90deg);
+    width: 20px;
+    margin: 3.5rem;
+    cursor: grab;
+}
 
 .season h3,
 .season button {

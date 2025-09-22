@@ -3258,7 +3258,6 @@ function lipSync() {
 
     bottomQueens.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
 
-    // Winner stays
     const safeQueen = bottomQueens[0];
     screen.createImage(safeQueen.image, "tomato");
     screen.createBold(`${safeQueen.getName()}, shantay you stay.`);
@@ -3290,30 +3289,41 @@ function lipSync() {
             const leverContainer = document.createElement("div");
             leverContainer.style.display = "flex";
             leverContainer.style.flexWrap = "wrap";
-            leverContainer.style.gap = "20px";
+            leverContainer.style.gap = "40px";
             leverContainer.style.marginTop = "1rem";
 
             badunkaDunkLevers.forEach(i => {
                 if (badunkaDunkLeversUsed.includes(i)) return;
 
                 const sliderWrapper = document.createElement("div");
+                sliderWrapper.className = "lever-wrapper";
                 sliderWrapper.style.textAlign = "center";
+                sliderWrapper.style.display = "flex";
+                sliderWrapper.style.flexDirection = "column";
+                sliderWrapper.style.alignItems = "center";
 
                 const sliderLabel = document.createElement("p");
-                sliderLabel.innerText = `Lever ${i}`;
+                sliderLabel.innerText = i;
 
                 const slider = document.createElement("input");
                 slider.type = "range";
                 slider.min = "0";
                 slider.max = "1";
-                slider.step = "1";
+                slider.step = "0.01";
                 slider.value = "0";
-                slider.style.width = "80px";
+
+                slider.style.width = "150px";
+                slider.style.transform = "rotate(90deg)";
+                slider.style.cursor = "grab";
+                slider.style.transition = "all 0.1s ease";
 
                 slider.addEventListener("input", () => {
-                    if (slider.value === "1") {
+                    if (slider.value >= 0.95) {
+                        slider.value = "1";
                         leverContainer.remove();
                         resolveLever(i, queen, correctLever, screen);
+                    } else if (slider.value <= 0.05) {
+                        slider.value = "0";
                     }
                 });
 
@@ -3323,7 +3333,6 @@ function lipSync() {
             });
 
             screen._MainBlock.appendChild(leverContainer);
-
         } else {
             const remainingLevers = badunkaDunkLevers.filter(l => !badunkaDunkLeversUsed.includes(l));
             const choice = remainingLevers[randomNumber(0, remainingLevers.length - 1)];
@@ -3332,6 +3341,7 @@ function lipSync() {
 
     } else {
         screen.createImage(queen.image, "red");
+
         screen.createBold(`${queen.getName()}, sashay away...`);
 
         const totalContestants = fullCast.length;
@@ -3359,6 +3369,7 @@ function resolveLever(choice, queen, correctLever, screen) {
         badunkaDunkCorrectCount++;
         screen.createHorizontalLine();
         screen.createImage(queen.image, "hotpink");
+        screen.createBold(`${queen.getName()} chose lever number ${choice}...`);
         screen.createBold(`${queen.getName()} CONDRAGULATIONS! You have lived to slay another day!`);
 
         queen.unfavoritism += 3;
@@ -3375,7 +3386,8 @@ function resolveLever(choice, queen, correctLever, screen) {
     } else {
         screen.createHorizontalLine();
         screen.createImage(queen.image, "red");
-        screen.createBold(`${queen.getName()}... sashay away...`);
+        screen.createBold(`${queen.getName()} chose lever number ${choice}...`);
+        screen.createBold(`${queen.getName()}, now, it is NOT your time, sashay away...`);
 
         const totalContestants = fullCast.length;
         const eliminatedSoFar = eliminatedCast.length;
