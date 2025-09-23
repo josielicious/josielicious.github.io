@@ -3460,7 +3460,7 @@ function resolveSmackdownRound(roundNumber = 1) {
 
     let matchRoundLabel = [];
     if (currentCast.length === 4) {
-        matchRoundLabel = [1, 2];
+        matchRoundLabel = [1, 2,3 ];
     } else if (currentCast.length === 6) {
         matchRoundLabel = [1, 1, 2];
     } else {
