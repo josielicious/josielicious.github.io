@@ -2325,14 +2325,14 @@ function miniChallenge() {
 
     const screen = new Scene();
     screen.clean();
-    screen.createBigText("Mini challenge!");
-    screen.createBold("", "description");
-    swapBackground("Werkroom");
     const miniChance = 50;
     if (wildcardType === "merge" && !wildcardUsed && phase === "merge") {
         addWildcard();
         wildcardUsed = true;
     }
+    screen.createBigText("Mini challenge!");
+    screen.createBold("", "description");
+    swapBackground("Werkroom");
     if (miniChance > randomNumber(0, 100)) {
         const mini = new MiniChallenge();
         mini.generateDescription();
@@ -2345,9 +2345,7 @@ function miniChallenge() {
 
 function addWildcard() {
     const screen = new Scene();
-    screen.clean();
-
-    if (rupaulMode  && eliminatedCast.length == 0) {
+    if (rupaulMode  && eliminatedCast.length === 0) {
         screen.createParagraph("Select the queen(s) to return as wildcard(s).");
 
         const checkboxes = eliminatedCast.map((q, i) => screen.createCheckbox(q.getName(), `wild_${i}`, q.image));
