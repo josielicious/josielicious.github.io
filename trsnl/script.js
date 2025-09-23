@@ -9,6 +9,9 @@ class Queen {
         this.unfavoritism = 0;
         this.ppe = 0;
         this.mvq = 0;
+        this.dollHolder = false;
+        this.dollEpisode = -1;
+        this.dunkSurivalEpisode = []
         this.earnedMvq = [];
         this.giftedMvq = [];
         this.donatedMvq = [];
@@ -1348,6 +1351,14 @@ let episodeCount = 0;
 let lipsyncTiebreak = false;
 let lipsyncRiggory = false;
 
+let badunkaDunk = false;
+let badunkaDunkOver = false;
+
+let spainDoll = false;
+let spainDollOver = false;
+
+let rupaulMode = false;
+
 let mergeFormat = "normal";
 let judgingType = "canon";
 
@@ -1455,6 +1466,36 @@ class Scene {
             object-fit: cover;
         `;
         this._MainBlock.appendChild(image);
+    }
+
+    createCheckbox(labelText, id = "", imgSrc = "") {
+        let container = document.createElement("div");
+        container.className = "checkbox-card";
+
+        let checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = id || ("chk_" + Math.random().toString(36).substr(2, 5));
+
+        let label = document.createElement("label");
+        label.htmlFor = checkbox.id;
+
+        if (imgSrc) {
+            let img = document.createElement("img");
+            img.src = imgSrc;
+            img.alt = labelText;
+            label.appendChild(img);
+        }
+
+        let span = document.createElement("span");
+        span.innerText = labelText;
+        label.appendChild(span);
+
+        container.appendChild(checkbox);
+        container.appendChild(label);
+
+        this._MainBlock.appendChild(container);
+
+        return checkbox;
     }
 }
 
@@ -1935,6 +1976,15 @@ function startSimulation() {
     let lsTiebreak = document.getElementById("lstb");
     lipsyncTiebreak = lsTiebreak.checked;
 
+    let rpMode = document.getElementById("rupaul");
+    rupaulMode = rpMode.checked;
+
+    let dunkTank = document.getElementById("tank");
+    badunkaDunk = dunkTank.checked;
+
+    let esDoll = document.getElementById("doll");
+    spainDoll = esDoll.checked;
+
     let wildcard = document.getElementById("wildcard-format");
     wildcardType = wildcard.options[wildcard.selectedIndex].value;
 
@@ -1961,6 +2011,9 @@ function restartSimulation() {
         q.ppe = 0;
         q.episodesOn = 0;
         q.rankP = "";
+        q.dollHolder = false;
+        q.dollEpisode = -1;
+        q.dunkSurivalEpisode = [];
         q.title = "";
         q.miniEpisode = [];
         q.ogPlace = 0;
@@ -2090,74 +2143,166 @@ function announcePassers() {
     let screen = new Scene();
     screen.clean();
 
-    currentCast.sort((a, b) => b.mvq - a.mvq);
+    if (rupaulMode) {
+        screen.createBigText("Select who makes merge...");
 
-    const cutoffScore = currentCast[amountPassers - 1].mvq;
-    const tiedAtCutoff = currentCast.filter(q => q.mvq === cutoffScore);
+        const checkboxes = currentCast.map((q, i) => screen.createCheckbox(q.getName(), `queen_${i}`, q.image));
 
-    let passers = [];
-    let eliminated = [];
+        const confirmBtn = document.createElement("button");
+        confirmBtn.innerText = "Confirm Merge Passers";
+        confirmBtn.addEventListener("click", () => {
+            const selectedQueens = currentCast.filter((q, i) => document.getElementById(`queen_${i}`).checked);
 
-    screen.createBigText("The final decision...");
-    screen.createBold("The queens will be notified if they passed or not...");
-    if (tiedAtCutoff.length > 1) {
-        screen.createHorizontalLine();
-        screen.createBigText("The tie breaker...");
+            checkboxes.forEach(cb => cb.parentElement.remove());
+            confirmBtn.remove();
+
+            selectedQueens.forEach(q => {
+                if (!Mergers.includes(q)) Mergers.push(q);
+                q.editTrackRecord("ADV");
+                screen.createImage(q.image, "green");
+                screen.createBold(`${q.getName()} passed to merge!`);
+            });
+
+            const eliminated = currentCast.filter(q => !selectedQueens.includes(q));
+            const totalContestants = 18;
+            const eliminatedSoFar = eliminatedCast.length;
+            const eliminatedThisRound = eliminated.length;
+            const elimStart = totalContestants - eliminatedSoFar - eliminatedThisRound + 1;
+            const elimEnd = totalContestants - eliminatedSoFar;
+
+            eliminated.forEach(q => {
+                if (!eliminatedCast.includes(q)) eliminatedCast.push(q);
+                q.editTrackRecord("ELIM");
+                q.rankP = `${toOrdinal(elimStart)}–${toOrdinal(elimEnd)}`;
+                screen.createImage(q.image, "sienna");
+                screen.createBold(`${q.getName()} has been eliminated.`);
+            });
+
+            if (currentBracketIndex < 2) {
+                currentBracketIndex++;
+                loadCurrentBracket();
+                screen.createButton("Proceed", "contestantProgress()");
+                return;
+            }
+
+            screen.createButton("Proceed", "startMergeAndProceed()");
+        });
+
+        screen._MainBlock.appendChild(confirmBtn);
+
+    } else {
+        currentCast.sort((a, b) => b.mvq - a.mvq);
+
+        const cutoffScore = currentCast[amountPassers - 1].mvq;
+        let tiedAtCutoff = currentCast.filter(q => q.mvq === cutoffScore);
+
+        let passers = [];
+        let eliminated = [];
+
+        screen.createBigText("The final decision...");
+        screen.createBold("The queens will be notified if they passed or not...");
+
         passers = currentCast.filter(q => q.mvq > cutoffScore);
-
         const remainingSlots = amountPassers - passers.length;
 
-        passers = passers.concat(tiedAtCutoff.slice(0, remainingSlots));
+        if (tiedAtCutoff.length > 1 && remainingSlots > 0) {
+            if (lipsyncTiebreak) {
+                screen.createHorizontalLine();
+                screen.createBigText("Tie-breaker Lip Sync!");
+                screen.createBold("These queens will lip-sync for their spot in the merge...");
 
-        eliminated = currentCast.filter(q => !passers.includes(q));
-        tiedAtCutoff.slice(0, remainingSlots).forEach(q => {
-            screen.createImage(q.image, "gold");
-            screen.createBold(`${q.getName()} was selected to make merge.`);
+                tiedAtCutoff.forEach(q => q.getASLipsync());
+
+                tiedAtCutoff.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
+
+                const winners = tiedAtCutoff.slice(0, remainingSlots);
+                passers = passers.concat(winners);
+                eliminated = currentCast.filter(q => !passers.includes(q));
+
+                winners.forEach(q => {
+                    screen.createImage(q.image, "gold");
+                    screen.createBold(`${q.getName()} won the lip-sync and makes merge!`);
+                });
+
+                tiedAtCutoff.slice(remainingSlots).forEach(q => {
+                    screen.createImage(q.image, "sienna");
+                    screen.createBold(`${q.getName()} lost the lip-sync and has been eliminated.`);
+                });
+
+                screen.createHorizontalLine();
+
+            } else {
+                passers = passers.concat(tiedAtCutoff.slice(0, remainingSlots));
+                eliminated = currentCast.filter(q => !passers.includes(q));
+
+                tiedAtCutoff.slice(0, remainingSlots).forEach(q => {
+                    screen.createImage(q.image, "gold");
+                    screen.createBold(`${q.getName()} was selected to make merge.`);
+                });
+            }
+        } else {
+            passers = currentCast.slice(0, amountPassers);
+            eliminated = currentCast.slice(amountPassers);
+        }
+
+        passers.forEach(q => {
+            if (!Mergers.includes(q)) Mergers.push(q);
+            q.editTrackRecord("ADV");
+            screen.createImage(q.image, "green");
+            screen.createBold(`${q.getName()} passed with ${q.mvq} MVQ Points!`);
         });
-        screen.createHorizontalLine();
-    } else {
-        passers = currentCast.slice(0, amountPassers);
-        eliminated = currentCast.slice(amountPassers);
+
+        const totalContestants = 18;
+        const eliminatedSoFar = eliminatedCast.length;
+        const eliminatedThisRound = eliminated.length;
+        const elimStart = totalContestants - eliminatedSoFar - eliminatedThisRound + 1;
+        const elimEnd = totalContestants - eliminatedSoFar;
+
+        eliminated.forEach(q => {
+            if (!eliminatedCast.includes(q)) eliminatedCast.push(q);
+            q.editTrackRecord("ELIM");
+            q.rankP = `${toOrdinal(elimStart)}–${toOrdinal(elimEnd)}`;
+            screen.createImage(q.image, "sienna");
+            screen.createBold(`${q.getName()} has been eliminated.`);
+        });
+
+        if (currentBracketIndex < 2) {
+            currentBracketIndex++;
+            loadCurrentBracket();
+            screen.createButton("Proceed", "contestantProgress()");
+            return;
+        }
+
+        screen.createButton("Proceed", "startMergeAndProceed()");
     }
-
-    passers.forEach(q => {
-        if (!Mergers.includes(q)) Mergers.push(q);
-        q.editTrackRecord("ADV");
-        screen.createImage(q.image, "green");
-        screen.createBold(`${q.getName()} passed with ${q.mvq} MVQ Points!`);
-    });
-
-    const totalContestants = 18;
-    const eliminatedSoFar = eliminatedCast.length;
-    const eliminatedThisRound = eliminated.length;
-
-    const elimStart = totalContestants - eliminatedSoFar - eliminatedThisRound + 1;
-    const elimEnd = totalContestants - eliminatedSoFar;
-
-    eliminated.forEach(q => {
-        if (!eliminatedCast.includes(q)) eliminatedCast.push(q);
-        q.editTrackRecord("ELIM");
-        q.rankP = `${toOrdinal(elimStart)}–${toOrdinal(elimEnd)}`;
-        screen.createImage(q.image, "sienna");
-        screen.createBold(`${q.getName()} has been eliminated.`);
-    });
-
-
-    if (currentBracketIndex < 2) {
-        currentBracketIndex++;
-        loadCurrentBracket();
-        screen.createButton("Proceed", "contestantProgress()");
-        return;
-    }
-
-    screen.createButton("Proceed", "startMergeAndProceed()");
 }
 
 function startMergeAndProceed() {
     phase = "merge";
     currentCast = fullCast.filter(q => !eliminatedCast.includes(q));
 
-    contestantProgress();
+    if (spainDoll) {
+        receiveDolls();
+    } else {
+        contestantProgress();
+    }
+}
+
+function receiveDolls() {
+    let screen = new Scene();
+    screen.clean();
+    screen.createBigText("El Roscón de Reinas!");
+    screen.createBold("The queens will grab a slice of cake, one lucky queen will get the lucky doll.")
+    currentCast.forEach(q => {
+        screen.createImage(q.image, "black");
+        screen.createImage("images/Cake.png", "black");
+        screen.createBold(`${q.getName()} grabbed a cake slice...`);
+    })
+
+    const luckyQueen = currentCast[Math.floor(Math.random() * currentCast.length)];
+    luckyQueen.dollHolder = true;
+
+    screen.createButton("Proceed", "contestantProgress()");
 }
 
 function newEpisode() {
@@ -2173,6 +2318,10 @@ function swapBackground(image) {
 
 function miniChallenge() {
     runwayBasedChallenge = false;
+
+    if (currentCast.length < 6) {
+        spainDollOver = true;
+    }
 
     const screen = new Scene();
     screen.clean();
@@ -2196,81 +2345,178 @@ function miniChallenge() {
 
 function addWildcard() {
     const screen = new Scene();
+    screen.clean();
 
-    const wildcard = eliminatedCast[randomNumber(0, eliminatedCast.length - 1)];
-    const originalRank = wildcard.rankP;
+    if (rupaulMode  && eliminatedCast.length == 0) {
+        screen.createParagraph("Select the queen(s) to return as wildcard(s).");
 
-    eliminatedCast = eliminatedCast.filter(q => q !== wildcard);
+        const checkboxes = eliminatedCast.map((q, i) => screen.createCheckbox(q.getName(), `wild_${i}`, q.image));
 
-    if (originalRank && originalRank.includes("–")) {
-        const sharedElims = eliminatedCast.filter(q =>
-            q.rankP === originalRank &&
-            q.assignedBrackets === wildcard.assignedBrackets &&
-            !Mergers.includes(q)
-        );
+        const confirmBtn = document.createElement("button");
+        confirmBtn.innerText = "Confirm Wildcards";
+        confirmBtn.addEventListener("click", () => {
+            const selectedQueens = eliminatedCast.filter((q, i) => document.getElementById(`wild_${i}`).checked);
 
-        if (sharedElims.length === 1) {
-            const onlyQueen = sharedElims[0];
-            const match = originalRank.match(/\d+/g);
-            if (match && match.length === 2) {
-                const newRank = Math.max(parseInt(match[0]), parseInt(match[1]));
-                onlyQueen.rankP = toOrdinal(newRank);
+            if (selectedQueens.length === 0) {
+                alert("Please select at least one queen to return as a wildcard.");
+                return;
             }
-        } else if (sharedElims.length > 1) {
+
+            checkboxes.forEach(cb => cb.parentElement.remove());
+            confirmBtn.remove();
+
+            selectedQueens.forEach(wildcard => {
+                const originalRank = wildcard.rankP;
+
+                eliminatedCast = eliminatedCast.filter(q => q !== wildcard);
+
+                if (originalRank && originalRank.includes("–")) {
+                    const sharedElims = eliminatedCast.filter(q =>
+                        q.rankP === originalRank &&
+                        q.assignedBrackets === wildcard.assignedBrackets &&
+                        !Mergers.includes(q)
+                    );
+
+                    if (sharedElims.length === 1) {
+                        const onlyQueen = sharedElims[0];
+                        const match = originalRank.match(/\d+/g);
+                        if (match && match.length === 2) {
+                            const newRank = Math.max(parseInt(match[0]), parseInt(match[1]));
+                            onlyQueen.rankP = toOrdinal(newRank);
+                        }
+                    } else if (sharedElims.length > 1) {
+                        const match = originalRank.match(/\d+/g);
+                        if (match && match.length === 2) {
+                            const start = parseInt(match[0]);
+                            const end = parseInt(match[1]);
+                            const numNow = sharedElims.length;
+                            const newStart = end - numNow + 1;
+                            const newEnd = end;
+                            const newRank = `${toOrdinal(newStart)}–${toOrdinal(newEnd)}`;
+                            sharedElims.forEach(q => {
+                                q.rankP = newRank;
+                            });
+                        }
+                    }
+                }
+
+                if (originalRank) {
+                    const match = originalRank.match(/\d+/g);
+                    if (match && match.length === 2) {
+                        const originalMax = parseInt(match[1]);
+                        eliminatedCast.forEach(q => {
+                            if (!q.rankP || Mergers.includes(q)) return;
+
+                            const singleMatch = q.rankP.match(/^(\d+)(?:st|nd|rd|th)$/);
+                            const rangeMatch = q.rankP.match(/^(\d+)[–-](\d+)$/);
+
+                            if (singleMatch) {
+                                let qRank = parseInt(singleMatch[1]);
+                                if (qRank < originalMax) q.rankP = toOrdinal(qRank + 1);
+                            } else if (rangeMatch) {
+                                let start = parseInt(rangeMatch[1]);
+                                let end = parseInt(rangeMatch[2]);
+                                if (end < originalMax) {
+                                    start += 1;
+                                    end += 1;
+                                    q.rankP = `${toOrdinal(start)}–${toOrdinal(end)}`;
+                                }
+                            }
+                        });
+                    }
+                }
+
+                if (!Mergers.includes(wildcard)) Mergers.push(wildcard);
+                if (!currentCast.includes(wildcard)) currentCast.push(wildcard);
+
+                wildcard.ogPlace = originalRank;
+                wildcard.rankP = null;
+                wildcard.rankRange = null;
+
+                if (wildcard.trackRecord.length > 0) wildcard.trackRecord.pop();
+                wildcard.addToTrackRecord("RTRN");
+
+                screen.createImage(wildcard.image, "orange");
+                screen.createBold(`${wildcard.getName()}, has been chosen to return as a wildcard!`);
+            });
+        });
+
+        screen._MainBlock.appendChild(confirmBtn);
+    } else {
+        const wildcard = eliminatedCast[randomNumber(0, eliminatedCast.length - 1)];
+        const originalRank = wildcard.rankP;
+
+        eliminatedCast = eliminatedCast.filter(q => q !== wildcard);
+
+        if (originalRank && originalRank.includes("–")) {
+            const sharedElims = eliminatedCast.filter(q =>
+                q.rankP === originalRank &&
+                q.assignedBrackets === wildcard.assignedBrackets &&
+                !Mergers.includes(q)
+            );
+
+            if (sharedElims.length === 1) {
+                const onlyQueen = sharedElims[0];
+                const match = originalRank.match(/\d+/g);
+                if (match && match.length === 2) {
+                    const newRank = Math.max(parseInt(match[0]), parseInt(match[1]));
+                    onlyQueen.rankP = toOrdinal(newRank);
+                }
+            } else if (sharedElims.length > 1) {
+                const match = originalRank.match(/\d+/g);
+                if (match && match.length === 2) {
+                    const start = parseInt(match[0]);
+                    const end = parseInt(match[1]);
+                    const numNow = sharedElims.length;
+                    const newStart = end - numNow + 1;
+                    const newEnd = end;
+                    const newRank = `${toOrdinal(newStart)}–${toOrdinal(newEnd)}`;
+                    sharedElims.forEach(q => {
+                        q.rankP = newRank;
+                    });
+                }
+            }
+        }
+
+        if (originalRank) {
             const match = originalRank.match(/\d+/g);
             if (match && match.length === 2) {
-                const start = parseInt(match[0]);
-                const end = parseInt(match[1]);
-                const numNow = sharedElims.length;
-                const newStart = end - numNow + 1;
-                const newEnd = end;
-                const newRank = `${toOrdinal(newStart)}–${toOrdinal(newEnd)}`;
-                sharedElims.forEach(q => {
-                    q.rankP = newRank;
+                const originalMax = parseInt(match[1]);
+                eliminatedCast.forEach(q => {
+                    if (!q.rankP || Mergers.includes(q)) return;
+
+                    const singleMatch = q.rankP.match(/^(\d+)(?:st|nd|rd|th)$/);
+                    const rangeMatch = q.rankP.match(/^(\d+)[–-](\d+)$/);
+
+                    if (singleMatch) {
+                        let qRank = parseInt(singleMatch[1]);
+                        if (qRank < originalMax) q.rankP = toOrdinal(qRank + 1);
+                    } else if (rangeMatch) {
+                        let start = parseInt(rangeMatch[1]);
+                        let end = parseInt(rangeMatch[2]);
+                        if (end < originalMax) {
+                            start += 1;
+                            end += 1;
+                            q.rankP = `${toOrdinal(start)}–${toOrdinal(end)}`;
+                        }
+                    }
                 });
             }
         }
+
+        if (!Mergers.includes(wildcard)) Mergers.push(wildcard);
+        if (!currentCast.includes(wildcard)) currentCast.push(wildcard);
+
+        wildcard.ogPlace = originalRank;
+        wildcard.rankP = null;
+        wildcard.rankRange = null;
+
+        if (wildcard.trackRecord.length > 0) wildcard.trackRecord.pop();
+        wildcard.addToTrackRecord("RTRN");
+
+        screen.createImage(wildcard.image, "orange");
+        screen.createBold(`${wildcard.getName()}, has been chosen by the wheel to be a wildcard!`);
     }
-
-    if (originalRank) {
-        const match = originalRank.match(/\d+/g);
-        if (match && match.length === 2) {
-            const originalMax = parseInt(match[1]);
-
-            eliminatedCast.forEach(q => {
-                if (!q.rankP || Mergers.includes(q)) return;
-
-                const singleMatch = q.rankP.match(/^(\d+)(?:st|nd|rd|th)$/);
-                const rangeMatch = q.rankP.match(/^(\d+)[–-](\d+)$/);
-
-                if (singleMatch) {
-                    let qRank = parseInt(singleMatch[1]);
-                    if (qRank < originalMax) q.rankP = toOrdinal(qRank + 1);
-                } else if (rangeMatch) {
-                    let start = parseInt(rangeMatch[1]);
-                    let end = parseInt(rangeMatch[2]);
-                    if (end < originalMax) {
-                        start += 1;
-                        end += 1;
-                        q.rankP = `${toOrdinal(start)}–${toOrdinal(end)}`;
-                    }
-                }
-            });
-        }
-    }
-
-    if (!Mergers.includes(wildcard)) Mergers.push(wildcard);
-    if (!currentCast.includes(wildcard)) currentCast.push(wildcard);
-
-    wildcard.ogPlace = originalRank;
-    wildcard.rankP = null;
-    wildcard.rankRange = null;
-
-    if (wildcard.trackRecord.length > 0) wildcard.trackRecord.pop();
-    wildcard.addToTrackRecord("RTRN");
-
-    screen.createImage(wildcard.image, "orange");
-    screen.createBold(`${wildcard.getName()}, has been chosen by the wheel to be a wildcard!`);
 }
 
 function generateChallenge() {
@@ -2674,49 +2920,100 @@ function topTwo() {
 
     screen.createBigText("Ladies, I've made my decision...");
 
-    topQueens.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
+    if (rupaulMode) {
+        screen.createParagraph("Select who wins... None or more...");
 
-    const winner = topQueens[0];
-    const second = topQueens[1] || null;
-    const third = topQueens[2] || null;
+        const checkboxes = topQueens.map((q, i) => screen.createCheckbox(q.getName(), `queen_${i}`, q.image));
 
-    const isDoubleWinner =
-        second &&
-        winner.lipsyncScore === second.lipsyncScore &&
-        winner.lipsyncScore > 6 &&
-        currentCast.length > 6;
+        const confirmBtn = document.createElement("button");
+        confirmBtn.innerText = "Confirm Winners";
+        confirmBtn.addEventListener("click", () => {
+            const selectedQueens = topQueens.filter((q, i) => document.getElementById(`queen_${i}`).checked);
 
-    if (isDoubleWinner) {
-        [winner, second].forEach(q => {
-            screen.createImage(q.image, "darkblue");
-            q.favoritism += 5;
-            addEarnedMvqPoints(q, episodeCount, 1);
-            q.addToTrackRecord(" WIN ");
+            checkboxes.forEach(cb => cb.parentElement.remove());
+            confirmBtn.remove();
+
+            if (selectedQueens.length === 0) {
+                topQueens.forEach(q => {
+                    q.addToTrackRecord(" WIN");
+                    screen.createImage(q.image, "cyan");
+                    screen.createParagraph(`${q.getName()}, you are safe.`);
+                });
+            } else {
+                selectedQueens.forEach(q => {
+                    if (selectedQueens.length > 1) {
+                        q.favoritism += 5;
+                        q.addToTrackRecord(" WIN ");
+                        addEarnedMvqPoints(q, episodeCount, 1);
+                        screen.createImage(q.image, "darkblue");
+                        screen.createBold(`${q.getName()}, you're a winner, baby!`);
+                    } else {
+                        q.favoritism += 5;
+                        q.addToTrackRecord("WIN");
+                        addEarnedMvqPoints(q, episodeCount, 1);
+                        screen.createImage(q.image, "royalblue");
+                        screen.createBold(`${q.getName()}, you're a winner, baby!`);
+                    }
+                });
+
+                topQueens
+                    .filter(q => !selectedQueens.includes(q))
+                    .forEach(q => {
+                        q.addToTrackRecord(" WIN");
+                        screen.createImage(q.image, "cyan");
+                        screen.createParagraph(`${q.getName()}, you are safe.`);
+                    });
+            }
+
+            screen.createButton("Proceed", "pointCeremony()");
         });
-        screen.createBold("Condragulations, you're both winners, baby!");
 
-        if (third) {
-            third.addToTrackRecord(" WIN");
-            screen.createImage(third.image, "cyan");
-            screen.createParagraph(`${third.getName()}, you are safe.`);
+        screen._MainBlock.appendChild(confirmBtn);
+    } else {
+        topQueens.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
+
+        const winner = topQueens[0];
+        const second = topQueens[1] || null;
+        const third = topQueens[2] || null;
+
+        const isDoubleWinner =
+            second &&
+            winner.lipsyncScore === second.lipsyncScore &&
+            winner.lipsyncScore > 6 &&
+            currentCast.length > 6;
+
+        if (isDoubleWinner) {
+            [winner, second].forEach(q => {
+                screen.createImage(q.image, "darkblue");
+                q.favoritism += 5;
+                addEarnedMvqPoints(q, episodeCount, 1);
+                q.addToTrackRecord(" WIN ");
+            });
+            screen.createBold("Condragulations, you're both winners, baby!");
+
+            if (third) {
+                third.addToTrackRecord(" WIN");
+                screen.createImage(third.image, "cyan");
+                screen.createParagraph(`${third.getName()}, you are safe.`);
+            }
         }
-    }
-    else {
-        winner.favoritism += 5;
-        winner.addToTrackRecord("WIN");
-        addEarnedMvqPoints(winner, episodeCount, 1);
-        screen.createImage(winner.image, "royalblue");
-        screen.createBold(`${winner.getName()}, you're a winner, baby!`);
+        else {
+            winner.favoritism += 5;
+            winner.addToTrackRecord("WIN");
+            addEarnedMvqPoints(winner, episodeCount, 1);
+            screen.createImage(winner.image, "royalblue");
+            screen.createBold(`${winner.getName()}, you're a winner, baby!`);
 
-        [second, third].filter(Boolean).forEach(q => {
-            q.favoritism += 5;
-            q.addToTrackRecord(" WIN");
-            screen.createImage(q.image, "cyan");
-            screen.createParagraph(`${q.getName()}, you are safe.`);
-        });
-    }
+            [second, third].filter(Boolean).forEach(q => {
+                q.favoritism += 5;
+                q.addToTrackRecord(" WIN");
+                screen.createImage(q.image, "cyan");
+                screen.createParagraph(`${q.getName()}, you are safe.`);
+            });
+        }
 
-    screen.createButton("Proceed", "pointCeremony()");
+        screen.createButton("Proceed", "pointCeremony()");
+    }
 }
 
 function addEarnedMvqPoints(queen, ep, pts) {
@@ -2853,7 +3150,7 @@ function winAndBtms() {
     bottomQueens.forEach(q => screen.createImage(q.image, "tomato"));
     screen.createBold("", "btm2");
     let btm2 = document.getElementById("btm2");
-    btm2.innerHTML += "I'm sorry my dears but you are up for elimination.";
+    btm2.innerHTML += `${bottomQueens[0].getName()}, ${bottomQueens[1].getName()}, I'm sorry my dears but you are up for elimination.`;
     screen.createButton("Proceed", "lipsyncDesc()");
 }
 
@@ -2861,65 +3158,255 @@ function lipsyncDesc() {
     const screen = new Scene();
     screen.clean();
 
-    for (let i = 0; i < bottomQueens.length; i++) {
-        if (lipsyncRiggory) {
-            bottomQueens[i].getLipsync();
-        } else {
-            bottomQueens[i].getASLipsync();
-        }
-    }
+    screen.createBigText("The time has come...");
+    screen.createBold("For you to lip-sync... for your life! Good luck, and don't fuck it up.");
 
-    let event = checkForLipsyncEvent(bottomQueens);
-    if (event != false) {
-        let eventQueen = bottomQueens.find( (q) => {
-            return q.getName() == event.queen.getName()
-        });
-        eventQueen.lipsyncScore += event.points;
+    let song = lsSong().toString();
+    screen.createHorizontalLine();
+
+    bottomQueens.forEach(q => {
+        if (lipsyncRiggory) q.getLipsync();
+        else q.getASLipsync();
+    });
+
+    if (spainDoll && !spainDollOver) {
+        const btnContainer = document.createElement("div");
+        screen._MainBlock.appendChild(btnContainer);
+
+        let seconds = 10;
+        const countdownText = document.createElement("p");
+        countdownText.innerText = `You can reveal results in ${seconds} seconds...`;
+        btnContainer.appendChild(countdownText);
+
+        const interval = setInterval(() => {
+            seconds--;
+            countdownText.innerText = `You can reveal results in ${seconds} seconds...`;
+
+            const dollQueen = bottomQueens.find(q => q.dollHolder);
+            if (dollQueen) {
+                clearInterval(interval);
+                countdownText.remove();
+
+                screen.createImage(dollQueen.image, "black");
+                screen.createImage("images/Queen.png", "gold");
+                screen.createBold(`${dollQueen.getName()} HOLDS THE LUCKY DOLL! You are now safe to slay another day...`);
+
+                dollQueen.addToTrackRecord("LOW");
+                dollQueen.dollEpisode = episodeCount - 1;
+
+                spainDollOver = true;
+                
+                let lowQueen = currentCast.find(q => {
+                    const lastIndex = q.trackRecord.length - 1;
+                    return q !== dollQueen &&
+                        q.trackRecord[lastIndex] &&
+                        q.trackRecord[lastIndex].toUpperCase() === "LOW";
+                });
+
+                screen.createImage(lowQueen.image, "tomato");
+                screen.createBold(`${lowQueen.getName()}, I'm sorry my dear, but this means that you are now up for elimination...`);
+
+                screen.createHorizontalLine();
+
+                lowQueen.trackRecord.pop();
+                bottomQueens = bottomQueens.filter(q => q !== dollQueen);
+                if (lowQueen && !bottomQueens.includes(lowQueen)) bottomQueens.push(lowQueen);
+
+                bottomQueens.forEach(q => {
+                    if (lipsyncRiggory) q.getLipsync();
+                    else q.getASLipsync();
+                });
+
+                generateLipsyncPerformances(bottomQueens);
+
+                screen.createButton("Show result", "lipSync()");
+            } else if (seconds <= 0) {
+                clearInterval(interval);
+                countdownText.remove();
+
+                const event = checkForLipsyncEvent(bottomQueens);
+                if (event !== false) {
+                    const eventQueen = bottomQueens.find(q => q.getName() === event.queen.getName());
+                    eventQueen.lipsyncScore += event.points;
+                }
+
+                generateLipsyncPerformances(bottomQueens);
+                screen.createButton("Show result", "lipSync()");
+            }
+        }, 1000);
+
+    } else {
+        const event = checkForLipsyncEvent(bottomQueens);
+        if (event !== false) {
+            const eventQueen = bottomQueens.find(q => q.getName() === event.queen.getName());
+            eventQueen.lipsyncScore += event.points;
+        }
+
+        generateLipsyncPerformances(bottomQueens);
+        screen.createButton("Show result", "lipSync()");
     }
-    generateLipsyncPerformances(bottomQueens);
-    screen.createButton("Show result", "lipSync()");
 }
 
+let badunkaDunkLevers = Array.from({ length: 10 }, (_, i) => i + 1);
+let badunkaDunkLeversUsed = [];
+let badunkaDunkMaxCorrect = 2;
+let badunkaDunkCorrectCount = 0;
+
 function lipSync() {
-    let screen = new Scene();
+    const screen = new Scene();
     screen.clean();
 
     bottomQueens.sort((a, b) => b.lipsyncScore - a.lipsyncScore);
 
-    if (bottomQueens[0].lipsyncScore < 2 && randomNumber(0, 10) >= 6) {
-        screen.createBold("Meh...");
+    const safeQueen = bottomQueens[0];
+    screen.createImage(safeQueen.image, "tomato");
+    screen.createBold(`${safeQueen.getName()}, shantay you stay.`);
+    safeQueen.unfavoritism += 3;
+    safeQueen.ppe += 1;
+
+    const lastIndex1 = safeQueen.trackRecord.length - 1;
+    if (safeQueen.trackRecord[lastIndex1].toUpperCase() === "RTRN") {
+        safeQueen.editTrackRecord("BTM2");
+    } else {
+        safeQueen.addToTrackRecord("BTM2");
+    }
+
+    const queen = bottomQueens[1];
+
+    if (badunkaDunk && !badunkaDunkOver) {
+        screen.createImage(queen.image, "tomato");
+        screen.createBold(`${queen.getName()}, my queen! Are you feeling lucky?`);
+
+        let correctLever = null;
+        if (badunkaDunkCorrectCount < badunkaDunkMaxCorrect) {
+            const remainingLevers = badunkaDunkLevers.filter(l => !badunkaDunkLeversUsed.includes(l));
+            if (remainingLevers.length > 0) {
+                correctLever = remainingLevers[randomNumber(0, remainingLevers.length - 1)];
+            }
+        }
+
+        if (rupaulMode) {
+            const leverContainer = document.createElement("div");
+            leverContainer.style.display = "flex";
+            leverContainer.style.flexWrap = "wrap";
+            leverContainer.style.gap = "40px";
+            leverContainer.style.marginTop = "1rem";
+
+            badunkaDunkLevers.forEach(i => {
+                if (badunkaDunkLeversUsed.includes(i)) return;
+
+                const sliderWrapper = document.createElement("div");
+                sliderWrapper.className = "lever-wrapper";
+                sliderWrapper.style.textAlign = "center";
+                sliderWrapper.style.display = "flex";
+                sliderWrapper.style.flexDirection = "column";
+                sliderWrapper.style.alignItems = "center";
+
+                const sliderLabel = document.createElement("p");
+                sliderLabel.innerText = i;
+
+                const slider = document.createElement("input");
+                slider.type = "range";
+                slider.min = "0";
+                slider.max = "1";
+                slider.step = "0.01";
+                slider.value = "0";
+
+                slider.style.width = "150px";
+                slider.style.transform = "rotate(90deg)";
+                slider.style.cursor = "grab";
+                slider.style.transition = "all 0.1s ease";
+
+                slider.addEventListener("input", () => {
+                    if (slider.value >= 0.95) {
+                        slider.value = "1";
+                        leverContainer.remove();
+                        resolveLever(i, queen, correctLever, screen);
+                    } else if (slider.value <= 0.05) {
+                        slider.value = "0";
+                    }
+                });
+
+                sliderWrapper.appendChild(sliderLabel);
+                sliderWrapper.appendChild(slider);
+                leverContainer.appendChild(sliderWrapper);
+            });
+
+            screen._MainBlock.appendChild(leverContainer);
+        } else {
+            const remainingLevers = badunkaDunkLevers.filter(l => !badunkaDunkLeversUsed.includes(l));
+            const choice = remainingLevers[randomNumber(0, remainingLevers.length - 1)];
+            resolveLever(choice, queen, correctLever, screen);
+        }
+
+    } else {
+        screen.createImage(queen.image, "red");
+
+        screen.createBold(`${queen.getName()}, sashay away...`);
+
+        const totalContestants = fullCast.length;
+        const eliminatedSoFar = eliminatedCast.length;
+        const rankNum = totalContestants - eliminatedSoFar;
+        const lastIndex2 = queen.trackRecord.length - 1;
+        if (queen.trackRecord[lastIndex2].toUpperCase() === "RTRN") {
+            queen.editTrackRecord("ELIM");
+        } else {
+            queen.addToTrackRecord("ELIM");
+        }
+        queen.rankP = toOrdinal(rankNum);
+
+        eliminatedCast.unshift(queen);
+        currentCast.splice(currentCast.indexOf(queen), 1);
+
+        screen.createButton("Proceed", "contestantProgress()");
+    }
+}
+
+function resolveLever(choice, queen, correctLever, screen) {
+    badunkaDunkLeversUsed.push(choice);
+
+    if (choice === correctLever) {
+        badunkaDunkCorrectCount++;
         screen.createHorizontalLine();
-    }
+        screen.createImage(queen.image, "hotpink");
+        screen.createBold(`${queen.getName()} chose lever number ${choice}...`);
+        screen.createBold(`${queen.getName()} CONDRAGULATIONS! You have lived to slay another day!`);
 
-    screen.createImage(bottomQueens[0].image, "tomato");
-    screen.createBold(bottomQueens[0].getName() + ", shantay you stay.");
-    bottomQueens[0].unfavoritism += 3;
-    bottomQueens[0].ppe += 1;
-    const lastIndex1 = bottomQueens[0].trackRecord.length - 1;
-    if (bottomQueens[0].trackRecord[lastIndex1].toUpperCase() === "RTRN") {
-        bottomQueens[0].editTrackRecord("BTM2");
+        queen.unfavoritism += 3;
+        queen.ppe += 1;
+
+        const lastIndex = queen.trackRecord.length - 1;
+        if (queen.trackRecord[lastIndex].toUpperCase() === "RTRN") {
+            queen.editTrackRecord("BTM2");
+        } else {
+            queen.addToTrackRecord("BTM2");
+        }
+
+        queen.dunkSurivalEpisode.push(episodeCount - 1);
     } else {
-        bottomQueens[0].addToTrackRecord("BTM2");
+        screen.createHorizontalLine();
+        screen.createImage(queen.image, "red");
+        screen.createBold(`${queen.getName()} chose lever number ${choice}...`);
+        screen.createBold(`${queen.getName()}, now, it is NOT your time, sashay away...`);
+
+        const totalContestants = fullCast.length;
+        const eliminatedSoFar = eliminatedCast.length;
+        const rankNum = totalContestants - eliminatedSoFar;
+        const lastIndex2 = queen.trackRecord.length - 1;
+        if (queen.trackRecord[lastIndex2].toUpperCase() === "RTRN") {
+            queen.editTrackRecord("ELIM");
+        } else {
+            queen.addToTrackRecord("ELIM");
+        }
+        queen.rankP = toOrdinal(rankNum);
+
+        eliminatedCast.unshift(queen);
+        currentCast.splice(currentCast.indexOf(queen), 1);
     }
 
-    screen.createImage(bottomQueens[1].image, "red");
-    screen.createBold(bottomQueens[1].getName() + ", sashay away...");
-
-    const totalContestants = fullCast.length;
-    const eliminatedSoFar = eliminatedCast.length;
-
-    const rankNum = totalContestants - eliminatedSoFar;
-
-    const lastIndex2 = bottomQueens[1].trackRecord.length - 1;
-    if (bottomQueens[1].trackRecord[lastIndex2].toUpperCase() === "RTRN") {
-        bottomQueens[1].editTrackRecord("ELIM");
-    } else {
-        bottomQueens[1].addToTrackRecord("ELIM");
+    if (badunkaDunkLeversUsed.length >= badunkaDunkLevers.length) {
+        badunkaDunkOver = true;
     }
-    bottomQueens[1].rankP = toOrdinal(rankNum);
-
-    eliminatedCast.unshift(bottomQueens[1]);
-    currentCast.splice(currentCast.indexOf(bottomQueens[1]), 1);
 
     screen.createButton("Proceed", "contestantProgress()");
 }
@@ -3570,7 +4057,7 @@ function createTrackRecordTable(groupName) {
                 case " WINADV": td.style.backgroundColor = "deepskyblue"; td.style.color = "black"; td.style.fontWeight = "bold"; td.innerHTML = 'WIN<br>+<br>ADV'; break;
                 case " WIN ADV": td.style.backgroundColor = "darkblue"; td.style.color = "white"; td.style.fontWeight = "bold"; td.innerHTML = 'WIN<br>+<br>ADV'; break;
                 case "HIGH": td.style.backgroundColor = "lightblue"; break;
-                case "HIGHADV": td.style.backgroundColor = "lightblue"; td.innerHTML = 'HIGH<br>+<br>><b>ADV</b>';break;
+                case "HIGHADV": td.style.backgroundColor = "lightblue"; td.innerHTML = 'HIGH<br>+<br><b>ADV</b>';break;
                 case "LOW": td.style.backgroundColor = "pink"; break;
                 case "BTM2":
                 case "BTM3":
@@ -3606,6 +4093,15 @@ function createTrackRecordTable(groupName) {
             if (wonMini) {
                 td.innerHTML += "<br><small><i>Mini<br>Chall.<br>Winner</i></small>";
             }
+
+            if (contestantData.dollEpisode === actualEp) {
+                td.style.border = "3px gold solid";
+            }
+
+            if (contestantData.dunkSurivalEpisode.includes(actualEp)) {
+                td.style.border = "3px #2a6bcc solid";
+            }
+
             row.appendChild(td);
         });
         const ppeCell = document.createElement("td");

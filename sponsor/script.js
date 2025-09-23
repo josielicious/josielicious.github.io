@@ -2347,7 +2347,7 @@ function addWildcard() {
     const screen = new Scene();
     screen.clean();
 
-    if (rupaulMode && eliminatedCast > 0) {
+    if (rupaulMode  && eliminatedCast.length == 0) {
         screen.createParagraph("Select the queen(s) to return as wildcard(s).");
 
         const checkboxes = eliminatedCast.map((q, i) => screen.createCheckbox(q.getName(), `wild_${i}`, q.image));
