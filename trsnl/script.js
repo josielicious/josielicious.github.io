@@ -930,7 +930,7 @@ let minty = new Queen("Minty Fresh", 6, 5, 4, 12, 4, 11, 9, "MintyFresh");
 let precious = new Queen("Precious Paula Nicole", 8, 8, 10, 7, 9, 9, 9, "PreciousPaulaNicole");
 let prince = new Queen("Prince", 4, 4, 4, 4, 4, 7, 4, "Prince");
 let turing = new Queen("Turing", 6, 6, 9, 6, 6, 7, 9, "Turing");
-let vinas = new Queen("Viñas DeLuxe", 6, 8, 8, 10, 8, 11, 7, "VinasDeLuxe");
+let vinas = new Queen("Viñas DeLuxe", 10, 10, 12, 15, 12, 14, 12, "VinasDeLuxe");
 let xilhouete = new Queen("Xilhouete", 6, 10, 6, 8, 11, 10, 8, "Xilhouete");
 let drph_season1 = [brigiding, corazon, eva, gigiEra, morgana, marinaSummers, minty, precious, prince, turing, vinas, xilhouete];
 //DRAG RACE PHILIPPINES 2
@@ -1521,7 +1521,26 @@ class MiniChallenge extends Challenge {
         const b = [
             "the pitcrew.", "a partner.", "noodles.", "hip pads.", "balls.", "past Drag Race contestants", "a celebrity."
         ];
-        description.innerHTML = `In today's mini-challenge, the queens will do ${a[randomNumber(0, a.length - 1)]}${b[randomNumber(0, b.length - 1)]}`;
+
+        if (currentCast.length === 5) {
+            description.innerHTML = "Bring in the puppets! The queens will mock eachother, and customize puppets of eachother";
+        }
+        else if (currentCast.length === 7) {
+            description.innerHTML = `The library is open! In today's mini-challenge, the queens will read each-other to FILTH! Because reading is what?`
+            const screen = new Scene();
+            currentCast.forEach(q => {
+                screen.createImage(q.image);
+            })
+            screen.createBold("Is FUNDAMENTAL!");
+        } else {
+            const miniChance = 80;
+            const randomized = Math.floor(Math.random() * 100);
+            if (randomized >= 80) {
+                description.innerHTML = `Today there's no mini challenge, let's move onto the maxi challenge!`
+            } else {
+                description.innerHTML = `In today's mini-challenge, the queens will do ${a[randomNumber(0, a.length - 1)]}${b[randomNumber(0, b.length - 1)]}`;
+            }
+        }
     }
 
     rankPerformances() {
@@ -1604,7 +1623,8 @@ class RoastChallenge extends Challenge {
             "MP",
             "Noir",
             "Roo",
-            "Yitzu"
+            "Yitzu",
+            "Seren"
         ];
         description.innerHTML = `The queens will prepare a set for the... "Roast of ${roastTopics[randomNumber(0, roastTopics.length - 1)]}"!`;
     }
@@ -2325,21 +2345,21 @@ function miniChallenge() {
 
     const screen = new Scene();
     screen.clean();
-    const miniChance = 50;
+
     if (wildcardType === "merge" && !wildcardUsed && phase === "merge") {
         addWildcard();
         wildcardUsed = true;
     }
+
     screen.createBigText("Mini challenge!");
     screen.createBold("", "description");
     swapBackground("Werkroom");
-    if (miniChance > randomNumber(0, 100)) {
-        const mini = new MiniChallenge();
-        mini.generateDescription();
-        mini.rankPerformances();
-    } else {
-        screen.createBold("Today, there's no mini challenge, let's go to the maxi challenge.");
-    }
+
+    const mini = new MiniChallenge();
+    mini.generateDescription();
+    mini.rankPerformances();
+
+    // BUTTON //
     generateChallenge()
 }
 
@@ -2515,6 +2535,7 @@ function addWildcard() {
         screen.createImage(wildcard.image, "orange");
         screen.createBold(`${wildcard.getName()}, has been chosen by the wheel to be a wildcard!`);
     }
+    screen.createHorizontalLine();
 }
 
 function generateChallenge() {

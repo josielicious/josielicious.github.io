@@ -1269,7 +1269,7 @@ function lipsyncsLC() {
                 }
             }
         }
-        if (CheckForReturning() == true) {
+        if (CheckForReturning() == true || totalCastSize === 13 && lmdfinale && episodeCount == 8) {
             screen.createButton("Proceed", "returningQueenScreen()");
         } else {
             screen.createButton("Proceed", "newEpisode()");
@@ -2868,7 +2868,7 @@ function slayPremiereJudging3() {
     topQueens[1].ppe += 4.5;
     topQueens.splice(0, 2);
     screen.createHorizontalLine();
-    if (CheckForReturning()) {
+    if (CheckForReturning() || totalCastSize === 13 && lmdfinale && episodeCount == 8) {
         screen.createButton("Proceed", "returningQueenScreen()");
     } else {
         screen.createButton("Proceed", "untucked()");
@@ -9017,7 +9017,7 @@ function lipsyncs14() {
     }
     episodeChallenges.push("LaLaPaRUZa Smackdown");
     episodeCount++;
-    if (CheckForReturning() == true) {
+    if (CheckForReturning() == true || totalCastSize === 13 && lmdfinale && episodeCount == 8) {
         screen.createButton("Proceed", "returningQueenScreen()");
     } else {
         screen.createButton("Proceed", "newEpisode()");
@@ -9122,7 +9122,7 @@ function lateQueenScreen() {
     screen.createImage(lateQueen.image, "royalblue");
     screen.createHorizontalLine();
     currentCast.push(lateQueen);
-    if (CheckForReturning() == true) {
+    if (CheckForReturning() == true || totalCastSize === 13 && lmdfinale && episodeCount == 8) {
         screen.createButton("Proceed", "returningQueenScreen()");
     } else {
         screen.createButton("Proceed", "newEpisode()");
@@ -9472,7 +9472,7 @@ function bottom6Judging() {
     }
     if ((s6Premiere || s12Premiere || porkchopPremiere || s14Premiere || ph2Premiere || newImmTwst) == true && premiereCounter < 3) {
         screen.createButton("Proceed", "doublePremiere()");
-    } else if (CheckForReturning() == true) {
+    } else if (CheckForReturning() == true || totalCastSize === 13 && lmdfinale && episodeCount == 8){
         screen.createButton("Proceed", "returningQueenScreen()");
     } else {
         screen.createButton("Proceed", "newEpisode()");
@@ -9577,7 +9577,7 @@ function judgingSlayersScreen() {
     }
     toBlots(top2, song);
     screen.createHorizontalLine();
-    if (CheckForReturning() == true) {
+    if (CheckForReturning() == true || totalCastSize === 13 && lmdfinale && episodeCount == 8) {
         screen.createButton("Proceed", "returningQueenScreen()");
     } else {
         screen.createButton("Proceed", "newEpisode()");
@@ -10765,11 +10765,7 @@ let disqOrDept = false;
 let disqOrDeptFlag = false;
 
 function lmdDoubleElimTime() {
-    if (totalCastSize === 13 && lmdfinale && episodeCount == 9) {
-        return true;
-    }
-    
-    if (totalCastSize >= 14 && lmdfinale && episodeCount == 10) {
+    if (lmdfinale && currentCast.length == 6) {
         return true;
     } 
 }
@@ -10906,7 +10902,7 @@ function lipSync() {
             }
         }
     } else {
-        if (score1 > 7 && score2 > 7 && randomNumber(0, 100) <= 50 && !doubleShantay && !noDouble || parPremiere && parPremiereCheck && episodeCount == 1 && bottomQueens[0].trackRecord.length == 0) {
+        if (!lmd3Ensurance() && score1 > 7 && score2 > 7 && randomNumber(0, 100) <= 50 && !doubleShantay && !noDouble || parPremiere && parPremiereCheck && episodeCount == 1 && bottomQueens[0].trackRecord.length == 0) {
             if (parPremiereCheck) {
                 parPremiereCheck = false;
                 if (bottomQueens[0].lipsyncScore <= 3 && bottomQueens[1].lipsyncScore <= 3) {
@@ -11217,7 +11213,7 @@ function lipSync() {
         }
         if ((s6Premiere || s12Premiere || porkchopPremiere || s14Premiere || ph2Premiere || newImmTwst) == true && premiereCounter < 3) {
             screen.createButton("Proceed", "doublePremiere()");
-        } else if (CheckForReturning() == true) {
+        } else if (CheckForReturning() == true || totalCastSize === 13 && lmdfinale && episodeCount == 8) {
             screen.createButton("Proceed", "returningQueenScreen()");
         } else {
             screen.createButton("Proceed", "untucked()");
@@ -11248,7 +11244,7 @@ function kandyFO() {
         }
         if ((s6Premiere || s12Premiere || porkchopPremiere || s14Premiere || ph2Premiere || newImmTwst) == true && premiereCounter < 3) {
             screen.createButton("Proceed", "doublePremiere()");
-        } else if (CheckForReturning() == true) {
+        } else if (CheckForReturning() == true || totalCastSize === 13 && lmdfinale && episodeCount == 8) {
             screen.createButton("Proceed", "returningQueenScreen()");
         } else {
             screen.createButton("Proceed", "untucked()");
@@ -11295,7 +11291,7 @@ function teamLipSync() {
     eliminatedCast.unshift(bottomQueens[1].QueenA);
     eliminatedCast.unshift(bottomQueens[1].QueenB);
     currentCast.splice(currentCast.indexOf(bottomQueens[1]), 1);
-    if (CheckForReturning() == true) {
+    if (CheckForReturning() == true || totalCastSize === 13 && lmdfinale && episodeCount == 8) {
         screen.createButton("Proceed", "returningQueenScreen()");
     } else {
         screen.createButton("Proceed", "newEpisode()");
@@ -11605,7 +11601,7 @@ function asLipSync() {
     }
     if ((s6Premiere || s12Premiere || porkchopPremiere || s14Premiere || ph2Premiere || newImmTwst) == true && premiereCounter < 3) {
         screen.createButton("Proceed", "doublePremiere()");
-    } else if (CheckForReturning() == true) {
+    } else if (CheckForReturning() == true || totalCastSize === 13 && lmdfinale && episodeCount == 8) {
         screen.createButton("Proceed", "returningQueenScreen()");
     } else {
         screen.createButton("Proceed", "untucked()");
@@ -11902,7 +11898,7 @@ function lsaLipSync() {
     }
     if ((s6Premiere || s12Premiere || porkchopPremiere || s14Premiere || ph2Premiere || newImmTwst) == true && premiereCounter < 3) {
         screen.createButton("Proceed", "doublePremiere()");
-    } else if (CheckForReturning() == true) {
+    } else if (CheckForReturning() == true || totalCastSize === 13 && lmdfinale && episodeCount == 8) {
         screen.createButton("Proceed", "returningQueenScreen()");
     } else {
         screen.createButton("Proceed", "untucked()");
