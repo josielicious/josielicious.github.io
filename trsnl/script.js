@@ -1511,8 +1511,10 @@ function sortPerformances(cast) {
     cast.sort((a, b) => (a.performanceScore - b.performanceScore));
 }
 
+let noMini = false;
 class MiniChallenge extends Challenge {
     generateDescription() {
+        noMini = false;
         const description = document.getElementById("description");
         const a = [
             "wigs with ", "a quiz about ", "nails with ", "a competition about ",
@@ -1526,16 +1528,13 @@ class MiniChallenge extends Challenge {
             description.innerHTML = "Bring in the puppets! The queens will mock eachother, and customize puppets of eachother";
         }
         else if (currentCast.length === 7) {
-            description.innerHTML = `The library is open! In today's mini-challenge, the queens will read each-other to FILTH! Because reading is what?`
-            const screen = new Scene();
-            currentCast.forEach(q => {
-                screen.createImage(q.image);
-            })
-            screen.createBold("Is FUNDAMENTAL!");
+            description.innerHTML = `The library is open! In today's mini-challenge, the queens will read each-other to FILTH!`;
+            startReadingChallenge();
         } else {
             const miniChance = 80;
             const randomized = Math.floor(Math.random() * 100);
-            if (randomized >= 80) {
+            if (randomized >= miniChance) {
+                noMini = true;
                 description.innerHTML = `Today there's no mini challenge, let's move onto the maxi challenge!`
             } else {
                 description.innerHTML = `In today's mini-challenge, the queens will do ${a[randomNumber(0, a.length - 1)]}${b[randomNumber(0, b.length - 1)]}`;
@@ -1544,12 +1543,85 @@ class MiniChallenge extends Challenge {
     }
 
     rankPerformances() {
+        if (noMini) return;
+
         const screen = new Scene();
         const winner = currentCast[randomNumber(0, currentCast.length - 1)];
 
         screen.createImage(winner.image);
         winner.miniEpisode.push(episodeCount - 1);
         screen.createBold(`${winner.getName()} won the mini-challenge!`);
+    }
+}
+
+function startReadingChallenge() {
+    const screen = new Scene();
+
+    const allReads = [
+        "You got a grill that could put Black & Decker out of business.",
+        "Everyone thinks you're pretty. I do think you're pretty. I think you have a beautiful face... for radio.",
+        "As Lady Gaga once said, there can be a hundred people in the room, and 99 have no idea who you are.",
+        "You're still here?",
+        "Haute couture? More like haute glue.",
+        "Maybe you'd look good if you were six feet under.",
+        "I see the sanitation men forgot to pick you up for garbage day.",
+        "I don't shut up, I grow up. But when I look at you, I throw up...",
+        "Your birth certificate should be an apology from your mother.",
+        "You're like a really good pair of socks. Soft, supportive, full of cum.",
+        "Keep rolling your eyes, maybe you’ll find a brain back there.",
+        "You are so rank girl, that plants die when you walk past them.",
+        "Someday you’ll go far. I hope you stay there.",
+        "If I wanted to hear from an asshole, I’d fart.",
+        "You bring everyone so much joy when you leave the room.",
+        "I thought of you today. It reminded me to take out the trash.",
+        "I’m not insulting you, I’m describing you.",
+        "Hey, you have something on your chin. No, the 3rd one down.",
+        "People like you are the reason God doesn’t talk to us anymore.",
+        "You have come so far! Initially, your makeup was kind of busted and your outfits were a mess and your personality was super grating, but look how far you've come now. You are much older."
+    ];
+
+    for (let i = 0; i < currentCast.length; i++) {
+        screen.createImage(currentCast[i].image, "black");
+        if (i === 0) {
+            screen.createBold(`First up, it's ${currentCast[i].getName()}!`);
+        } else if (i === currentCast.length - 1) {
+            screen.createBold(`Last but definetly not least, it's ${currentCast[i].getName()}!`);
+        } else {
+            screen.createBold(`Next up, it's ${currentCast[i].getName()}!`);
+        }
+
+        let numberOfReads = randomNumber(2, 3);
+        let alreadyRead = [];
+
+        for (let r = 0; r < numberOfReads; r++) {
+            let queenToRead = currentCast[Math.floor(Math.random() * currentCast.length)];
+
+            while (
+                queenToRead.getName() === currentCast[i].getName() ||
+                alreadyRead.includes(queenToRead)
+                ) {
+                queenToRead = currentCast[Math.floor(Math.random() * currentCast.length)];
+            }
+            alreadyRead.push(queenToRead);
+
+            let readNumber = randomNumber(0, allReads.length - 1);
+            let chosenRead = allReads[readNumber];
+
+            screen.createImage(queenToRead.image, "lightgreen");
+            screen.createBold(currentCast[i].getName() + " to " + queenToRead.getName() + ":");
+            screen.createParagraph(`"${chosenRead}"`);
+
+            allReads.splice(readNumber, 1);
+            if (allReads.length === 0) {
+                allReads.push(
+                    "You're still here?",
+                    "Never mind.",
+                    "WHO CARES?"
+                );
+            }
+        }
+
+        screen.createHorizontalLine();
     }
 }
 
