@@ -2437,7 +2437,7 @@ function miniChallenge() {
 
 function addWildcard() {
     const screen = new Scene();
-    if (rupaulMode  && eliminatedCast.length === 0) {
+    if (rupaulMode  && eliminatedCast.length !== 0) {
         screen.createParagraph("Select the queen(s) to return as wildcard(s).");
 
         const checkboxes = eliminatedCast.map((q, i) => screen.createCheckbox(q.getName(), `wild_${i}`, q.image));
@@ -3495,7 +3495,7 @@ function resolveLever(choice, queen, correctLever, screen) {
         currentCast.splice(currentCast.indexOf(queen), 1);
     }
 
-    if (badunkaDunkLeversUsed.length >= badunkaDunkLevers.length) {
+    if (badunkaDunkLeversUsed.length >= badunkaDunkLevers.length || badunkaDunkCorrectCount >= badunkaDunkMaxCorrect) {
         badunkaDunkOver = true;
     }
 
@@ -4173,8 +4173,8 @@ function createTrackRecordTable(groupName) {
                 case "RTRNBTM2": td.style.backgroundColor = "tomato"; td.innerHTML = '<b>RTRN</b><br>+<br>BTM2'; break;
                 case "RTRNELIM": td.style.backgroundColor = "red"; td.innerHTML = 'RTRN<br>+<br>ELIM';  td.style.fontWeight = "bold"; break;
                 case "":
-                case " ": td.style.backgroundColor = "#a2a9b1"; break;
-                default: td.style.backgroundColor = "gray"; break;
+                case " ":
+                default: td.style.backgroundColor = "#a2a9b1"; break;
             }
 
             const actualEp = epStart + index;
