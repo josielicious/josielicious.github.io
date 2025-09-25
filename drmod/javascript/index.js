@@ -163,6 +163,11 @@ function miniChallenge() {
     }
     let miniChallengeScreen = new Scene();
     miniChallengeScreen.clean();
+    if (episodeCount == 7 && all_stars && slaysian_rules) {
+        miniChallengeScreen.createBold("As of tonight, the Slaysian Royale rules have been... ABOLISHED.")
+        all_stars = false;
+        regularFormat = true;
+    }
     if (premiereCounter == 3 && s14Premiere && episodeCount == 3) {
         s14ElimReturn();
         premiereCounter++;
@@ -6855,6 +6860,7 @@ let teamsF = false;
 let canFinale = false;
 let lftc = false;
 let all_stars = false;
+let slaysian_rules = false;
 let allstars3Finale = false;
 let lipsync_assassin = false;
 let all_winners = false;
@@ -6870,6 +6876,9 @@ function predefCast(cast, format, finale, premiere = '', returning = '') {
         thailandFormat = true;
     } else if (format == "all-stars") {
         all_stars = true;
+    } else if (format == "slaysian-format") {
+        all_stars = true;
+        slaysian_rules = true;
     } else if (format == "all-winners") {
         all_winners = true;
     } else if (format == "team") {
@@ -7358,6 +7367,9 @@ function startSimulation(challenge = "") {
             thailandFormat = true;
         } else if (select.options[select.selectedIndex].value == "all-stars") {
             all_stars = true;
+        } else if (select.options[select.selectedIndex].value == "slaysian-format") {
+            all_stars = true;
+            slaysian_rules = true;
         } else if (select.options[select.selectedIndex].value == "all-winners") {
             all_winners = true;
         } else if (select.options[select.selectedIndex].value == "team") {
@@ -15482,6 +15494,7 @@ function eliminatedKittyWinLipsyncJudging() {
             eliminatedCast.unshift(top2[0].lipstick);
             bottomQueens.splice(bottomQueens.indexOf(top2[0].lipstick), 1);
             currentCast.splice(currentCast.indexOf(top2[0].lipstick), 1);
+
         }
     }
     for (let i = 0; i < bottomQueens.length; i++) {
